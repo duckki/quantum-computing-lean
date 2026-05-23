@@ -20,5 +20,5 @@ lake build
   multiplication, trace, projection, and Kronecker product support.
 - `Quantum/Basic.lean`: common states, gates, controlled gates, partial trace,
   and measurement definitions.
-- `Quantum/Lemmas.lean`: basic simp lemmas for basis vectors and measurement.
+- `Quantum/Lemmas.lean`: basic simp lemmas for basis vectors, measurement, and gates.
 - `Quantum.lean`: top-level import module.
