@@ -2,6 +2,8 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Matrix.Mul
 import Mathlib.LinearAlgebra.Matrix.ConjTranspose
 import Mathlib.LinearAlgebra.Matrix.Kronecker
+import Mathlib.LinearAlgebra.Matrix.Trace
+import Mathlib.LinearAlgebra.UnitaryGroup
 import Mathlib.Logic.Equiv.Fin.Basic
 
 open scoped BigOperators
@@ -22,8 +24,8 @@ noncomputable abbrev adjoint (A : Matrix m n) : Matrix n m :=
 noncomputable def mul (A : Matrix m n) (B : Matrix n p) : Matrix m p :=
   A * B
 
-noncomputable def trace (A : Square n) : ℂ :=
-  ∑ i, A i i
+noncomputable abbrev trace (A : Square n) : ℂ :=
+  _root_.Matrix.trace A
 
 noncomputable def proj (s : Vector n) : Square n :=
   mul s (adjoint s)
@@ -32,30 +34,13 @@ noncomputable def kron {q : ℕ} (A : Matrix m n) (B : Matrix p q) : Matrix (m *
   _root_.Matrix.reindex finProdFinEquiv finProdFinEquiv (_root_.Matrix.kronecker A B)
 
 @[simp]
-theorem adjoint_apply (A : Matrix m n) (i : Fin n) (j : Fin m) :
-    adjoint A i j = star (A j i) :=
-  rfl
-
-@[simp]
-theorem adjoint_adjoint (A : Matrix m n) : adjoint (adjoint A) = A := by
-  simp [adjoint]
-
-@[simp]
-theorem adjoint_zero : adjoint (0 : Matrix m n) = 0 := by
-  simp [adjoint]
-
-@[simp]
-theorem adjoint_one : adjoint (1 : Square n) = 1 := by
-  simp [adjoint]
-
-@[simp]
-theorem adjoint_add (A B : Matrix m n) : adjoint (A + B) = adjoint A + adjoint B := by
-  simp [adjoint]
-
-@[simp]
 theorem adjoint_mul (A : Matrix m n) (B : Matrix n p) :
     adjoint (mul A B) = mul (adjoint B) (adjoint A) := by
   simp [adjoint, mul]
+
+theorem trace_mul_comm (A : Matrix m n) (B : Matrix n m) :
+    trace (mul A B) = trace (mul B A) := by
+  simpa [trace, mul] using _root_.Matrix.trace_mul_comm A B
 
 @[simp]
 theorem kron_apply {q : ℕ} (A : Matrix m n) (B : Matrix p q)
@@ -78,7 +63,17 @@ def isNormal (A : Square n) : Prop :=
   mul (adjoint A) A = mul A (adjoint A)
 
 def isUnitary (A : Square n) : Prop :=
-  mul (adjoint A) A = 1
+  A ∈ _root_.Matrix.unitaryGroup (Fin n) ℂ
+
+theorem isUnitary_iff_adjoint_mul_self (A : Square n) :
+    isUnitary A ↔ mul (adjoint A) A = 1 := by
+  simpa [isUnitary, adjoint, mul, _root_.Matrix.star_eq_conjTranspose] using
+    (_root_.Matrix.mem_unitaryGroup_iff' (A := A))
+
+theorem isUnitary_iff_mul_adjoint_self (A : Square n) :
+    isUnitary A ↔ mul A (adjoint A) = 1 := by
+  simpa [isUnitary, adjoint, mul, _root_.Matrix.star_eq_conjTranspose] using
+    (_root_.Matrix.mem_unitaryGroup_iff (A := A))
 
 end Matrix
 
