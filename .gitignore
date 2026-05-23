@@ -1,3 +1,5 @@
+.lake/
+/.lake
+/.DS_Store
 *.olean
-/_target
-/leanpkg.path
+*.ilean

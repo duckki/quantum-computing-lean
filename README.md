@@ -1,52 +1,22 @@
-# Quantum Computing in Lean
+# Quantum
 
-This is an implementation of the theory of quantum computing in the Lean programming language (using the Lean theorem prover version 3).
+A fresh Lean 4 formalization of basic quantum computing definitions.
 
-It's built on top of the "mathlib" library written by the Lean Community.
+This branch intentionally drops the old Lean 3 project structure. The new code is
+a Lake/mathlib4 project and starts with a small core API for finite-dimensional
+complex matrices, state vectors, common qubit states and gates, projections, and
+measurement probabilities.
 
+## Build
 
-## Organization
+```sh
+lake exe cache get
+lake build
+```
 
-### The [src](src) directory
+## Layout
 
-* [common_lemmas.lean](src/common_lemmas.lean): Contains lemmas that are not specific to complex matrix or quantum computing.
-
-* [matrix_inner_product.lean](src/matrix_inner_product.lean): The `inner_product_space` instantiation for the `matrix` type.
-
-* [matrix.lean](src/matrix.lean): Matrix-related definitions, notably `Matrix` and `kron` (the Kronecker product).
-
-  * The `Matrix` type is defined based on the mathlib's `matrix` type, but specialized for complex number and the `fin` range type.
-
-* [matrix_lemmas.lean](src/matrix_lemmas.lean): Derived facts from the definitions of `Matrix`, `kron` and `adjoint`.
-
-* [quantum.lean](src/quantum.lean): Definitions for quantum computing, such as measurements and basic states and circuits.
-
-* [quantum_lemmas.lean](src/quantum_lemmas.lean): Derived facts from the definitions in the [quantum.lean](src/quantum.lean) file.
-
-* [measurement.lean](src/measurement.lean): More generalized definitions of measurements and theorems about them.
-
-
-### The [src/theorems](src/theorems) directory
-
-* [no-clone.lean](src/theorems/no-cloning.lean): Several different versions of the "no-cloning" theorems.
-
-* [random-number-generator.lean](src/theorems/random-number-generator.lean): A few examples of Hadamard transform algorithm.
-
-
-## Reference materials
-
-* Tutorial: Quantum Programming: https://sites.google.com/ncsu.edu/qc-tutorial/home
-
-* An Introduction to Quantum Computing, Without the Physics : https://arxiv.org/abs/1708.03684
-
-* The "Verified Quantum Computing" book: https://www.cs.umd.edu/~rrand/vqc/
-
-
-## Related project
-
-* Lean: https://leanprover.github.io
-
-* Lean Community: https://leanprover-community.github.io
-
-* QWIRE: https://github.com/inQWIRE/QWIRE
-  * "A quantum circuit language and formal verification tool" by Robert Rand et al.
+- `Quantum/Matrix.lean`: core finite complex matrix and vector API.
+- `Quantum/Basic.lean`: common states, gates, projections, trace, and
+  measurement definitions.
+- `Quantum.lean`: top-level import module.
