@@ -16,7 +16,8 @@ lake build
 
 ## Layout
 
-- `Quantum/Matrix.lean`: core finite complex matrix and vector API.
-- `Quantum/Basic.lean`: common states, gates, projections, trace, and
-  measurement definitions.
+- `Quantum/Matrix.lean`: core finite complex matrix/vector API, adjoint,
+  multiplication, trace, projection, and Kronecker product support.
+- `Quantum/Basic.lean`: common states, gates, controlled gates, partial trace,
+  and measurement definitions.
 - `Quantum.lean`: top-level import module.

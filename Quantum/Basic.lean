@@ -14,6 +14,9 @@ def ket01 : Vector 4 := Vector.basis 1
 def ket10 : Vector 4 := Vector.basis 2
 def ket11 : Vector 4 := Vector.basis 3
 
+def ketZeros (n : ℕ) : Vector (2 ^ n) :=
+  Vector.basis ⟨0, by simp⟩
+
 noncomputable def ketPlus : Vector 2 :=
   fun i _ => if (i : ℕ) = 0 then invSqrt2 else invSqrt2
 
@@ -80,6 +83,15 @@ noncomputable def PPlus : Square 2 :=
 
 noncomputable def PMinus : Square 2 :=
   Matrix.proj ketMinus
+
+noncomputable def controlledGate {n : ℕ} (U : Square n) : Square (2 * n) :=
+  Matrix.proj ket0 ⊗ (I n) + Matrix.proj ket1 ⊗ U
+
+noncomputable def gateControlled (U : Square 2) : Square 4 :=
+  SWAP ⬝ controlledGate U ⬝ SWAP
+
+noncomputable def partialTrace {n m : ℕ} (A : Square (n * m)) : Square n :=
+  fun i j => ∑ k : Fin m, A (finProdFinEquiv (i, k)) (finProdFinEquiv (j, k))
 
 def measure {n : ℕ} (s : Vector n) (i : Fin n) : ℝ :=
   Complex.normSq (s i 0)
