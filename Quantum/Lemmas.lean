@@ -41,6 +41,46 @@ theorem invSqrt2_mul_self : invSqrt2 * invSqrt2 = (1 / 2 : ℂ) := by
   rw [sq, ← Complex.ofReal_mul, Real.mul_self_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
   norm_num
 
+@[simp]
+theorem normSq_invSqrt2 : Complex.normSq invSqrt2 = (1 / 2 : ℝ) := by
+  rw [invSqrt2, Complex.normSq_ofReal]
+  field_simp [
+    ((Real.sqrt_ne_zero (x := 2) (by norm_num : (0 : ℝ) ≤ 2)).mpr
+      (by norm_num : (2 : ℝ) ≠ 0))]
+  rw [sq, Real.mul_self_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
+
+@[simp]
+theorem measure_ketPlus_zero : measure ketPlus 0 = (1 / 2 : ℝ) := by
+  simp [measure, ketPlus]
+
+@[simp]
+theorem measure_ketPlus_one : measure ketPlus 1 = (1 / 2 : ℝ) := by
+  simp [measure, ketPlus]
+
+@[simp]
+theorem measure_ketMinus_zero : measure ketMinus 0 = (1 / 2 : ℝ) := by
+  simp [measure, ketMinus]
+
+@[simp]
+theorem measure_ketMinus_one : measure ketMinus 1 = (1 / 2 : ℝ) := by
+  simp [measure, ketMinus, Complex.normSq_neg]
+
+@[simp]
+theorem measure_ketPhiPlus_zero : measure ketPhiPlus 0 = (1 / 2 : ℝ) := by
+  simp [measure, ketPhiPlus]
+
+@[simp]
+theorem measure_ketPhiPlus_one : measure ketPhiPlus 1 = 0 := by
+  simp [measure, ketPhiPlus]
+
+@[simp]
+theorem measure_ketPhiPlus_two : measure ketPhiPlus 2 = 0 := by
+  simp [measure, ketPhiPlus]
+
+@[simp]
+theorem measure_ketPhiPlus_three : measure ketPhiPlus 3 = (1 / 2 : ℝ) := by
+  simp [measure, ketPhiPlus]
+
 theorem X_isUnitary : Matrix.isUnitary X := by
   rw [Matrix.isUnitary_iff_adjoint_mul_self]
   ext i j
@@ -117,5 +157,77 @@ theorem H_mul_ket1 : H ⬝ ket1 = ketMinus := by
   fin_cases i <;> fin_cases j <;>
     norm_num [Matrix.mul, H, ket1, ketMinus, Vector.basis, _root_.Matrix.mul_apply,
       Fin.sum_univ_two]
+
+@[simp]
+theorem CNOT_mul_ket00 : CNOT ⬝ ket00 = ket00 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, CNOT, ket00, Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem CNOT_mul_ket01 : CNOT ⬝ ket01 = ket01 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, CNOT, ket01, Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem CNOT_mul_ket10 : CNOT ⬝ ket10 = ket11 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, CNOT, ket10, ket11, Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem CNOT_mul_ket11 : CNOT ⬝ ket11 = ket10 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, CNOT, ket10, ket11, Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem CZ_mul_ket00 : CZ ⬝ ket00 = ket00 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, CZ, ket00, Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem CZ_mul_ket01 : CZ ⬝ ket01 = ket01 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, CZ, ket01, Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem CZ_mul_ket10 : CZ ⬝ ket10 = ket10 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, CZ, ket10, Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem CZ_mul_ket11 : CZ ⬝ ket11 = -ket11 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, CZ, ket11, Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem SWAP_mul_ket00 : SWAP ⬝ ket00 = ket00 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, SWAP, ket00, Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem SWAP_mul_ket01 : SWAP ⬝ ket01 = ket10 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, SWAP, ket01, ket10, Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem SWAP_mul_ket10 : SWAP ⬝ ket10 = ket01 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, SWAP, ket01, ket10, Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem SWAP_mul_ket11 : SWAP ⬝ ket11 = ket11 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, SWAP, ket11, Vector.basis, _root_.Matrix.mul_apply]
 
 end Quantum
