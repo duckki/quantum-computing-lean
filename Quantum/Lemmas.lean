@@ -33,6 +33,20 @@ theorem proj_def {n : ℕ} (i : Fin n) :
   rfl
 
 @[simp]
+theorem proj_zero : proj (0 : Fin 2) = P0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [proj, Matrix.proj, Matrix.mul, Matrix.adjoint, P0, Vector.basis,
+      _root_.Matrix.mul_apply, Fin.sum_univ_one]
+
+@[simp]
+theorem proj_one : proj (1 : Fin 2) = P1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [proj, Matrix.proj, Matrix.mul, Matrix.adjoint, P1, Vector.basis,
+      _root_.Matrix.mul_apply, Fin.sum_univ_one]
+
+@[simp]
 theorem prob_basis_self {n : ℕ} (i : Fin n) : prob (Vector.basis i) i = 1 := by
   simp [prob]
 
@@ -314,6 +328,30 @@ theorem proj_ket1 : Matrix.proj ket1 = P1 := by
   fin_cases i <;> fin_cases j <;>
     norm_num [Matrix.proj, Matrix.mul, Matrix.adjoint, P1, ket1, Vector.basis,
       _root_.Matrix.mul_apply, Fin.sum_univ_one]
+
+@[simp]
+theorem P0_mul_ket0 : P0 ⬝ ket0 = ket0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, P0, ket0, Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem P0_mul_ket1 : P0 ⬝ ket1 = 0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, P0, ket1, Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem P1_mul_ket0 : P1 ⬝ ket0 = 0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, P1, ket0, Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem P1_mul_ket1 : P1 ⬝ ket1 = ket1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, P1, ket1, Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_two]
 
 theorem X_isUnitary : Matrix.isUnitary X := by
   rw [Matrix.isUnitary_iff_adjoint_mul_self]
