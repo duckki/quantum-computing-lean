@@ -852,34 +852,30 @@ theorem partialTrace_proj_kron_of_isUnit {n m : ℕ} (s : Vector n) {t : Vector 
 @[simp]
 theorem partialTrace_proj_ket00 :
     partialTrace (n := 2) (m := 2) (Matrix.proj ket00) = P0 := by
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp [partialTrace, Matrix.proj, Matrix.mul, Matrix.adjoint, ket00, P0, Vector.basis,
-      _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat]
+  rw [← ket0_kron_ket0]
+  rw [← proj_ket0]
+  exact partialTrace_proj_kron_of_isUnit (s := ket0) ket0_isUnit
 
 @[simp]
 theorem partialTrace_proj_ket01 :
     partialTrace (n := 2) (m := 2) (Matrix.proj ket01) = P0 := by
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp [partialTrace, Matrix.proj, Matrix.mul, Matrix.adjoint, ket01, P0, Vector.basis,
-      _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat]
+  rw [← ket0_kron_ket1]
+  rw [← proj_ket0]
+  exact partialTrace_proj_kron_of_isUnit (s := ket0) ket1_isUnit
 
 @[simp]
 theorem partialTrace_proj_ket10 :
     partialTrace (n := 2) (m := 2) (Matrix.proj ket10) = P1 := by
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp [partialTrace, Matrix.proj, Matrix.mul, Matrix.adjoint, ket10, P1, Vector.basis,
-      _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat]
+  rw [← ket1_kron_ket0]
+  rw [← proj_ket1]
+  exact partialTrace_proj_kron_of_isUnit (s := ket1) ket0_isUnit
 
 @[simp]
 theorem partialTrace_proj_ket11 :
     partialTrace (n := 2) (m := 2) (Matrix.proj ket11) = P1 := by
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp [partialTrace, Matrix.proj, Matrix.mul, Matrix.adjoint, ket11, P1, Vector.basis,
-      _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat]
+  rw [← ket1_kron_ket1]
+  rw [← proj_ket1]
+  exact partialTrace_proj_kron_of_isUnit (s := ket1) ket1_isUnit
 
 @[simp]
 theorem partialTrace_proj_ketPhiPlus :
