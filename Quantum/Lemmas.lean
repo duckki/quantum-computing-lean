@@ -159,6 +159,32 @@ theorem H_mul_ket1 : H ⬝ ket1 = ketMinus := by
       Fin.sum_univ_two]
 
 @[simp]
+theorem ket0_kron_ket0 : ket0 ⊗ ket0 = ket00 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.kron, ket0, ket00, Vector.basis, finProdFinEquiv, Fin.divNat, Fin.modNat]
+
+@[simp]
+theorem ket0_kron_ket1 : ket0 ⊗ ket1 = ket01 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.kron, ket0, ket1, ket01, Vector.basis, finProdFinEquiv, Fin.divNat,
+      Fin.modNat]
+
+@[simp]
+theorem ket1_kron_ket0 : ket1 ⊗ ket0 = ket10 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.kron, ket0, ket1, ket10, Vector.basis, finProdFinEquiv, Fin.divNat,
+      Fin.modNat]
+
+@[simp]
+theorem ket1_kron_ket1 : ket1 ⊗ ket1 = ket11 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.kron, ket1, ket11, Vector.basis, finProdFinEquiv, Fin.divNat, Fin.modNat]
+
+@[simp]
 theorem CNOT_mul_ket00 : CNOT ⬝ ket00 = ket00 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -229,5 +255,54 @@ theorem SWAP_mul_ket11 : SWAP ⬝ ket11 = ket11 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [Matrix.mul, SWAP, ket11, Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem controlledGate_X : controlledGate X = CNOT := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [controlledGate, Matrix.proj, Matrix.mul, Matrix.kron, X, CNOT, ket0, ket1,
+      Vector.basis, _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat]
+
+@[simp]
+theorem controlledGate_Z : controlledGate Z = CZ := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [controlledGate, Matrix.proj, Matrix.mul, Matrix.kron, Z, CZ, ket0, ket1,
+      Vector.basis, _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat]
+
+@[simp]
+theorem gateControlled_Z : gateControlled Z = CZ := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [gateControlled, Matrix.mul, SWAP, CZ, controlledGate_Z, _root_.Matrix.mul_apply,
+      Fin.sum_univ_four]
+
+@[simp]
+theorem gateControlled_X_mul_ket00 : gateControlled X ⬝ ket00 = ket00 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [gateControlled, Matrix.mul, SWAP, controlledGate_X, CNOT, ket00, Vector.basis,
+      _root_.Matrix.mul_apply, Fin.sum_univ_four]
+
+@[simp]
+theorem gateControlled_X_mul_ket01 : gateControlled X ⬝ ket01 = ket11 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [gateControlled, Matrix.mul, SWAP, controlledGate_X, CNOT, ket01, ket11, Vector.basis,
+      _root_.Matrix.mul_apply, Fin.sum_univ_four]
+
+@[simp]
+theorem gateControlled_X_mul_ket10 : gateControlled X ⬝ ket10 = ket10 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [gateControlled, Matrix.mul, SWAP, controlledGate_X, CNOT, ket10, Vector.basis,
+      _root_.Matrix.mul_apply, Fin.sum_univ_four]
+
+@[simp]
+theorem gateControlled_X_mul_ket11 : gateControlled X ⬝ ket11 = ket01 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [gateControlled, Matrix.mul, SWAP, controlledGate_X, CNOT, ket01, ket11, Vector.basis,
+      _root_.Matrix.mul_apply, Fin.sum_univ_four]
 
 end Quantum
