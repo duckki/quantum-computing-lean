@@ -1,5 +1,5 @@
 import Quantum.Measurement
-import Quantum.Lemmas.Gates
+import Quantum.Gates
 
 namespace Quantum
 

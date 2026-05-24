@@ -1,5 +1,5 @@
 import Quantum.Measurement
-import Quantum.Lemmas.Core
+import Quantum.Core
 
 namespace Quantum
 

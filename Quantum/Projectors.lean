@@ -1,4 +1,4 @@
-import Quantum.Lemmas.States
+import Quantum.States
 
 namespace Quantum
 

@@ -30,6 +30,8 @@ lake build
   unitary circuit composition.
 - `Quantum/Examples.lean`: standard unitary circuits and the Bell-state
   preparation example.
-- `Quantum/Lemmas.lean`: aggregate import for split lemma modules under
-  `Quantum/Lemmas/`.
+- `Quantum/Core.lean`, `Quantum/States.lean`, `Quantum/Projectors.lean`,
+  `Quantum/Gates.lean`, `Quantum/PartialTrace.lean`, and
+  `Quantum/Measurement/Lemmas.lean`: reusable theorem modules grouped by the
+  definitions they support.
 - `Quantum.lean`: top-level import module.

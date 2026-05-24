@@ -1,4 +1,5 @@
-import Quantum.Lemmas
+import Quantum.Gates
+import Quantum.Measurement.Lemmas
 
 namespace Quantum
 

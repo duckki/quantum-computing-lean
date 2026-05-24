@@ -1,4 +1,4 @@
-import Quantum.Lemmas.Projectors
+import Quantum.Projectors
 
 namespace Quantum
 

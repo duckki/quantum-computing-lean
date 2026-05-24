@@ -1,6 +1,5 @@
 import Mathlib.Analysis.Matrix.PosDef
 import Quantum.Basic
-import Quantum.Lemmas.Core
 
 namespace Quantum
 

@@ -1,5 +1,5 @@
 import Quantum.Circuit
-import Quantum.Lemmas.Gates
+import Quantum.Gates
 
 namespace Quantum
 
