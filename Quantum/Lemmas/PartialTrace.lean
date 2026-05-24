@@ -1,3 +1,4 @@
+import Quantum.State
 import Quantum.Lemmas.Gates
 
 namespace Quantum
@@ -59,5 +60,30 @@ theorem partialTrace_proj_ketPhiPlus :
   fin_cases i <;> fin_cases j <;>
     simp [partialTrace, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPhiPlus,
       _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat, Fin.sum_univ_two]
+
+@[simp]
+theorem partialTrace_pure_ket00 :
+    partialTrace (n := 2) (m := 2) (DensityMatrix.pure ket00) = P0 := by
+  simp [DensityMatrix.pure]
+
+@[simp]
+theorem partialTrace_pure_ket01 :
+    partialTrace (n := 2) (m := 2) (DensityMatrix.pure ket01) = P0 := by
+  simp [DensityMatrix.pure]
+
+@[simp]
+theorem partialTrace_pure_ket10 :
+    partialTrace (n := 2) (m := 2) (DensityMatrix.pure ket10) = P1 := by
+  simp [DensityMatrix.pure]
+
+@[simp]
+theorem partialTrace_pure_ket11 :
+    partialTrace (n := 2) (m := 2) (DensityMatrix.pure ket11) = P1 := by
+  simp [DensityMatrix.pure]
+
+@[simp]
+theorem partialTrace_pure_ketPhiPlus :
+    partialTrace (n := 2) (m := 2) (DensityMatrix.pure ketPhiPlus) = ((1 / 2 : ℂ) • (I 2)) := by
+  simp [DensityMatrix.pure]
 
 end Quantum

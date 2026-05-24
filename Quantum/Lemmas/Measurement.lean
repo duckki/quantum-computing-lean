@@ -1,8 +1,75 @@
+import Quantum.Measurement
 import Quantum.Lemmas.Core
 
 namespace Quantum
 
 namespace Measurement
+
+theorem sum_generalizedProb {n outcomes : ℕ} (M : Fin outcomes → Square n) (s : Vector n) :
+    (∑ m : Fin outcomes, generalizedProb M s m) =
+      ((s† ⬝ (∑ m : Fin outcomes, (M m)† ⬝ M m) ⬝ s) 0 0).re := by
+  have hmat :
+      s† ⬝ (∑ m : Fin outcomes, (M m)† ⬝ M m) ⬝ s =
+        ∑ m : Fin outcomes, s† ⬝ ((M m)† ⬝ M m) ⬝ s := by
+    simp [Matrix.mul, _root_.Matrix.mul_sum, _root_.Matrix.sum_mul]
+  have hscalar :
+      (∑ m : Fin outcomes, (s† ⬝ ((M m)† ⬝ M m) ⬝ s) 0 0) =
+        (s† ⬝ (∑ m : Fin outcomes, (M m)† ⬝ M m) ⬝ s) 0 0 := by
+    simpa [_root_.Matrix.sum_apply] using congr_fun (congr_fun hmat.symm 0) 0
+  simpa [generalizedProb, Complex.re_sum] using congrArg Complex.re hscalar
+
+theorem sum_generalizedProb_of_isComplete {n outcomes : ℕ}
+    {M : Fin outcomes → Square n} (hM : IsComplete M) {s : Vector n}
+    (hs : Matrix.isUnit s) :
+    (∑ m : Fin outcomes, generalizedProb M s m) = 1 := by
+  rw [sum_generalizedProb, hM]
+  have hroot : s† ⬝ s = 1 := by simpa [Matrix.isUnit] using hs
+  have h : s† ⬝ (I n) ⬝ s = 1 := by
+    simpa [Matrix.mul] using hroot
+  rw [h]
+  norm_num
+
+theorem projectors_isComplete (n : ℕ) : IsComplete (projectors n) := by
+  exact sum_adjoint_mul_projectors n
+
+namespace Generalized
+
+@[simp]
+theorem prob_eq_generalizedProb {n outcomes : ℕ} (M : Generalized n outcomes)
+    (s : Vector n) (m : Fin outcomes) :
+    M.prob s m = generalizedProb M.operator s m :=
+  rfl
+
+@[simp]
+theorem postMeasure_eq_generalizedPostMeasure {n outcomes : ℕ} (M : Generalized n outcomes)
+    (s : Vector n) (m : Fin outcomes) :
+    M.postMeasure s m = generalizedPostMeasure M.operator s m :=
+  rfl
+
+theorem prob_nonneg {n outcomes : ℕ} (M : Generalized n outcomes)
+    (s : Vector n) (m : Fin outcomes) :
+    0 ≤ M.prob s m := by
+  simpa [prob] using generalizedProb_nonneg M.operator s m
+
+theorem sum_prob_of_isUnit {n outcomes : ℕ} (M : Generalized n outcomes)
+    {s : Vector n} (hs : Matrix.isUnit s) :
+    (∑ m : Fin outcomes, M.prob s m) = 1 := by
+  simpa [prob] using sum_generalizedProb_of_isComplete M.isComplete hs
+
+theorem sum_pureProb {n outcomes : ℕ} (M : Generalized n outcomes) (ψ : PureState n) :
+    (∑ m : Fin outcomes, M.pureProb ψ m) = 1 := by
+  simpa [pureProb] using M.sum_prob_of_isUnit ψ.isUnit
+
+noncomputable def projective (n : ℕ) : Generalized n n where
+  operator := projectors n
+  isComplete := projectors_isComplete n
+
+@[simp]
+theorem projective_apply {n : ℕ} (i : Fin n) :
+    (projective n).operator i = projectors n i :=
+  rfl
+
+end Generalized
 
 @[simp]
 theorem prob_ketPlus_zero : prob ketPlus 0 = (1 / 2 : ℝ) := by
