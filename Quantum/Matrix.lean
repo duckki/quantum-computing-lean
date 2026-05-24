@@ -75,6 +75,19 @@ theorem isUnitary_iff_mul_adjoint_self (A : Square n) :
   simpa [isUnitary, adjoint, mul, _root_.Matrix.star_eq_conjTranspose] using
     (_root_.Matrix.mem_unitaryGroup_iff (A := A))
 
+theorem isUnitary_mul_isUnit {A : Square n} {s : Vector n}
+    (hA : isUnitary A) (hs : isUnit s) : isUnit (mul A s) := by
+  rw [isUnit] at hs ⊢
+  rw [adjoint_mul]
+  rw [isUnitary_iff_adjoint_mul_self] at hA
+  have hAroot : adjoint A * A = 1 := by simpa [mul] using hA
+  have hsroot : adjoint s * s = 1 := by simpa [mul] using hs
+  change (adjoint s * adjoint A) * (A * s) = 1
+  rw [_root_.Matrix.mul_assoc]
+  rw [← _root_.Matrix.mul_assoc (adjoint A) A s]
+  rw [hAroot]
+  simpa using hsroot
+
 end Matrix
 
 postfix:max "†" => Matrix.adjoint
