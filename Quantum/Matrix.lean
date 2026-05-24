@@ -43,6 +43,53 @@ theorem trace_mul_comm (A : Matrix m n) (B : Matrix n m) :
   simpa [trace, mul] using _root_.Matrix.trace_mul_comm A B
 
 @[simp]
+theorem adjoint_zero : adjoint (0 : Matrix m n) = 0 := by
+  simp [adjoint]
+
+@[simp]
+theorem adjoint_one : adjoint (1 : Square n) = 1 := by
+  simp [adjoint]
+
+@[simp]
+theorem adjoint_adjoint (A : Matrix m n) : adjoint (adjoint A) = A := by
+  ext i j
+  simp [adjoint]
+
+theorem adjoint_inj {A B : Matrix m n} (h : adjoint A = adjoint B) : A = B := by
+  rw [← adjoint_adjoint A, h, adjoint_adjoint]
+
+@[simp]
+theorem adjoint_add (A B : Matrix m n) : adjoint (A + B) = adjoint A + adjoint B := by
+  simp [adjoint]
+
+@[simp]
+theorem adjoint_neg (A : Matrix m n) : adjoint (-A) = -adjoint A := by
+  simp [adjoint]
+
+@[simp]
+theorem adjoint_sub (A B : Matrix m n) : adjoint (A - B) = adjoint A - adjoint B := by
+  simp [sub_eq_add_neg]
+
+@[simp]
+theorem adjoint_smul (a : ℂ) (A : Matrix m n) : adjoint (a • A) = star a • adjoint A := by
+  simp [adjoint]
+
+@[simp]
+theorem adjoint_apply (A : Matrix m n) (i : Fin n) (j : Fin m) :
+    adjoint A i j = star (A j i) :=
+  rfl
+
+theorem trace_smul (a : ℂ) (A : Square n) : trace (a • A) = a * trace A := by
+  simp [trace, _root_.Matrix.trace, Finset.mul_sum]
+
+@[simp]
+theorem trace_zero : trace (0 : Square n) = 0 := by
+  simp [trace]
+
+theorem trace_adjoint (A : Square n) : trace (adjoint A) = star (trace A) := by
+  simp [trace, adjoint, _root_.Matrix.trace]
+
+@[simp]
 theorem adjoint_proj (s : Vector n) : adjoint (proj s) = proj s := by
   simp [proj]
 
@@ -51,6 +98,64 @@ theorem kron_apply {q : ℕ} (A : Matrix m n) (B : Matrix p q)
     (i : Fin m) (k : Fin p) (j : Fin n) (l : Fin q) :
     kron A B (finProdFinEquiv (i, k)) (finProdFinEquiv (j, l)) = A i j * B k l := by
   simp [kron]
+
+@[simp]
+theorem kron_zero_left {q : ℕ} (B : Matrix p q) :
+    kron (0 : Matrix m n) B = 0 := by
+  ext i j
+  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
+  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
+  simp [kron]
+
+@[simp]
+theorem kron_zero_right {q : ℕ} (A : Matrix m n) :
+    kron A (0 : Matrix p q) = 0 := by
+  ext i j
+  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
+  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
+  simp [kron]
+
+theorem kron_add_left {q : ℕ} (A B : Matrix m n) (C : Matrix p q) :
+    kron (A + B) C = kron A C + kron B C := by
+  ext i j
+  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
+  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
+  simp [kron, add_mul]
+
+theorem kron_add_right {q : ℕ} (A : Matrix m n) (B C : Matrix p q) :
+    kron A (B + C) = kron A B + kron A C := by
+  ext i j
+  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
+  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
+  simp [kron, mul_add]
+
+theorem kron_sub_left {q : ℕ} (A B : Matrix m n) (C : Matrix p q) :
+    kron (A - B) C = kron A C - kron B C := by
+  ext i j
+  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
+  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
+  simp [kron, sub_eq_add_neg, add_mul]
+
+theorem kron_sub_right {q : ℕ} (A : Matrix m n) (B C : Matrix p q) :
+    kron A (B - C) = kron A B - kron A C := by
+  ext i j
+  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
+  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
+  simp [kron, sub_eq_add_neg, mul_add]
+
+theorem kron_smul_left {q : ℕ} (a : ℂ) (A : Matrix m n) (B : Matrix p q) :
+    kron (a • A) B = a • kron A B := by
+  ext i j
+  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
+  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
+  simp [kron, mul_assoc]
+
+theorem kron_smul_right {q : ℕ} (a : ℂ) (A : Matrix m n) (B : Matrix p q) :
+    kron A (a • B) = a • kron A B := by
+  ext i j
+  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
+  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
+  simp [kron, mul_left_comm]
 
 @[simp]
 theorem adjoint_kron {q : ℕ} (A : Matrix m n) (B : Matrix p q) :
@@ -83,8 +188,38 @@ theorem kron_one_one : kron (1 : Square m) (1 : Square n) = (1 : Square (m * n))
   rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
   simp [kron, _root_.Matrix.one_apply, Prod.ext_iff]
 
+theorem trace_kron (A : Square m) (B : Square n) :
+    trace (kron A B) = trace A * trace B := by
+  calc
+    trace (kron A B) = ∑ x : Fin m × Fin n, A x.1 x.1 * B x.2 x.2 := by
+      rw [trace, _root_.Matrix.trace]
+      symm
+      exact Fintype.sum_equiv finProdFinEquiv
+        (fun x : Fin m × Fin n => A x.1 x.1 * B x.2 x.2)
+        (fun x : Fin (m * n) => kron A B x x)
+        (by intro x; simp [kron])
+    _ = trace A * trace B := by
+      rw [trace, trace, _root_.Matrix.trace, _root_.Matrix.trace]
+      rw [← Finset.univ_product_univ]
+      rw [Finset.sum_product]
+      rw [Finset.sum_comm]
+      simp [Finset.mul_sum, mul_comm]
+
 def isUnit (s : Vector n) : Prop :=
   mul (adjoint s) s = 1
+
+theorem isUnit_kron {s : Vector m} {t : Vector n}
+    (hs : isUnit s) (ht : isUnit t) : isUnit (kron s t) := by
+  rw [isUnit, adjoint_kron, kron_mul]
+  have hsroot : mul (adjoint s) s = (1 : Square 1) := by simpa [isUnit] using hs
+  have htroot : mul (adjoint t) t = (1 : Square 1) := by simpa [isUnit] using ht
+  rw [hsroot, htroot]
+  simp
+
+theorem not_isUnit_zero (n : ℕ) : ¬ isUnit (0 : Vector n) := by
+  intro h
+  have hscalar := congrFun (congrFun h 0) 0
+  norm_num [isUnit, mul, adjoint, _root_.Matrix.mul_apply] at hscalar
 
 theorem proj_mul_proj_of_isUnit {s : Vector n} (hs : isUnit s) :
     mul (proj s) (proj s) = proj s := by
@@ -101,6 +236,14 @@ theorem trace_proj_of_isUnit {s : Vector n} (hs : isUnit s) : trace (proj s) = 1
   rw [isUnit] at hs
   rw [hs]
   simp [trace]
+
+theorem trace_outer_eq_inner (s t : Vector n) :
+    trace (mul s (adjoint t)) = (mul (adjoint t) s) 0 0 := by
+  rw [trace_mul_comm]
+  simp [trace, mul, _root_.Matrix.trace]
+
+theorem trace_proj (s : Vector n) : trace (proj s) = (mul (adjoint s) s) 0 0 := by
+  simp [proj, trace_outer_eq_inner]
 
 def isNormal (A : Square n) : Prop :=
   mul (adjoint A) A = mul A (adjoint A)
@@ -148,6 +291,17 @@ theorem isUnitary_mul_isUnit {A : Square n} {s : Vector n}
   rw [← _root_.Matrix.mul_assoc (adjoint A) A s]
   rw [hAroot]
   simpa using hsroot
+
+theorem isUnitary_preserve_inner {U : Square n} (hU : isUnitary U) (v w : Vector n) :
+    mul (adjoint (mul U v)) (mul U w) = mul (adjoint v) w := by
+  rw [adjoint_mul]
+  rw [isUnitary_iff_adjoint_mul_self] at hU
+  have hUroot : adjoint U * U = 1 := by simpa [mul] using hU
+  change (adjoint v * adjoint U) * (U * w) = adjoint v * w
+  rw [_root_.Matrix.mul_assoc]
+  rw [← _root_.Matrix.mul_assoc (adjoint U) U w]
+  rw [hUroot]
+  simp
 
 theorem isUnitary_kron {A : Square m} {B : Square n}
     (hA : isUnitary A) (hB : isUnitary B) : isUnitary (kron A B) := by

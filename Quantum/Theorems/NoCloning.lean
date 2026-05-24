@@ -30,44 +30,6 @@ private theorem ketZeros_inner_invSqrt2_smul (n : ℕ) :
       rw [hunit]
       simp
 
-private theorem Matrix.isUnit_kron {m n : ℕ} {s : Vector m} {t : Vector n}
-    (hs : Matrix.isUnit s) (ht : Matrix.isUnit t) : Matrix.isUnit (s ⊗ t) := by
-  rw [Matrix.isUnit, Matrix.adjoint_kron, Matrix.kron_mul]
-  have hs' : s† ⬝ s = (1 : Square 1) := by
-    simpa [Matrix.isUnit] using hs
-  have ht' : t† ⬝ t = (1 : Square 1) := by
-    simpa [Matrix.isUnit] using ht
-  rw [hs', ht']
-  simp
-
-private theorem Matrix.not_isUnit_zero (n : ℕ) : ¬ Matrix.isUnit (0 : Vector n) := by
-  intro h
-  have hscalar := congrFun (congrFun h 0) 0
-  norm_num [Matrix.isUnit, Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_apply] at hscalar
-
-private theorem Matrix.kron_add_left {m n p q : ℕ}
-    (A B : Matrix m n) (C : Matrix p q) :
-    (A + B) ⊗ C = A ⊗ C + B ⊗ C := by
-  ext i j
-  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
-  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
-  simp [Matrix.kron, add_mul]
-
-private theorem Matrix.kron_smul_left {m n p q : ℕ}
-    (a : ℂ) (A : Matrix m n) (C : Matrix p q) :
-    (a • A) ⊗ C = a • (A ⊗ C) := by
-  ext i j
-  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
-  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
-  simp [Matrix.kron, mul_assoc]
-
-private theorem Matrix.kron_zero_right {m n p q : ℕ} (A : Matrix m n) :
-    A ⊗ (0 : Matrix p q) = 0 := by
-  ext i j
-  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
-  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
-  simp [Matrix.kron]
-
 private theorem ketPlus_eq_superposition :
     ketPlus = invSqrt2 • ket0 + invSqrt2 • ket1 := by
   ext i j
