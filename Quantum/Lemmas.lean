@@ -1,3 +1,4 @@
+import Mathlib.Data.Complex.BigOperators
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.NormNum
@@ -38,6 +39,23 @@ theorem prob_basis_self {n : ℕ} (i : Fin n) : prob (Vector.basis i) i = 1 := b
 theorem prob_basis_ne {n : ℕ} {i j : Fin n} (h : j ≠ i) :
     prob (Vector.basis i) j = 0 := by
   simp [prob, Vector.basis_apply_ne h]
+
+theorem prob_nonneg {n : ℕ} (s : Vector n) (i : Fin n) : 0 ≤ prob s i :=
+  Complex.normSq_nonneg _
+
+theorem sum_prob {n : ℕ} (s : Vector n) :
+    (∑ i : Fin n, prob s i) = ((s† ⬝ s) 0 0).re := by
+  have h : (∑ i : Fin n, ((prob s i : ℝ) : ℂ)) = (s† ⬝ s) 0 0 := by
+    simp [prob, Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_apply,
+      Complex.normSq_eq_conj_mul_self]
+  simpa [Complex.re_sum] using congrArg Complex.re h
+
+theorem sum_prob_of_isUnit {n : ℕ} {s : Vector n} (hs : Matrix.isUnit s) :
+    (∑ i : Fin n, prob s i) = 1 := by
+  rw [sum_prob]
+  have hroot : s† ⬝ s = 1 := by simpa [Matrix.isUnit] using hs
+  rw [hroot]
+  norm_num
 
 theorem quadratic_proj {n : ℕ} (s : Vector n) (i : Fin n) :
     ((s† ⬝ proj i ⬝ s) 0 0).re = Complex.normSq (s i 0) := by
@@ -203,6 +221,16 @@ theorem postMeasure_ketMinus_one : postMeasure ketMinus 1 = -ket1 := by
 theorem generalizedProb_projectors {n : ℕ} (s : Vector n) (i : Fin n) :
     generalizedProb (projectors n) s i = prob s i := by
   simp [generalizedProb, prob, projectors, quadratic_proj]
+
+theorem sum_generalizedProb_projectors {n : ℕ} (s : Vector n) :
+    (∑ i : Fin n, generalizedProb (projectors n) s i) = (∑ i : Fin n, prob s i) := by
+  simp
+
+theorem sum_generalizedProb_projectors_of_isUnit {n : ℕ} {s : Vector n}
+    (hs : Matrix.isUnit s) :
+    (∑ i : Fin n, generalizedProb (projectors n) s i) = 1 := by
+  rw [sum_generalizedProb_projectors]
+  exact sum_prob_of_isUnit hs
 
 @[simp]
 theorem generalizedPostMeasure_projectors {n : ℕ} (s : Vector n) (i : Fin n) :
