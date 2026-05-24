@@ -354,6 +354,56 @@ theorem P1_mul_ket1 : P1 ⬝ ket1 = ket1 := by
     norm_num [Matrix.mul, P1, ket1, Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_two]
 
 @[simp]
+theorem P0_adjoint : P0† = P0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.adjoint, P0]
+
+@[simp]
+theorem P1_adjoint : P1† = P1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.adjoint, P1]
+
+@[simp]
+theorem P0_mul_self : P0 ⬝ P0 = P0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, P0, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem P1_mul_self : P1 ⬝ P1 = P1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, P1, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem P0_mul_P1 : P0 ⬝ P1 = 0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, P0, P1, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem P1_mul_P0 : P1 ⬝ P0 = 0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, P0, P1, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem trace_P0 : Tr(P0) = 1 := by
+  simpa [proj_ket0] using Matrix.trace_proj_of_isUnit ket0_isUnit
+
+@[simp]
+theorem trace_P1 : Tr(P1) = 1 := by
+  simpa [proj_ket1] using Matrix.trace_proj_of_isUnit ket1_isUnit
+
+@[simp]
+theorem P0_add_P1 : P0 + P1 = I 2 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [P0, P1]
+
+@[simp]
 theorem PPlus_mul_ketPlus : PPlus ⬝ ketPlus = ketPlus := by
   ext i j
   fin_cases i <;> fin_cases j <;>
