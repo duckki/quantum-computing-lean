@@ -45,9 +45,49 @@ theorem quadratic_proj {n : ℕ} (s : Vector n) (i : Fin n) :
     _root_.Matrix.mul_apply, Complex.normSq]
 
 @[simp]
+theorem adjoint_proj {n : ℕ} (i : Fin n) :
+    (proj i)† = proj i := by
+  simp [proj]
+
+@[simp]
+theorem proj_mul_self {n : ℕ} (i : Fin n) :
+    proj i ⬝ proj i = proj i := by
+  simpa [proj] using Matrix.proj_mul_proj_of_isUnit (Vector.basis_isUnit i)
+
+@[simp]
+theorem trace_proj {n : ℕ} (i : Fin n) : Tr(proj i) = 1 := by
+  simpa [proj] using Matrix.trace_proj_of_isUnit (Vector.basis_isUnit i)
+
+@[simp]
 theorem adjoint_mul_proj {n : ℕ} (i : Fin n) :
     (proj i)† ⬝ proj i = proj i := by
-  simp [proj, Matrix.proj_mul_proj_of_isUnit (Vector.basis_isUnit i)]
+  simp
+
+@[simp]
+theorem proj_mul_proj_ne {n : ℕ} {i j : Fin n} (h : i ≠ j) :
+    proj i ⬝ proj j = 0 := by
+  ext a b
+  simp [proj, Matrix.proj, Matrix.mul, Matrix.adjoint, Vector.basis,
+    _root_.Matrix.mul_apply, Ne.symm h]
+
+theorem proj_mul_proj {n : ℕ} (i j : Fin n) :
+    proj i ⬝ proj j = if i = j then proj i else 0 := by
+  by_cases h : i = j
+  · subst j
+    simp
+  · simp [h, proj_mul_proj_ne h]
+
+@[simp]
+theorem sum_proj (n : ℕ) : (∑ i : Fin n, proj i) = I n := by
+  ext a b
+  rw [_root_.Matrix.sum_apply]
+  simp [proj, Matrix.proj, Matrix.mul, Matrix.adjoint, Vector.basis,
+    _root_.Matrix.mul_apply, _root_.Matrix.one_apply]
+
+@[simp]
+theorem sum_adjoint_mul_projectors (n : ℕ) :
+    (∑ i : Fin n, (projectors n i)† ⬝ projectors n i) = I n := by
+  simp [projectors]
 
 end Measurement
 
