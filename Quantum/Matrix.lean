@@ -56,6 +56,23 @@ theorem adjoint_kron {q : ℕ} (A : Matrix m n) (B : Matrix p q) :
   rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
   simp [adjoint, kron, _root_.Matrix.kronecker]
 
+@[simp]
+theorem kron_mul {q r s : ℕ} (A : Matrix m n) (B : Matrix p q)
+    (C : Matrix n r) (D : Matrix q s) :
+    mul (kron A B) (kron C D) = kron (mul A C) (mul B D) := by
+  ext i j
+  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
+  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
+  simp [mul, kron, _root_.Matrix.mul_kronecker_mul]
+
+@[simp]
+theorem kron_one_one : kron (1 : Square m) (1 : Square n) = (1 : Square (m * n)) := by
+  ext i j
+  rw [← finProdFinEquiv.apply_symm_apply i, ← finProdFinEquiv.apply_symm_apply j]
+  rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
+  rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
+  simp [kron, _root_.Matrix.one_apply, Prod.ext_iff]
+
 def isUnit (s : Vector n) : Prop :=
   mul (adjoint s) s = 1
 
@@ -75,6 +92,24 @@ theorem isUnitary_iff_mul_adjoint_self (A : Square n) :
   simpa [isUnitary, adjoint, mul, _root_.Matrix.star_eq_conjTranspose] using
     (_root_.Matrix.mem_unitaryGroup_iff (A := A))
 
+@[simp]
+theorem isUnitary_one : isUnitary (1 : Square n) := by
+  rw [isUnitary_iff_adjoint_mul_self]
+  simp [mul]
+
+theorem isUnitary_mul {A B : Square n}
+    (hA : isUnitary A) (hB : isUnitary B) : isUnitary (mul A B) := by
+  rw [isUnitary_iff_adjoint_mul_self]
+  rw [adjoint_mul]
+  rw [isUnitary_iff_adjoint_mul_self] at hA hB
+  have hAroot : adjoint A * A = 1 := by simpa [mul] using hA
+  have hBroot : adjoint B * B = 1 := by simpa [mul] using hB
+  change (adjoint B * adjoint A) * (A * B) = 1
+  rw [_root_.Matrix.mul_assoc]
+  rw [← _root_.Matrix.mul_assoc (adjoint A) A B]
+  rw [hAroot]
+  simp [hBroot]
+
 theorem isUnitary_mul_isUnit {A : Square n} {s : Vector n}
     (hA : isUnitary A) (hs : isUnit s) : isUnit (mul A s) := by
   rw [isUnit] at hs ⊢
@@ -87,6 +122,13 @@ theorem isUnitary_mul_isUnit {A : Square n} {s : Vector n}
   rw [← _root_.Matrix.mul_assoc (adjoint A) A s]
   rw [hAroot]
   simpa using hsroot
+
+theorem isUnitary_kron {A : Square m} {B : Square n}
+    (hA : isUnitary A) (hB : isUnitary B) : isUnitary (kron A B) := by
+  rw [isUnitary_iff_adjoint_mul_self]
+  rw [adjoint_kron, kron_mul]
+  rw [isUnitary_iff_adjoint_mul_self] at hA hB
+  simp [hA, hB]
 
 end Matrix
 

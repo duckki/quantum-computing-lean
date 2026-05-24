@@ -352,4 +352,21 @@ theorem gateControlled_X_mul_ket11 : gateControlled X ⬝ ket11 = ket01 := by
     simp [gateControlled, Matrix.mul, SWAP, controlledGate_X, CNOT, ket01, ket11, Vector.basis,
       _root_.Matrix.mul_apply, Fin.sum_univ_four]
 
+@[simp]
+theorem H_kron_I_mul_ket00 : (H ⊗ (I 2)) ⬝ ket00 = ketPlus ⊗ ket0 := by
+  rw [← ket0_kron_ket0, Matrix.kron_mul]
+  rw [H_mul_ket0]
+  simp [Matrix.mul]
+
+@[simp]
+theorem CNOT_mul_ketPlus_kron_ket0 : CNOT ⬝ (ketPlus ⊗ ket0) = ketPhiPlus := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul, Matrix.kron, CNOT, ketPlus, ket0, ketPhiPlus, Vector.basis,
+      _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat, Fin.sum_univ_four]
+
+@[simp]
+theorem bell_state_preparation : CNOT ⬝ ((H ⊗ (I 2)) ⬝ ket00) = ketPhiPlus := by
+  rw [H_kron_I_mul_ket00, CNOT_mul_ketPlus_kron_ket0]
+
 end Quantum
