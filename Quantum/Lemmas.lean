@@ -451,6 +451,44 @@ theorem H_mul_ket1 : H ⬝ ket1 = ketMinus := by
       Fin.sum_univ_two]
 
 @[simp]
+theorem X_mul_ketPlus : X ⬝ ketPlus = ketPlus := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, X, ketPlus, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem X_mul_ketMinus : X ⬝ ketMinus = -ketMinus := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, X, ketMinus, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem Z_mul_ketPlus : Z ⬝ ketPlus = ketMinus := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, Z, ketPlus, ketMinus, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem Z_mul_ketMinus : Z ⬝ ketMinus = ketPlus := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, Z, ketPlus, ketMinus, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem H_mul_ketPlus : H ⬝ ketPlus = ket0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, H, ketPlus, ket0, Vector.basis, _root_.Matrix.mul_apply,
+      Fin.sum_univ_two]
+
+@[simp]
+theorem H_mul_ketMinus : H ⬝ ketMinus = ket1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, H, ketMinus, ket1, Vector.basis, _root_.Matrix.mul_apply,
+      Fin.sum_univ_two]
+
+@[simp]
 theorem ket0_kron_ket0 : ket0 ⊗ ket0 = ket00 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
