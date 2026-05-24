@@ -70,6 +70,12 @@ theorem kron_mul {q r s : ℕ} (A : Matrix m n) (B : Matrix p q)
   simp [mul, kron, _root_.Matrix.mul_kronecker_mul]
 
 @[simp]
+theorem proj_kron (s : Vector m) (t : Vector n) :
+    proj (kron s t) = kron (proj s) (proj t) := by
+  rw [proj, adjoint_kron, kron_mul]
+  rfl
+
+@[simp]
 theorem kron_one_one : kron (1 : Square m) (1 : Square n) = (1 : Square (m * n)) := by
   ext i j
   rw [← finProdFinEquiv.apply_symm_apply i, ← finProdFinEquiv.apply_symm_apply j]

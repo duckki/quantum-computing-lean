@@ -828,6 +828,28 @@ theorem bell_state_preparation : CNOT ⬝ ((H ⊗ (I 2)) ⬝ ket00) = ketPhiPlus
   rw [H_kron_I_mul_ket00, CNOT_mul_ketPlus_kron_ket0]
 
 @[simp]
+theorem partialTrace_kron {n m : ℕ} (A : Square n) (B : Square m) :
+    partialTrace (n := n) (m := m) (A ⊗ B) = Matrix.trace B • A := by
+  ext i j
+  simp [partialTrace, Matrix.kron, Matrix.trace, _root_.Matrix.trace]
+  rw [mul_comm]
+  rw [Finset.mul_sum]
+
+@[simp]
+theorem partialTrace_kron_proj_of_isUnit {n m : ℕ} (A : Square n) {s : Vector m}
+    (hs : Matrix.isUnit s) :
+    partialTrace (n := n) (m := m) (A ⊗ Matrix.proj s) = A := by
+  rw [partialTrace_kron, Matrix.trace_proj_of_isUnit hs]
+  simp
+
+@[simp]
+theorem partialTrace_proj_kron_of_isUnit {n m : ℕ} (s : Vector n) {t : Vector m}
+    (ht : Matrix.isUnit t) :
+    partialTrace (n := n) (m := m) (Matrix.proj (s ⊗ t)) = Matrix.proj s := by
+  rw [Matrix.proj_kron]
+  exact partialTrace_kron_proj_of_isUnit (Matrix.proj s) ht
+
+@[simp]
 theorem partialTrace_proj_ket00 :
     partialTrace (n := 2) (m := 2) (Matrix.proj ket00) = P0 := by
   ext i j
