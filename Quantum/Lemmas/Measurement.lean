@@ -32,6 +32,33 @@ theorem sum_generalizedProb_of_isComplete {n outcomes : ℕ}
 theorem projectors_isComplete (n : ℕ) : IsComplete (projectors n) := by
   exact sum_adjoint_mul_projectors n
 
+@[simp]
+theorem projectiveOperators_apply {n outcomes : ℕ}
+    (u : Fin outcomes → Vector n) (i : Fin outcomes) :
+    projectiveOperators u i = Matrix.proj (u i) :=
+  rfl
+
+theorem generalizedProb_projectiveOperators_of_isUnit {n outcomes : ℕ}
+    {u : Fin outcomes → Vector n} (s : Vector n) {i : Fin outcomes}
+    (hu : Matrix.isUnit (u i)) :
+    generalizedProb (projectiveOperators u) s i = projProb u s i := by
+  simp [generalizedProb, projProb, projectiveOperators, Matrix.proj_mul_proj_of_isUnit hu]
+
+theorem generalizedPostMeasure_projectiveOperators_of_isUnit {n outcomes : ℕ}
+    {u : Fin outcomes → Vector n} (s : Vector n) {i : Fin outcomes}
+    (hu : Matrix.isUnit (u i)) :
+    generalizedPostMeasure (projectiveOperators u) s i = projPostMeasure u s i := by
+  simp [generalizedPostMeasure, projPostMeasure, projectiveOperators,
+    generalizedProb_projectiveOperators_of_isUnit s hu]
+
+theorem projectiveOperators_eq_projectors (n : ℕ) :
+    projectiveOperators (fun i : Fin n => Vector.basis i) = projectors n :=
+  rfl
+
+theorem projectiveOperators_computationalBasis_isComplete (n : ℕ) :
+    IsProjectiveComplete (fun i : Fin n => Vector.basis i) := by
+  simpa [projectiveOperators_eq_projectors] using projectors_isComplete n
+
 namespace Generalized
 
 @[simp]
@@ -70,6 +97,74 @@ theorem projective_apply {n : ℕ} (i : Fin n) :
   rfl
 
 end Generalized
+
+namespace Projective
+
+@[simp]
+theorem operator_apply {n outcomes : ℕ} (M : Projective n outcomes) (m : Fin outcomes) :
+    M.operator m = Matrix.proj (M.vector m) :=
+  rfl
+
+@[simp]
+theorem toGeneralized_operator {n outcomes : ℕ} (M : Projective n outcomes) :
+    M.toGeneralized.operator = M.operator :=
+  rfl
+
+@[simp]
+theorem prob_eq_projProb {n outcomes : ℕ} (M : Projective n outcomes)
+    (s : Vector n) (m : Fin outcomes) :
+    M.prob s m = projProb M.vector s m :=
+  rfl
+
+@[simp]
+theorem postMeasure_eq_projPostMeasure {n outcomes : ℕ} (M : Projective n outcomes)
+    (s : Vector n) (m : Fin outcomes) :
+    M.postMeasure s m = projPostMeasure M.vector s m :=
+  rfl
+
+@[simp]
+theorem prob_eq_generalized_prob {n outcomes : ℕ} (M : Projective n outcomes)
+    (s : Vector n) (m : Fin outcomes) :
+    M.prob s m = M.toGeneralized.prob s m :=
+  (generalizedProb_projectiveOperators_of_isUnit s (M.isUnit m)).symm
+
+@[simp]
+theorem postMeasure_eq_generalizedPostMeasure {n outcomes : ℕ} (M : Projective n outcomes)
+    (s : Vector n) (m : Fin outcomes) :
+    M.postMeasure s m = M.toGeneralized.postMeasure s m :=
+  (generalizedPostMeasure_projectiveOperators_of_isUnit s (M.isUnit m)).symm
+
+theorem sum_prob_of_isUnit {n outcomes : ℕ} (M : Projective n outcomes)
+    {s : Vector n} (hs : Matrix.isUnit s) :
+    (∑ m : Fin outcomes, M.prob s m) = 1 := by
+  calc
+    (∑ m : Fin outcomes, M.prob s m) = ∑ m : Fin outcomes, M.toGeneralized.prob s m := by
+      apply Finset.sum_congr rfl
+      intro m _
+      exact M.prob_eq_generalized_prob s m
+    _ = 1 := M.toGeneralized.sum_prob_of_isUnit hs
+
+noncomputable def computationalBasis (n : ℕ) : Projective n n where
+  vector := fun i => Vector.basis i
+  isUnit := fun i => Vector.basis_isUnit i
+  isComplete := projectiveOperators_computationalBasis_isComplete n
+
+@[simp]
+theorem computationalBasis_apply {n : ℕ} (i : Fin n) :
+    (computationalBasis n).vector i = Vector.basis i :=
+  rfl
+
+end Projective
+
+theorem projProb_eq_quadratic_projector {n outcomes : ℕ}
+    (u : Fin outcomes → Vector n) (s : Vector n) (i : Fin outcomes) :
+    projProb u s i = ((s† ⬝ Matrix.proj (u i) ⬝ s) 0 0).re := by
+  simp [projProb]
+
+theorem projective_quadratic_eq_inner_square {n outcomes : ℕ}
+    (u : Fin outcomes → Vector n) (s : Vector n) (i : Fin outcomes) :
+    s† ⬝ Matrix.proj (u i) ⬝ s = ((u i)† ⬝ s)† ⬝ ((u i)† ⬝ s) := by
+  simp [Matrix.proj, Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_assoc]
 
 @[simp]
 theorem prob_ketPlus_zero : prob ketPlus 0 = (1 / 2 : ℝ) := by
