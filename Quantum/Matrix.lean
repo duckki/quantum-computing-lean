@@ -43,6 +43,10 @@ theorem trace_mul_comm (A : Matrix m n) (B : Matrix n m) :
   simpa [trace, mul] using _root_.Matrix.trace_mul_comm A B
 
 @[simp]
+theorem adjoint_proj (s : Vector n) : adjoint (proj s) = proj s := by
+  simp [proj]
+
+@[simp]
 theorem kron_apply {q : ℕ} (A : Matrix m n) (B : Matrix p q)
     (i : Fin m) (k : Fin p) (j : Fin n) (l : Fin q) :
     kron A B (finProdFinEquiv (i, k)) (finProdFinEquiv (j, l)) = A i j * B k l := by
@@ -75,6 +79,22 @@ theorem kron_one_one : kron (1 : Square m) (1 : Square n) = (1 : Square (m * n))
 
 def isUnit (s : Vector n) : Prop :=
   mul (adjoint s) s = 1
+
+theorem proj_mul_proj_of_isUnit {s : Vector n} (hs : isUnit s) :
+    mul (proj s) (proj s) = proj s := by
+  change (s * adjoint s) * (s * adjoint s) = s * adjoint s
+  rw [_root_.Matrix.mul_assoc]
+  rw [← _root_.Matrix.mul_assoc (adjoint s) s (adjoint s)]
+  have hsroot : adjoint s * s = 1 := by simpa [isUnit, mul] using hs
+  rw [hsroot]
+  simp
+
+theorem trace_proj_of_isUnit {s : Vector n} (hs : isUnit s) : trace (proj s) = 1 := by
+  rw [proj]
+  rw [trace_mul_comm]
+  rw [isUnit] at hs
+  rw [hs]
+  simp [trace]
 
 def isNormal (A : Square n) : Prop :=
   mul (adjoint A) A = mul A (adjoint A)

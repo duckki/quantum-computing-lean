@@ -369,4 +369,44 @@ theorem CNOT_mul_ketPlus_kron_ket0 : CNOT ⬝ (ketPlus ⊗ ket0) = ketPhiPlus :=
 theorem bell_state_preparation : CNOT ⬝ ((H ⊗ (I 2)) ⬝ ket00) = ketPhiPlus := by
   rw [H_kron_I_mul_ket00, CNOT_mul_ketPlus_kron_ket0]
 
+@[simp]
+theorem partialTrace_proj_ket00 :
+    partialTrace (n := 2) (m := 2) (Matrix.proj ket00) = P0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [partialTrace, Matrix.proj, Matrix.mul, Matrix.adjoint, ket00, P0, Vector.basis,
+      _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat]
+
+@[simp]
+theorem partialTrace_proj_ket01 :
+    partialTrace (n := 2) (m := 2) (Matrix.proj ket01) = P0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [partialTrace, Matrix.proj, Matrix.mul, Matrix.adjoint, ket01, P0, Vector.basis,
+      _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat]
+
+@[simp]
+theorem partialTrace_proj_ket10 :
+    partialTrace (n := 2) (m := 2) (Matrix.proj ket10) = P1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [partialTrace, Matrix.proj, Matrix.mul, Matrix.adjoint, ket10, P1, Vector.basis,
+      _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat]
+
+@[simp]
+theorem partialTrace_proj_ket11 :
+    partialTrace (n := 2) (m := 2) (Matrix.proj ket11) = P1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [partialTrace, Matrix.proj, Matrix.mul, Matrix.adjoint, ket11, P1, Vector.basis,
+      _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat]
+
+@[simp]
+theorem partialTrace_proj_ketPhiPlus :
+    partialTrace (n := 2) (m := 2) (Matrix.proj ketPhiPlus) = ((1 / 2 : ℂ) • (I 2)) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [partialTrace, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPhiPlus,
+      _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat, Fin.sum_univ_two]
+
 end Quantum
