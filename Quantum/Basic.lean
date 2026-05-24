@@ -93,17 +93,24 @@ noncomputable def gateControlled (U : Square 2) : Square 4 :=
 noncomputable def partialTrace {n m : ℕ} (A : Square (n * m)) : Square n :=
   fun i j => ∑ k : Fin m, A (finProdFinEquiv (i, k)) (finProdFinEquiv (j, k))
 
-def measure {n : ℕ} (s : Vector n) (i : Fin n) : ℝ :=
+namespace Measurement
+
+/-- Probability of observing computational-basis outcome `i` when measuring `s`. -/
+def prob {n : ℕ} (s : Vector n) (i : Fin n) : ℝ :=
   Complex.normSq (s i 0)
 
-noncomputable def stateAfterMeasure {n : ℕ} (s : Vector n) (i : Fin n) : Vector n :=
-  ((1 / Real.sqrt (measure s i) : ℝ) : ℂ) • (Matrix.proj (Vector.basis i) ⬝ s)
+/-- Normalized post-measurement state after observing computational-basis outcome `i`. -/
+noncomputable def postMeasure {n : ℕ} (s : Vector n) (i : Fin n) : Vector n :=
+  ((1 / Real.sqrt (prob s i) : ℝ) : ℂ) • (Matrix.proj (Vector.basis i) ⬝ s)
 
-noncomputable def genMeasure {n : ℕ} (M : Fin n → Square n) (s : Vector n) (m : Fin n) : ℝ :=
+noncomputable def generalizedProb {n outcomes : ℕ}
+    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes) : ℝ :=
   ((s† ⬝ ((M m)† ⬝ M m) ⬝ s) 0 0).re
 
-noncomputable def stateAfterGenMeasure {n : ℕ} (M : Fin n → Square n)
-    (s : Vector n) (m : Fin n) : Vector n :=
-  ((1 / Real.sqrt (genMeasure M s m) : ℝ) : ℂ) • (M m ⬝ s)
+noncomputable def generalizedPostMeasure {n outcomes : ℕ}
+    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes) : Vector n :=
+  ((1 / Real.sqrt (generalizedProb M s m) : ℝ) : ℂ) • (M m ⬝ s)
+
+end Measurement
 
 end Quantum

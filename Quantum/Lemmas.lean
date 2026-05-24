@@ -18,13 +18,17 @@ theorem basis_apply_ne {i j : Fin n} (h : j ≠ i) : basis i j 0 = 0 := by
 
 end Vector
 
-@[simp]
-theorem measure_basis_self {n : ℕ} (i : Fin n) : measure (Vector.basis i) i = 1 := by
-  simp [measure]
+namespace Measurement
 
-theorem measure_basis_ne {n : ℕ} {i j : Fin n} (h : j ≠ i) :
-    measure (Vector.basis i) j = 0 := by
-  simp [measure, Vector.basis_apply_ne h]
+@[simp]
+theorem prob_basis_self {n : ℕ} (i : Fin n) : prob (Vector.basis i) i = 1 := by
+  simp [prob]
+
+theorem prob_basis_ne {n : ℕ} {i j : Fin n} (h : j ≠ i) :
+    prob (Vector.basis i) j = 0 := by
+  simp [prob, Vector.basis_apply_ne h]
+
+end Measurement
 
 @[simp]
 theorem star_invSqrt2 : (starRingEnd ℂ) invSqrt2 = invSqrt2 := by
@@ -58,79 +62,83 @@ theorem normSq_invSqrt2 : Complex.normSq invSqrt2 = (1 / 2 : ℝ) := by
       (by norm_num : (2 : ℝ) ≠ 0))]
   rw [sq, Real.mul_self_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
 
-@[simp]
-theorem measure_ketPlus_zero : measure ketPlus 0 = (1 / 2 : ℝ) := by
-  simp [measure, ketPlus]
+namespace Measurement
 
 @[simp]
-theorem measure_ketPlus_one : measure ketPlus 1 = (1 / 2 : ℝ) := by
-  simp [measure, ketPlus]
+theorem prob_ketPlus_zero : prob ketPlus 0 = (1 / 2 : ℝ) := by
+  simp [prob, ketPlus]
 
 @[simp]
-theorem measure_ketMinus_zero : measure ketMinus 0 = (1 / 2 : ℝ) := by
-  simp [measure, ketMinus]
+theorem prob_ketPlus_one : prob ketPlus 1 = (1 / 2 : ℝ) := by
+  simp [prob, ketPlus]
 
 @[simp]
-theorem measure_ketMinus_one : measure ketMinus 1 = (1 / 2 : ℝ) := by
-  simp [measure, ketMinus, Complex.normSq_neg]
+theorem prob_ketMinus_zero : prob ketMinus 0 = (1 / 2 : ℝ) := by
+  simp [prob, ketMinus]
 
 @[simp]
-theorem measure_ketPhiPlus_zero : measure ketPhiPlus 0 = (1 / 2 : ℝ) := by
-  simp [measure, ketPhiPlus]
+theorem prob_ketMinus_one : prob ketMinus 1 = (1 / 2 : ℝ) := by
+  simp [prob, ketMinus, Complex.normSq_neg]
 
 @[simp]
-theorem measure_ketPhiPlus_one : measure ketPhiPlus 1 = 0 := by
-  simp [measure, ketPhiPlus]
+theorem prob_ketPhiPlus_zero : prob ketPhiPlus 0 = (1 / 2 : ℝ) := by
+  simp [prob, ketPhiPlus]
 
 @[simp]
-theorem measure_ketPhiPlus_two : measure ketPhiPlus 2 = 0 := by
-  simp [measure, ketPhiPlus]
+theorem prob_ketPhiPlus_one : prob ketPhiPlus 1 = 0 := by
+  simp [prob, ketPhiPlus]
 
 @[simp]
-theorem measure_ketPhiPlus_three : measure ketPhiPlus 3 = (1 / 2 : ℝ) := by
-  simp [measure, ketPhiPlus]
+theorem prob_ketPhiPlus_two : prob ketPhiPlus 2 = 0 := by
+  simp [prob, ketPhiPlus]
 
 @[simp]
-theorem stateAfterMeasure_ket0_zero : stateAfterMeasure ket0 0 = ket0 := by
+theorem prob_ketPhiPlus_three : prob ketPhiPlus 3 = (1 / 2 : ℝ) := by
+  simp [prob, ketPhiPlus]
+
+@[simp]
+theorem postMeasure_ket0_zero : postMeasure ket0 0 = ket0 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    norm_num [stateAfterMeasure, measure, Matrix.proj, Matrix.mul, Matrix.adjoint, ket0,
+    norm_num [postMeasure, prob, Matrix.proj, Matrix.mul, Matrix.adjoint, ket0,
       Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_two]
 
 @[simp]
-theorem stateAfterMeasure_ket1_one : stateAfterMeasure ket1 1 = ket1 := by
+theorem postMeasure_ket1_one : postMeasure ket1 1 = ket1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    norm_num [stateAfterMeasure, measure, Matrix.proj, Matrix.mul, Matrix.adjoint, ket1,
+    norm_num [postMeasure, prob, Matrix.proj, Matrix.mul, Matrix.adjoint, ket1,
       Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_two]
 
 @[simp]
-theorem stateAfterMeasure_ketPlus_zero : stateAfterMeasure ketPlus 0 = ket0 := by
+theorem postMeasure_ketPlus_zero : postMeasure ketPlus 0 = ket0 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [stateAfterMeasure, measure, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ket0,
+    simp [postMeasure, prob, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ket0,
       Vector.basis, _root_.Matrix.mul_apply]
 
 @[simp]
-theorem stateAfterMeasure_ketPlus_one : stateAfterMeasure ketPlus 1 = ket1 := by
+theorem postMeasure_ketPlus_one : postMeasure ketPlus 1 = ket1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [stateAfterMeasure, measure, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ket1,
+    simp [postMeasure, prob, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ket1,
       Vector.basis, _root_.Matrix.mul_apply]
 
 @[simp]
-theorem stateAfterMeasure_ketMinus_zero : stateAfterMeasure ketMinus 0 = ket0 := by
+theorem postMeasure_ketMinus_zero : postMeasure ketMinus 0 = ket0 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [stateAfterMeasure, measure, Matrix.proj, Matrix.mul, Matrix.adjoint, ketMinus, ket0,
+    simp [postMeasure, prob, Matrix.proj, Matrix.mul, Matrix.adjoint, ketMinus, ket0,
       Vector.basis, _root_.Matrix.mul_apply]
 
 @[simp]
-theorem stateAfterMeasure_ketMinus_one : stateAfterMeasure ketMinus 1 = -ket1 := by
+theorem postMeasure_ketMinus_one : postMeasure ketMinus 1 = -ket1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [stateAfterMeasure, measure, Matrix.proj, Matrix.mul, Matrix.adjoint, ketMinus, ket1,
+    simp [postMeasure, prob, Matrix.proj, Matrix.mul, Matrix.adjoint, ketMinus, ket1,
       Vector.basis, _root_.Matrix.mul_apply]
+
+end Measurement
 
 theorem ket0_isUnit : Matrix.isUnit ket0 := by
   rw [Matrix.isUnit]
