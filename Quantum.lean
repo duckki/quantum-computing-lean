@@ -6,3 +6,4 @@ import Quantum.Register
 import Quantum.Circuit
 import Quantum.Examples
 import Quantum.Lemmas
+import Quantum.Theorems
