@@ -24,6 +24,42 @@ noncomputable abbrev adjoint (A : Matrix m n) : Matrix n m :=
 noncomputable def mul (A : Matrix m n) (B : Matrix n p) : Matrix m p :=
   A * B
 
+@[simp]
+theorem mul_add (A : Matrix m n) (B C : Matrix n p) :
+    mul A (B + C) = mul A B + mul A C := by
+  simp [mul, _root_.Matrix.mul_add]
+
+@[simp]
+theorem add_mul (A B : Matrix m n) (C : Matrix n p) :
+    mul (A + B) C = mul A C + mul B C := by
+  simp [mul, _root_.Matrix.add_mul]
+
+@[simp]
+theorem mul_zero (A : Matrix m n) : mul A (0 : Matrix n p) = 0 := by
+  simp [mul]
+
+@[simp]
+theorem zero_mul (A : Matrix n p) : mul (0 : Matrix m n) A = 0 := by
+  simp [mul]
+
+@[simp]
+theorem mul_one (A : Matrix m n) : mul A (1 : Square n) = A := by
+  simp [mul]
+
+@[simp]
+theorem one_mul (A : Matrix m n) : mul (1 : Square m) A = A := by
+  simp [mul]
+
+@[simp]
+theorem mul_smul (A : Matrix m n) (a : ℂ) (B : Matrix n p) :
+    mul A (a • B) = a • mul A B := by
+  simp [mul]
+
+@[simp]
+theorem smul_mul (a : ℂ) (A : Matrix m n) (B : Matrix n p) :
+    mul (a • A) B = a • mul A B := by
+  simp [mul]
+
 noncomputable abbrev trace (A : Square n) : ℂ :=
   _root_.Matrix.trace A
 
@@ -120,28 +156,28 @@ theorem kron_add_left {q : ℕ} (A B : Matrix m n) (C : Matrix p q) :
   ext i j
   rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
   rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
-  simp [kron, add_mul]
+  simp [kron, _root_.add_mul]
 
 theorem kron_add_right {q : ℕ} (A : Matrix m n) (B C : Matrix p q) :
     kron A (B + C) = kron A B + kron A C := by
   ext i j
   rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
   rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
-  simp [kron, mul_add]
+  simp [kron, _root_.mul_add]
 
 theorem kron_sub_left {q : ℕ} (A B : Matrix m n) (C : Matrix p q) :
     kron (A - B) C = kron A C - kron B C := by
   ext i j
   rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
   rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
-  simp [kron, sub_eq_add_neg, add_mul]
+  simp [kron, sub_eq_add_neg, _root_.add_mul]
 
 theorem kron_sub_right {q : ℕ} (A : Matrix m n) (B C : Matrix p q) :
     kron A (B - C) = kron A B - kron A C := by
   ext i j
   rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
   rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
-  simp [kron, sub_eq_add_neg, mul_add]
+  simp [kron, sub_eq_add_neg, _root_.mul_add]
 
 theorem kron_smul_left {q : ℕ} (a : ℂ) (A : Matrix m n) (B : Matrix p q) :
     kron (a • A) B = a • kron A B := by

@@ -149,4 +149,22 @@ theorem PPlus_add_PMinus : PPlus + PMinus = I 2 := by
       _root_.Matrix.mul_apply] <;>
     ring_nf
 
+theorem I_eq_add_P0_P1 : (I 2) = P0 + P1 := by
+  rw [P0_add_P1]
+
+theorem I_eq_add_PPlus_PMinus : (I 2) = PPlus + PMinus := by
+  rw [PPlus_add_PMinus]
+
+theorem X_eq_sub_PPlus_PMinus : X = PPlus - PMinus := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [X, PPlus, PMinus, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ketMinus,
+      _root_.Matrix.mul_apply] <;>
+    ring_nf
+
+theorem Z_eq_sub_P0_P1 : Z = P0 - P1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Z, P0, P1]
+
 end Quantum
