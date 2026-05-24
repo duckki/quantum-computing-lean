@@ -380,6 +380,52 @@ theorem PMinus_mul_ketMinus : PMinus ⬝ ketMinus = ketMinus := by
     simp [PMinus, Matrix.proj, Matrix.mul, Matrix.adjoint, ketMinus, _root_.Matrix.mul_apply] <;>
     ring_nf
 
+@[simp]
+theorem PPlus_adjoint : PPlus† = PPlus := by
+  simp [PPlus]
+
+@[simp]
+theorem PMinus_adjoint : PMinus† = PMinus := by
+  simp [PMinus]
+
+@[simp]
+theorem PPlus_mul_self : PPlus ⬝ PPlus = PPlus := by
+  simpa [PPlus] using Matrix.proj_mul_proj_of_isUnit ketPlus_isUnit
+
+@[simp]
+theorem PMinus_mul_self : PMinus ⬝ PMinus = PMinus := by
+  simpa [PMinus] using Matrix.proj_mul_proj_of_isUnit ketMinus_isUnit
+
+@[simp]
+theorem trace_PPlus : Tr(PPlus) = 1 := by
+  simpa [PPlus] using Matrix.trace_proj_of_isUnit ketPlus_isUnit
+
+@[simp]
+theorem trace_PMinus : Tr(PMinus) = 1 := by
+  simpa [PMinus] using Matrix.trace_proj_of_isUnit ketMinus_isUnit
+
+@[simp]
+theorem PPlus_mul_PMinus : PPlus ⬝ PMinus = 0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PPlus, PMinus, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ketMinus,
+      _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem PMinus_mul_PPlus : PMinus ⬝ PPlus = 0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PPlus, PMinus, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ketMinus,
+      _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem PPlus_add_PMinus : PPlus + PMinus = I 2 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PPlus, PMinus, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ketMinus,
+      _root_.Matrix.mul_apply] <;>
+    ring_nf
+
 theorem X_isUnitary : Matrix.isUnitary X := by
   rw [Matrix.isUnitary_iff_adjoint_mul_self]
   ext i j
