@@ -232,6 +232,20 @@ theorem postMeasure_ketMinus_one : postMeasure ketMinus 1 = -ket1 := by
       Vector.basis, _root_.Matrix.mul_apply]
 
 @[simp]
+theorem postMeasure_ketPhiPlus_zero : postMeasure ketPhiPlus 0 = ket00 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [postMeasure, prob, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPhiPlus, ket00,
+      Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_four]
+
+@[simp]
+theorem postMeasure_ketPhiPlus_three : postMeasure ketPhiPlus 3 = ket11 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [postMeasure, prob, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPhiPlus, ket11,
+      Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_four]
+
+@[simp]
 theorem generalizedProb_projectors {n : ℕ} (s : Vector n) (i : Fin n) :
     generalizedProb (projectors n) s i = prob s i := by
   simp [generalizedProb, prob, projectors, quadratic_proj]
