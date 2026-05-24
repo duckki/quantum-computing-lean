@@ -107,6 +107,20 @@ theorem sum_adjoint_mul_projectors (n : ℕ) :
     (∑ i : Fin n, (projectors n i)† ⬝ projectors n i) = I n := by
   simp [projectors]
 
+theorem generalizedProb_eq_sum_prob {n outcomes : ℕ} (M : Fin outcomes → Square n)
+    (s : Vector n) (m : Fin outcomes) :
+    generalizedProb M s m = ∑ i : Fin n, prob (M m ⬝ s) i := by
+  rw [sum_prob]
+  have h : s† ⬝ ((M m)† ⬝ M m) ⬝ s = (M m ⬝ s)† ⬝ (M m ⬝ s) := by
+    simp [Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_assoc]
+  simp [generalizedProb, h]
+
+theorem generalizedProb_nonneg {n outcomes : ℕ} (M : Fin outcomes → Square n)
+    (s : Vector n) (m : Fin outcomes) :
+    0 ≤ generalizedProb M s m := by
+  rw [generalizedProb_eq_sum_prob]
+  exact Finset.sum_nonneg fun i _ => prob_nonneg _ _
+
 end Measurement
 
 @[simp]
