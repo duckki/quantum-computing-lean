@@ -353,6 +353,33 @@ theorem P1_mul_ket1 : P1 ⬝ ket1 = ket1 := by
   fin_cases i <;> fin_cases j <;>
     norm_num [Matrix.mul, P1, ket1, Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_two]
 
+@[simp]
+theorem PPlus_mul_ketPlus : PPlus ⬝ ketPlus = ketPlus := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PPlus, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem PPlus_mul_ketMinus : PPlus ⬝ ketMinus = 0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PPlus, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ketMinus,
+      _root_.Matrix.mul_apply]
+
+@[simp]
+theorem PMinus_mul_ketPlus : PMinus ⬝ ketPlus = 0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PMinus, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ketMinus,
+      _root_.Matrix.mul_apply]
+
+@[simp]
+theorem PMinus_mul_ketMinus : PMinus ⬝ ketMinus = ketMinus := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PMinus, Matrix.proj, Matrix.mul, Matrix.adjoint, ketMinus, _root_.Matrix.mul_apply] <;>
+    ring_nf
+
 theorem X_isUnitary : Matrix.isUnitary X := by
   rw [Matrix.isUnitary_iff_adjoint_mul_self]
   ext i j
