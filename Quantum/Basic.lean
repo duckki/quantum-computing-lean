@@ -95,18 +95,28 @@ noncomputable def partialTrace {n m : ℕ} (A : Square (n * m)) : Square n :=
 
 namespace Measurement
 
+/-- Projection onto the computational-basis outcome `i`. -/
+noncomputable def proj {n : ℕ} (i : Fin n) : Square n :=
+  Matrix.proj (Vector.basis i)
+
+/-- Measurement operators for a computational-basis measurement. -/
+noncomputable def projectors (n : ℕ) : Fin n → Square n :=
+  fun i => proj i
+
 /-- Probability of observing computational-basis outcome `i` when measuring `s`. -/
 def prob {n : ℕ} (s : Vector n) (i : Fin n) : ℝ :=
   Complex.normSq (s i 0)
 
 /-- Normalized post-measurement state after observing computational-basis outcome `i`. -/
 noncomputable def postMeasure {n : ℕ} (s : Vector n) (i : Fin n) : Vector n :=
-  ((1 / Real.sqrt (prob s i) : ℝ) : ℂ) • (Matrix.proj (Vector.basis i) ⬝ s)
+  ((1 / Real.sqrt (prob s i) : ℝ) : ℂ) • (proj i ⬝ s)
 
+/-- Probability of generalized measurement outcome `m` for measurement operators `M`. -/
 noncomputable def generalizedProb {n outcomes : ℕ}
     (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes) : ℝ :=
   ((s† ⬝ ((M m)† ⬝ M m) ⬝ s) 0 0).re
 
+/-- Normalized post-measurement state after generalized measurement outcome `m`. -/
 noncomputable def generalizedPostMeasure {n outcomes : ℕ}
     (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes) : Vector n :=
   ((1 / Real.sqrt (generalizedProb M s m) : ℝ) : ℂ) • (M m ⬝ s)

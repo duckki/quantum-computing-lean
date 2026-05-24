@@ -16,9 +16,20 @@ theorem basis_apply (i j : Fin n) : basis i j 0 = if j = i then 1 else 0 :=
 theorem basis_apply_ne {i j : Fin n} (h : j ≠ i) : basis i j 0 = 0 := by
   simp [basis, h]
 
+theorem basis_isUnit (i : Fin n) : Matrix.isUnit (basis i) := by
+  rw [Matrix.isUnit]
+  ext j k
+  fin_cases j
+  fin_cases k
+  simp [Matrix.mul, Matrix.adjoint, basis, _root_.Matrix.mul_apply]
+
 end Vector
 
 namespace Measurement
+
+theorem proj_def {n : ℕ} (i : Fin n) :
+    proj i = Matrix.proj (Vector.basis i) :=
+  rfl
 
 @[simp]
 theorem prob_basis_self {n : ℕ} (i : Fin n) : prob (Vector.basis i) i = 1 := by
@@ -27,6 +38,16 @@ theorem prob_basis_self {n : ℕ} (i : Fin n) : prob (Vector.basis i) i = 1 := b
 theorem prob_basis_ne {n : ℕ} {i j : Fin n} (h : j ≠ i) :
     prob (Vector.basis i) j = 0 := by
   simp [prob, Vector.basis_apply_ne h]
+
+theorem quadratic_proj {n : ℕ} (s : Vector n) (i : Fin n) :
+    ((s† ⬝ proj i ⬝ s) 0 0).re = Complex.normSq (s i 0) := by
+  simp [proj, Matrix.proj, Matrix.mul, Matrix.adjoint, Vector.basis,
+    _root_.Matrix.mul_apply, Complex.normSq]
+
+@[simp]
+theorem adjoint_mul_proj {n : ℕ} (i : Fin n) :
+    (proj i)† ⬝ proj i = proj i := by
+  simp [proj, Matrix.proj_mul_proj_of_isUnit (Vector.basis_isUnit i)]
 
 end Measurement
 
@@ -100,43 +121,54 @@ theorem prob_ketPhiPlus_three : prob ketPhiPlus 3 = (1 / 2 : ℝ) := by
 theorem postMeasure_ket0_zero : postMeasure ket0 0 = ket0 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    norm_num [postMeasure, prob, Matrix.proj, Matrix.mul, Matrix.adjoint, ket0,
+    norm_num [postMeasure, prob, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, ket0,
       Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_two]
 
 @[simp]
 theorem postMeasure_ket1_one : postMeasure ket1 1 = ket1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    norm_num [postMeasure, prob, Matrix.proj, Matrix.mul, Matrix.adjoint, ket1,
+    norm_num [postMeasure, prob, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, ket1,
       Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_two]
 
 @[simp]
 theorem postMeasure_ketPlus_zero : postMeasure ketPlus 0 = ket0 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [postMeasure, prob, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ket0,
+    simp [postMeasure, prob, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ket0,
       Vector.basis, _root_.Matrix.mul_apply]
 
 @[simp]
 theorem postMeasure_ketPlus_one : postMeasure ketPlus 1 = ket1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [postMeasure, prob, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ket1,
+    simp [postMeasure, prob, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ket1,
       Vector.basis, _root_.Matrix.mul_apply]
 
 @[simp]
 theorem postMeasure_ketMinus_zero : postMeasure ketMinus 0 = ket0 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [postMeasure, prob, Matrix.proj, Matrix.mul, Matrix.adjoint, ketMinus, ket0,
+    simp [postMeasure, prob, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, ketMinus, ket0,
       Vector.basis, _root_.Matrix.mul_apply]
 
 @[simp]
 theorem postMeasure_ketMinus_one : postMeasure ketMinus 1 = -ket1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [postMeasure, prob, Matrix.proj, Matrix.mul, Matrix.adjoint, ketMinus, ket1,
+    simp [postMeasure, prob, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, ketMinus, ket1,
       Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem generalizedProb_projectors {n : ℕ} (s : Vector n) (i : Fin n) :
+    generalizedProb (projectors n) s i = prob s i := by
+  simp [generalizedProb, prob, projectors, quadratic_proj]
+
+@[simp]
+theorem generalizedPostMeasure_projectors {n : ℕ} (s : Vector n) (i : Fin n) :
+    generalizedPostMeasure (projectors n) s i = postMeasure s i := by
+  simp [generalizedPostMeasure, postMeasure, generalizedProb, prob, projectors,
+    quadratic_proj]
 
 end Measurement
 
