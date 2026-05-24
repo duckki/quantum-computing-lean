@@ -341,6 +341,78 @@ theorem SWAP_isUnitary : Matrix.isUnitary SWAP := by
     decide
 
 @[simp]
+theorem X_adjoint : X† = X := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.adjoint, X]
+
+@[simp]
+theorem Z_adjoint : Z† = Z := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.adjoint, Z]
+
+@[simp]
+theorem H_adjoint : H† = H := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.adjoint, H]
+
+@[simp]
+theorem CNOT_adjoint : CNOT† = CNOT := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.adjoint, CNOT]
+
+@[simp]
+theorem CZ_adjoint : CZ† = CZ := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.adjoint, CZ]
+
+@[simp]
+theorem SWAP_adjoint : SWAP† = SWAP := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.adjoint, SWAP]
+
+@[simp]
+theorem X_mul_self : X ⬝ X = I 2 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, X, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem Z_mul_self : Z ⬝ Z = I 2 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, Z, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem H_mul_self : H ⬝ H = I 2 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, H, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem CNOT_mul_self : CNOT ⬝ CNOT = I 4 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, CNOT, _root_.Matrix.mul_apply, Fin.sum_univ_four] <;> decide
+
+@[simp]
+theorem CZ_mul_self : CZ ⬝ CZ = I 4 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, CZ, _root_.Matrix.mul_apply, Fin.sum_univ_four] <;> decide
+
+@[simp]
+theorem SWAP_mul_self : SWAP ⬝ SWAP = I 4 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, SWAP, _root_.Matrix.mul_apply, Fin.sum_univ_four] <;> decide
+
+@[simp]
 theorem X_mul_ket0 : X ⬝ ket0 = ket1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
