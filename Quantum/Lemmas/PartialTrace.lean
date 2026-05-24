@@ -1,4 +1,4 @@
-import Quantum.State
+import Quantum.Measurement
 import Quantum.Lemmas.Gates
 
 namespace Quantum
@@ -82,6 +82,25 @@ theorem partialTrace_proj_eq_of_kron_eq {n m : ℕ} {a b : Vector n} {s t : Vect
   rw [partialTrace_proj_kron_of_isUnit (s := a) hs] at hpartial
   rw [partialTrace_proj_kron_of_isUnit (s := b) ht] at hpartial
   exact hpartial
+
+namespace Measurement
+
+theorem partialProb_kron_of_isUnit {n m : ℕ} (s : Vector n) {t : Vector m}
+    (ht : Matrix.isUnit t) :
+    partialProb (s ⊗ t) = prob s := by
+  funext i
+  rw [partialProb, partialTrace_proj_kron_of_isUnit (s := s) ht]
+  simp [prob, Matrix.proj, Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_apply, Complex.normSq]
+
+theorem prob_eq_of_kron_eq {n m : ℕ} {a b : Vector n} {s t : Vector m}
+    (h : a ⊗ s = b ⊗ t) (hs : Matrix.isUnit s) (ht : Matrix.isUnit t) :
+    prob a = prob b := by
+  have hpartial : partialProb (a ⊗ s) = partialProb (b ⊗ t) := by
+    rw [h]
+  rw [partialProb_kron_of_isUnit a hs, partialProb_kron_of_isUnit b ht] at hpartial
+  exact hpartial
+
+end Measurement
 
 @[simp]
 theorem partialTrace_proj_ket00 :
