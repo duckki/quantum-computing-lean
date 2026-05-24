@@ -42,6 +42,15 @@ theorem invSqrt2_mul_self : invSqrt2 * invSqrt2 = (1 / 2 : ℂ) := by
   norm_num
 
 @[simp]
+theorem sqrt_two_mul_invSqrt2 : ((Real.sqrt 2 : ℝ) : ℂ) * invSqrt2 = 1 := by
+  rw [invSqrt2]
+  rw [← Complex.ofReal_mul]
+  congr
+  field_simp [
+    ((Real.sqrt_ne_zero (x := 2) (by norm_num : (0 : ℝ) ≤ 2)).mpr
+      (by norm_num : (2 : ℝ) ≠ 0))]
+
+@[simp]
 theorem normSq_invSqrt2 : Complex.normSq invSqrt2 = (1 / 2 : ℝ) := by
   rw [invSqrt2, Complex.normSq_ofReal]
   field_simp [
@@ -80,6 +89,48 @@ theorem measure_ketPhiPlus_two : measure ketPhiPlus 2 = 0 := by
 @[simp]
 theorem measure_ketPhiPlus_three : measure ketPhiPlus 3 = (1 / 2 : ℝ) := by
   simp [measure, ketPhiPlus]
+
+@[simp]
+theorem stateAfterMeasure_ket0_zero : stateAfterMeasure ket0 0 = ket0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [stateAfterMeasure, measure, Matrix.proj, Matrix.mul, Matrix.adjoint, ket0,
+      Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem stateAfterMeasure_ket1_one : stateAfterMeasure ket1 1 = ket1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [stateAfterMeasure, measure, Matrix.proj, Matrix.mul, Matrix.adjoint, ket1,
+      Vector.basis, _root_.Matrix.mul_apply, Fin.sum_univ_two]
+
+@[simp]
+theorem stateAfterMeasure_ketPlus_zero : stateAfterMeasure ketPlus 0 = ket0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [stateAfterMeasure, measure, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ket0,
+      Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem stateAfterMeasure_ketPlus_one : stateAfterMeasure ketPlus 1 = ket1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [stateAfterMeasure, measure, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPlus, ket1,
+      Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem stateAfterMeasure_ketMinus_zero : stateAfterMeasure ketMinus 0 = ket0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [stateAfterMeasure, measure, Matrix.proj, Matrix.mul, Matrix.adjoint, ketMinus, ket0,
+      Vector.basis, _root_.Matrix.mul_apply]
+
+@[simp]
+theorem stateAfterMeasure_ketMinus_one : stateAfterMeasure ketMinus 1 = -ket1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [stateAfterMeasure, measure, Matrix.proj, Matrix.mul, Matrix.adjoint, ketMinus, ket1,
+      Vector.basis, _root_.Matrix.mul_apply]
 
 theorem ket0_isUnit : Matrix.isUnit ket0 := by
   rw [Matrix.isUnit]
