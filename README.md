@@ -20,5 +20,16 @@ lake build
   multiplication, trace, projection, and Kronecker product support.
 - `Quantum/Basic.lean`: common states, gates, controlled gates, partial trace,
   and measurement definitions.
-- `Quantum/Lemmas.lean`: basic simp lemmas for basis vectors, measurement, and gates.
+- `Quantum/State.lean`: pure-state and density-matrix wrappers, including
+  mathlib-backed positive semidefiniteness for density matrices.
+- `Quantum/Measurement.lean`: complete generalized measurements and typed
+  measurement operators.
+- `Quantum/Register.lean`: `n`-qubit register aliases and tensoring with the
+  `2 ^ (n + m)` dimension reindexing handled internally.
+- `Quantum/Circuit.lean`: typed circuit syntax, denotational semantics, and
+  unitary circuit composition.
+- `Quantum/Examples.lean`: standard unitary circuits and the Bell-state
+  preparation example.
+- `Quantum/Lemmas.lean`: aggregate import for split lemma modules under
+  `Quantum/Lemmas/`.
 - `Quantum.lean`: top-level import module.

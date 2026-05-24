@@ -4,4 +4,5 @@ import Quantum.State
 import Quantum.Measurement
 import Quantum.Register
 import Quantum.Circuit
+import Quantum.Examples
 import Quantum.Lemmas
