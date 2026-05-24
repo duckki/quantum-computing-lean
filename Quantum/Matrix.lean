@@ -129,6 +129,13 @@ theorem trace_adjoint (A : Square n) : trace (adjoint A) = star (trace A) := by
 theorem adjoint_proj (s : Vector n) : adjoint (proj s) = proj s := by
   simp [proj]
 
+theorem proj_add (s t : Vector n) :
+    proj (s + t) =
+      proj s + mul s (adjoint t) + mul t (adjoint s) + proj t := by
+  ext i j
+  simp [proj, mul, adjoint, _root_.Matrix.mul_apply]
+  ring
+
 @[simp]
 theorem kron_apply {q : ℕ} (A : Matrix m n) (B : Matrix p q)
     (i : Fin m) (k : Fin p) (j : Fin n) (l : Fin q) :
@@ -215,6 +222,13 @@ theorem proj_kron (s : Vector m) (t : Vector n) :
     proj (kron s t) = kron (proj s) (proj t) := by
   rw [proj, adjoint_kron, kron_mul]
   rfl
+
+theorem proj_add_kron (s t : Vector m) (u v : Vector n) :
+    proj (kron s u + kron t v) =
+      kron (proj s) (proj u) + kron (mul s (adjoint t)) (mul u (adjoint v)) +
+        kron (mul t (adjoint s)) (mul v (adjoint u)) + kron (proj t) (proj v) := by
+  rw [proj_add, proj_kron, proj_kron]
+  rw [adjoint_kron, adjoint_kron, kron_mul, kron_mul]
 
 @[simp]
 theorem kron_one_one : kron (1 : Square m) (1 : Square n) = (1 : Square (m * n)) := by

@@ -111,6 +111,16 @@ theorem prob_kron_cancel_left {n m : ℕ} {s t : Vector n} {u : Vector m}
   rw [prob_kron_apply u s j i, prob_kron_apply u t j i] at hprob
   exact mul_left_cancel₀ hj hprob
 
+theorem prob_add_of_pointwise_orthogonal {n : ℕ} {s t : Vector n}
+    (h : ∀ i, star (s i 0) * t i 0 = 0) :
+    prob (s + t) = fun i => prob s i + prob t i := by
+  funext i
+  have hinner : (star (s i 0) * t i 0).re = 0 := by
+    simpa using congrArg Complex.re (h i)
+  have hdot : (s i 0).re * (t i 0).re + (s i 0).im * (t i 0).im = 0 := by
+    simpa [Complex.mul_re, Complex.conj_re, Complex.conj_im] using hinner
+  simp [prob, Complex.normSq_add, hdot]
+
 theorem quadratic_proj {n : ℕ} (s : Vector n) (i : Fin n) :
     ((s† ⬝ proj i ⬝ s) 0 0).re = Complex.normSq (s i 0) := by
   simp [proj, Matrix.proj, Matrix.mul, Matrix.adjoint, Vector.basis,
