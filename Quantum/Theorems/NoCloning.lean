@@ -1,5 +1,12 @@
 import Quantum.Gates
 
+/-!
+# No-Cloning Theorems
+
+Formal statements showing that unitary cloning maps cannot exist for selected
+families of pure states.
+-/
+
 namespace Quantum
 
 namespace Theorems.NoCloning
@@ -14,14 +21,14 @@ private theorem ket0_inner_ketPlus :
   norm_num [Matrix.mul, Matrix.adjoint, ket0, ketPlus, Vector.basis,
     _root_.Matrix.mul_apply, Fin.sum_univ_two]
 
-private theorem ketZeros_isUnit (n : ℕ) : Matrix.isUnit (ketZeros n) := by
+private theorem ketZeros_isNormalized (n : ℕ) : Vector.IsNormalized (ketZeros n) := by
   simpa [ketZeros] using
-    (Vector.basis_isUnit (⟨0, by simp⟩ : Fin (2 ^ n)))
+    (Vector.basis_isNormalized (⟨0, by simp⟩ : Fin (2 ^ n)))
 
 private theorem ketZeros_inner_invSqrt2_smul (n : ℕ) :
     ((ketZeros n)† ⬝ (invSqrt2 • ketZeros n)) 0 0 = invSqrt2 := by
   have hunit : (ketZeros n)† ⬝ ketZeros n = (1 : Square 1) := by
-    simpa [Matrix.isUnit] using ketZeros_isUnit n
+    simpa [Vector.IsNormalized] using ketZeros_isNormalized n
   calc
     ((ketZeros n)† ⬝ (invSqrt2 • ketZeros n)) 0 0 =
         (invSqrt2 • ((ketZeros n)† ⬝ ketZeros n)) 0 0 := by
@@ -49,7 +56,7 @@ private theorem triple_kron_entry_010 {n : ℕ} (a b : Vector 2) (c : Vector (2 
   rw [Matrix.kron_apply, Matrix.kron_apply]
 
 theorem no_cloning_of_inner_eq_invSqrt2 {d : ℕ} {x y blank : Vector d}
-    (hblank : Matrix.isUnit blank) (hxy : (x† ⬝ y) 0 0 = invSqrt2) :
+    (hblank : Vector.IsNormalized blank) (hxy : (x† ⬝ y) 0 0 = invSqrt2) :
     ¬ (∃ U : Square (d * d),
       Matrix.isUnitary U ∧ ∀ s : Vector d, U ⬝ (s ⊗ blank) = s ⊗ s) := by
   rintro ⟨U, hU, hclone⟩
@@ -57,7 +64,7 @@ theorem no_cloning_of_inner_eq_invSqrt2 {d : ℕ} {x y blank : Vector d}
     simpa using (Matrix.isUnitary_iff_adjoint_mul_self U).mp hU
   have hblankScalar : (blank† ⬝ blank) 0 0 = (1 : ℂ) := by
     have h := congrFun (congrFun hblank 0) 0
-    simpa [Matrix.isUnit] using h
+    simpa [Vector.IsNormalized] using h
   let a : Vector (d * d) := x ⊗ blank
   let b : Vector (d * d) := y ⊗ blank
   have hpreserve :
@@ -95,24 +102,31 @@ theorem no_cloning_of_inner_eq_invSqrt2 {d : ℕ} {x y blank : Vector d}
 theorem no_cloning_1 :
     ¬ (∃ U : Square 4,
       Matrix.isUnitary U ∧ ∀ s : Vector 2, U ⬝ (s ⊗ ket0) = s ⊗ s) := by
-  exact no_cloning_of_inner_eq_invSqrt2 ket0_isUnit ket0_inner_ketPlus
+  exact no_cloning_of_inner_eq_invSqrt2 ket0_isNormalized ket0_inner_ketPlus
 
 /-- No unitary `n`-qubit gate with an all-zero blank register can clone every state vector. -/
 theorem no_cloning_2 (n : ℕ) :
     ¬ (∃ U : Square (2 ^ n * 2 ^ n),
       Matrix.isUnitary U ∧ ∀ s : Vector (2 ^ n), U ⬝ (s ⊗ ketZeros n) = s ⊗ s) := by
-  exact no_cloning_of_inner_eq_invSqrt2 (ketZeros_isUnit n)
+  exact no_cloning_of_inner_eq_invSqrt2 (ketZeros_isNormalized n)
     (ketZeros_inner_invSqrt2_smul n)
 
-private theorem no_cloning_with_garbage_core (n : ℕ) :
+/--
+No unitary can clone an arbitrary one-qubit state into two copies while hiding
+extra output in an arbitrary `n`-qubit garbage register.
+
+The register dimension is written as `2 * (2 * 2 ^ n)` to match the tensor
+shape used by the current API and avoid carrying arithmetic casts.
+-/
+theorem no_cloning_3 (n : ℕ) :
     ¬ (∃ (U : Square (2 * (2 * 2 ^ n))) (f : Vector 2 → Vector (2 ^ n)),
       Matrix.isUnitary U ∧
-        ∀ s : Vector 2, Matrix.isUnit s →
+        ∀ s : Vector 2, Vector.IsNormalized s →
           U ⬝ (s ⊗ (ket0 ⊗ ketZeros n)) = s ⊗ (s ⊗ f s)) := by
   rintro ⟨U, f, hU, hclone⟩
   let blank : Vector (2 * 2 ^ n) := ket0 ⊗ ketZeros n
-  have hblank : Matrix.isUnit blank :=
-    Matrix.isUnit_kron ket0_isUnit (ketZeros_isUnit n)
+  have hblank : Vector.IsNormalized blank :=
+    Vector.isNormalized_kron ket0_isNormalized (ketZeros_isNormalized n)
   have hlinear :
       U ⬝ (ketPlus ⊗ blank) =
         invSqrt2 • (U ⬝ (ket0 ⊗ blank)) +
@@ -130,9 +144,9 @@ private theorem no_cloning_with_garbage_core (n : ℕ) :
       ketPlus ⊗ (ketPlus ⊗ f ketPlus) =
         invSqrt2 • (ket0 ⊗ (ket0 ⊗ f ket0)) +
           invSqrt2 • (ket1 ⊗ (ket1 ⊗ f ket1)) := by
-    rw [← hclone ketPlus ketPlus_isUnit]
+    rw [← hclone ketPlus ketPlus_isNormalized]
     rw [hlinear]
-    rw [hclone ket0 ket0_isUnit, hclone ket1 ket1_isUnit]
+    rw [hclone ket0 ket0_isNormalized, hclone ket1 ket1_isNormalized]
   have hfzero : f ketPlus = 0 := by
     ext k j
     fin_cases j
@@ -146,43 +160,17 @@ private theorem no_cloning_with_garbage_core (n : ℕ) :
       simpa only [mul_assoc] using hentry₀
     have hhalf : (1 / 2 : ℂ) ≠ 0 := by norm_num
     exact (mul_eq_zero.mp hentry').resolve_left hhalf
-  have hinput : Matrix.isUnit (ketPlus ⊗ blank) :=
-    Matrix.isUnit_kron ketPlus_isUnit hblank
-  have houtput : Matrix.isUnit (U ⬝ (ketPlus ⊗ blank)) :=
-    Matrix.isUnitary_mul_isUnit hU hinput
+  have hinput : Vector.IsNormalized (ketPlus ⊗ blank) :=
+    Vector.isNormalized_kron ketPlus_isNormalized hblank
+  have houtput : Vector.IsNormalized (U ⬝ (ketPlus ⊗ blank)) :=
+    Matrix.isUnitary_mul_isNormalized hU hinput
   have hzeroTensor :
       ketPlus ⊗ (ketPlus ⊗ (0 : Vector (2 ^ n))) =
         (0 : Vector (2 * (2 * 2 ^ n))) := by
     rw [Matrix.kron_zero_right]
     exact Matrix.kron_zero_right ketPlus
-  rw [hclone ketPlus ketPlus_isUnit, hfzero, hzeroTensor] at houtput
-  exact Matrix.not_isUnit_zero (2 * (2 * 2 ^ n)) houtput
-
-/--
-No unitary can clone an arbitrary one-qubit state into two copies while hiding
-extra output in an arbitrary `n`-qubit garbage register.
-
-The register dimension is written as `2 * (2 * 2 ^ n)` to match the tensor
-shape used by the current API and avoid carrying arithmetic casts.
--/
-theorem no_cloning_3 (n : ℕ) :
-    ¬ (∃ (U : Square (2 * (2 * 2 ^ n))) (f : Vector 2 → Vector (2 ^ n)),
-      Matrix.isUnitary U ∧
-        ∀ s : Vector 2, Matrix.isUnit s →
-          U ⬝ (s ⊗ (ket0 ⊗ ketZeros n)) = s ⊗ (s ⊗ f s)) := by
-  exact no_cloning_with_garbage_core n
-
-/--
-Alternative no-cloning formulation with an explicit garbage register. This has
-the same statement as `no_cloning_3`; the current proof uses the old
-partial-measurement contradiction specialized to a single amplitude.
--/
-theorem no_cloning_3_alt (n : ℕ) :
-    ¬ (∃ (U : Square (2 * (2 * 2 ^ n))) (f : Vector 2 → Vector (2 ^ n)),
-      Matrix.isUnitary U ∧
-        ∀ s : Vector 2, Matrix.isUnit s →
-          U ⬝ (s ⊗ (ket0 ⊗ ketZeros n)) = s ⊗ (s ⊗ f s)) := by
-  exact no_cloning_with_garbage_core n
+  rw [hclone ketPlus ketPlus_isNormalized, hfzero, hzeroTensor] at houtput
+  exact Vector.not_isNormalized_zero (2 * (2 * 2 ^ n)) houtput
 
 end Theorems.NoCloning
 

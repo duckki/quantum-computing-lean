@@ -1,6 +1,13 @@
 import Quantum.Circuit
 import Quantum.Gates
 
+/-!
+# Circuit Examples
+
+Standard unitary circuits built from named gates, including Bell-state
+preparation.
+-/
+
 namespace Quantum
 
 namespace Circuit

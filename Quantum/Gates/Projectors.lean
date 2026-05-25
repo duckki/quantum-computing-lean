@@ -1,6 +1,41 @@
-import Quantum.States
+import Quantum.Gates.Basic
+
+/-!
+# Gate Projectors
+
+Named qubit projectors and algebraic facts about the computational and
+Hadamard-basis projectors.
+-/
 
 namespace Quantum
+
+def P0 : Square 2 :=
+  fun i j =>
+    if (i : ℕ) = 0 ∧ (j : ℕ) = 0 then 1 else 0
+
+def P1 : Square 2 :=
+  fun i j =>
+    if (i : ℕ) = 1 ∧ (j : ℕ) = 1 then 1 else 0
+
+noncomputable def PPlus : Square 2 :=
+  Matrix.proj ketPlus
+
+noncomputable def PMinus : Square 2 :=
+  Matrix.proj ketMinus
+
+@[simp]
+theorem proj_ket0 : Matrix.proj ket0 = P0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.proj, Matrix.mul, Matrix.adjoint, P0, ket0, Vector.basis,
+      _root_.Matrix.mul_apply, Fin.sum_univ_one]
+
+@[simp]
+theorem proj_ket1 : Matrix.proj ket1 = P1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.proj, Matrix.mul, Matrix.adjoint, P1, ket1, Vector.basis,
+      _root_.Matrix.mul_apply, Fin.sum_univ_one]
 
 @[simp]
 theorem P0_mul_ket0 : P0 ⬝ ket0 = ket0 := by
@@ -64,11 +99,11 @@ theorem P1_mul_P0 : P1 ⬝ P0 = 0 := by
 
 @[simp]
 theorem trace_P0 : Tr(P0) = 1 := by
-  simpa [proj_ket0] using Matrix.trace_proj_of_isUnit ket0_isUnit
+  simpa [proj_ket0] using Matrix.trace_proj_of_isNormalized ket0_isNormalized
 
 @[simp]
 theorem trace_P1 : Tr(P1) = 1 := by
-  simpa [proj_ket1] using Matrix.trace_proj_of_isUnit ket1_isUnit
+  simpa [proj_ket1] using Matrix.trace_proj_of_isNormalized ket1_isNormalized
 
 @[simp]
 theorem P0_add_P1 : P0 + P1 = I 2 := by
@@ -113,19 +148,19 @@ theorem PMinus_adjoint : PMinus† = PMinus := by
 
 @[simp]
 theorem PPlus_mul_self : PPlus ⬝ PPlus = PPlus := by
-  simpa [PPlus] using Matrix.proj_mul_proj_of_isUnit ketPlus_isUnit
+  simpa [PPlus] using Matrix.proj_mul_proj_of_isNormalized ketPlus_isNormalized
 
 @[simp]
 theorem PMinus_mul_self : PMinus ⬝ PMinus = PMinus := by
-  simpa [PMinus] using Matrix.proj_mul_proj_of_isUnit ketMinus_isUnit
+  simpa [PMinus] using Matrix.proj_mul_proj_of_isNormalized ketMinus_isNormalized
 
 @[simp]
 theorem trace_PPlus : Tr(PPlus) = 1 := by
-  simpa [PPlus] using Matrix.trace_proj_of_isUnit ketPlus_isUnit
+  simpa [PPlus] using Matrix.trace_proj_of_isNormalized ketPlus_isNormalized
 
 @[simp]
 theorem trace_PMinus : Tr(PMinus) = 1 := by
-  simpa [PMinus] using Matrix.trace_proj_of_isUnit ketMinus_isUnit
+  simpa [PMinus] using Matrix.trace_proj_of_isNormalized ketMinus_isNormalized
 
 @[simp]
 theorem PPlus_mul_PMinus : PPlus ⬝ PMinus = 0 := by

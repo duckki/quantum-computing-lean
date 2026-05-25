@@ -5,6 +5,15 @@ import Mathlib.LinearAlgebra.Matrix.Kronecker
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.LinearAlgebra.UnitaryGroup
 import Mathlib.Logic.Equiv.Fin.Basic
+import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.NormNum
+
+/-!
+# Complex Matrices
+
+Finite-dimensional complex matrices, state vectors, adjoints, traces,
+Kronecker products, projections, and normalized-vector predicates.
+-/
 
 open scoped BigOperators
 
@@ -255,38 +264,6 @@ theorem trace_kron (A : Square m) (B : Square n) :
       rw [Finset.sum_comm]
       simp [Finset.mul_sum, mul_comm]
 
-def isUnit (s : Vector n) : Prop :=
-  mul (adjoint s) s = 1
-
-theorem isUnit_kron {s : Vector m} {t : Vector n}
-    (hs : isUnit s) (ht : isUnit t) : isUnit (kron s t) := by
-  rw [isUnit, adjoint_kron, kron_mul]
-  have hsroot : mul (adjoint s) s = (1 : Square 1) := by simpa [isUnit] using hs
-  have htroot : mul (adjoint t) t = (1 : Square 1) := by simpa [isUnit] using ht
-  rw [hsroot, htroot]
-  simp
-
-theorem not_isUnit_zero (n : ℕ) : ¬ isUnit (0 : Vector n) := by
-  intro h
-  have hscalar := congrFun (congrFun h 0) 0
-  norm_num [isUnit, mul, adjoint, _root_.Matrix.mul_apply] at hscalar
-
-theorem proj_mul_proj_of_isUnit {s : Vector n} (hs : isUnit s) :
-    mul (proj s) (proj s) = proj s := by
-  change (s * adjoint s) * (s * adjoint s) = s * adjoint s
-  rw [_root_.Matrix.mul_assoc]
-  rw [← _root_.Matrix.mul_assoc (adjoint s) s (adjoint s)]
-  have hsroot : adjoint s * s = 1 := by simpa [isUnit, mul] using hs
-  rw [hsroot]
-  simp
-
-theorem trace_proj_of_isUnit {s : Vector n} (hs : isUnit s) : trace (proj s) = 1 := by
-  rw [proj]
-  rw [trace_mul_comm]
-  rw [isUnit] at hs
-  rw [hs]
-  simp [trace]
-
 theorem trace_outer_eq_inner (s t : Vector n) :
     trace (mul s (adjoint t)) = (mul (adjoint t) s) 0 0 := by
   rw [trace_mul_comm]
@@ -329,19 +306,6 @@ theorem isUnitary_mul {A B : Square n}
   rw [hAroot]
   simp [hBroot]
 
-theorem isUnitary_mul_isUnit {A : Square n} {s : Vector n}
-    (hA : isUnitary A) (hs : isUnit s) : isUnit (mul A s) := by
-  rw [isUnit] at hs ⊢
-  rw [adjoint_mul]
-  rw [isUnitary_iff_adjoint_mul_self] at hA
-  have hAroot : adjoint A * A = 1 := by simpa [mul] using hA
-  have hsroot : adjoint s * s = 1 := by simpa [mul] using hs
-  change (adjoint s * adjoint A) * (A * s) = 1
-  rw [_root_.Matrix.mul_assoc]
-  rw [← _root_.Matrix.mul_assoc (adjoint A) A s]
-  rw [hAroot]
-  simpa using hsroot
-
 theorem isUnitary_preserve_inner {U : Square n} (hU : isUnitary U) (v w : Vector n) :
     mul (adjoint (mul U v)) (mul U w) = mul (adjoint v) w := by
   rw [adjoint_mul]
@@ -372,9 +336,77 @@ namespace Vector
 
 variable {n : ℕ}
 
+/-- A state vector is normalized when its inner product with itself is `1`. -/
+def IsNormalized (s : Vector n) : Prop :=
+  s† ⬝ s = 1
+
+theorem isNormalized_kron {m n : ℕ} {s : Vector m} {t : Vector n}
+    (hs : IsNormalized s) (ht : IsNormalized t) : IsNormalized (s ⊗ t) := by
+  rw [IsNormalized, Matrix.adjoint_kron, Matrix.kron_mul]
+  have hsroot : s† ⬝ s = (1 : Square 1) := by simpa [IsNormalized] using hs
+  have htroot : t† ⬝ t = (1 : Square 1) := by simpa [IsNormalized] using ht
+  rw [hsroot, htroot]
+  simp
+
+theorem not_isNormalized_zero (n : ℕ) : ¬ IsNormalized (0 : Vector n) := by
+  intro h
+  have hscalar := congrFun (congrFun h 0) 0
+  norm_num [IsNormalized, Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_apply] at hscalar
+
 def basis (i : Fin n) : Vector n :=
   fun j _ => if j = i then 1 else 0
 
+@[simp]
+theorem basis_apply (i j : Fin n) : basis i j 0 = if j = i then 1 else 0 :=
+  rfl
+
+theorem basis_apply_ne {i j : Fin n} (h : j ≠ i) : basis i j 0 = 0 := by
+  simp [basis, h]
+
+theorem basis_isNormalized (i : Fin n) : IsNormalized (basis i) := by
+  rw [IsNormalized]
+  ext j k
+  fin_cases j
+  fin_cases k
+  simp [Matrix.mul, Matrix.adjoint, basis, _root_.Matrix.mul_apply]
+
 end Vector
+
+namespace Matrix
+
+variable {m n p : ℕ}
+
+theorem proj_mul_proj_of_isNormalized {s : Vector n} (hs : Vector.IsNormalized s) :
+    mul (proj s) (proj s) = proj s := by
+  change (s * adjoint s) * (s * adjoint s) = s * adjoint s
+  rw [_root_.Matrix.mul_assoc]
+  rw [← _root_.Matrix.mul_assoc (adjoint s) s (adjoint s)]
+  have hsroot : adjoint s * s = 1 := by simpa [Vector.IsNormalized, mul] using hs
+  rw [hsroot]
+  simp
+
+theorem trace_proj_of_isNormalized {s : Vector n} (hs : Vector.IsNormalized s) :
+    trace (proj s) = 1 := by
+  rw [proj]
+  rw [trace_mul_comm]
+  rw [Vector.IsNormalized] at hs
+  rw [hs]
+  simp [trace]
+
+theorem isUnitary_mul_isNormalized {A : Square n} {s : Vector n}
+    (hA : isUnitary A) (hs : Vector.IsNormalized s) :
+    Vector.IsNormalized (mul A s) := by
+  rw [Vector.IsNormalized] at hs ⊢
+  rw [adjoint_mul]
+  rw [isUnitary_iff_adjoint_mul_self] at hA
+  have hAroot : adjoint A * A = 1 := by simpa [mul] using hA
+  have hsroot : adjoint s * s = 1 := by simpa [mul] using hs
+  change (adjoint s * adjoint A) * (A * s) = 1
+  rw [_root_.Matrix.mul_assoc]
+  rw [← _root_.Matrix.mul_assoc (adjoint A) A s]
+  rw [hAroot]
+  simpa using hsroot
+
+end Matrix
 
 end Quantum

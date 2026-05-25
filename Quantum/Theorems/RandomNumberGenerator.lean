@@ -1,5 +1,12 @@
 import Quantum.Gates
-import Quantum.Measurement.Lemmas
+import Quantum.Measurement.Computational
+
+/-!
+# Random Number Generator Theorems
+
+Uniform measurement probabilities for Hadamard-based random-number generator
+states.
+-/
 
 namespace Quantum
 

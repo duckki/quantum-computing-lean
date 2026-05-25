@@ -1,7 +1,17 @@
 import Mathlib.LinearAlgebra.Matrix.Reindex
-import Quantum.Measurement
+import Quantum.State
+import Quantum.States
+
+/-!
+# Qubit Registers
+
+Aliases and tensoring operations for `n`-qubit registers with dimension
+`2 ^ n`.
+-/
 
 namespace Quantum
+
+namespace Circuit
 
 namespace Register
 
@@ -111,5 +121,7 @@ theorem isUnitary_tensorGate {n m : ℕ} {U : Gate n} {V : Gate m}
   exact isUnitary_reindexSquare (tensorEquiv n m) (Matrix.isUnitary_kron hU hV)
 
 end Register
+
+end Circuit
 
 end Quantum

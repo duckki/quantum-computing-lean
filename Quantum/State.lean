@@ -1,5 +1,12 @@
 import Mathlib.Analysis.Matrix.PosDef
-import Quantum.Basic
+import Quantum.Matrix
+
+/-!
+# Quantum States
+
+Pure-state and density-matrix wrappers, with density-matrix evolution and
+well-formedness predicates.
+-/
 
 namespace Quantum
 
@@ -48,17 +55,17 @@ theorem pure_isPositive (s : Vector n) : isPositive (pure s) := by
   simpa [isPositive, pure, Matrix.proj, Matrix.mul, Matrix.adjoint] using
     _root_.Matrix.posSemidef_self_mul_conjTranspose (A := s)
 
-theorem trace_pure_of_isUnit {s : Vector n} (hs : Matrix.isUnit s) :
+theorem trace_pure_of_isNormalized {s : Vector n} (hs : Vector.IsNormalized s) :
     Tr(pure s) = 1 := by
-  simpa [pure] using Matrix.trace_proj_of_isUnit hs
+  simpa [pure] using Matrix.trace_proj_of_isNormalized hs
 
-theorem pure_hasTraceOne_of_isUnit {s : Vector n} (hs : Matrix.isUnit s) :
+theorem pure_hasTraceOne_of_isNormalized {s : Vector n} (hs : Vector.IsNormalized s) :
     hasTraceOne (pure s) := by
-  exact trace_pure_of_isUnit hs
+  exact trace_pure_of_isNormalized hs
 
-theorem pure_isDensity_of_isUnit {s : Vector n} (hs : Matrix.isUnit s) :
+theorem pure_isDensity_of_isNormalized {s : Vector n} (hs : Vector.IsNormalized s) :
     isDensity (pure s) := by
-  exact ⟨pure_isPositive s, pure_hasTraceOne_of_isUnit hs⟩
+  exact ⟨pure_isPositive s, pure_hasTraceOne_of_isNormalized hs⟩
 
 @[simp]
 theorem evolve_apply (U : Square n) (ρ : DensityMatrix n) :
@@ -74,7 +81,7 @@ end DensityMatrix
 /-- A pure state is a normalized state vector. -/
 structure PureState (n : ℕ) where
   vector : Vector n
-  isUnit : Matrix.isUnit vector
+  isNormalized : Vector.IsNormalized vector
 
 namespace PureState
 
@@ -84,7 +91,7 @@ instance : Coe (PureState n) (Vector n) where
   coe ψ := ψ.vector
 
 @[simp]
-theorem coe_mk (s : Vector n) (hs : Matrix.isUnit s) :
+theorem coe_mk (s : Vector n) (hs : Vector.IsNormalized s) :
     ((PureState.mk s hs : PureState n) : Vector n) = s :=
   rfl
 
@@ -94,13 +101,13 @@ noncomputable def density (ψ : PureState n) : DensityMatrix n :=
 
 theorem density_isDensity (ψ : PureState n) :
     DensityMatrix.isDensity ψ.density :=
-  DensityMatrix.pure_isDensity_of_isUnit ψ.isUnit
+  DensityMatrix.pure_isDensity_of_isNormalized ψ.isNormalized
 
 /-- Evolve a pure state by a unitary gate. -/
 noncomputable def evolve (U : Square n) (hU : Matrix.isUnitary U) (ψ : PureState n) :
     PureState n where
   vector := U ⬝ ψ.vector
-  isUnit := Matrix.isUnitary_mul_isUnit hU ψ.isUnit
+  isNormalized := Matrix.isUnitary_mul_isNormalized hU ψ.isNormalized
 
 @[simp]
 theorem evolve_vector (U : Square n) (hU : Matrix.isUnitary U) (ψ : PureState n) :

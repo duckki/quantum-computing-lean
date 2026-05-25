@@ -1,11 +1,18 @@
-import Quantum.Register
+import Quantum.Circuit.Register
+
+/-!
+# Quantum Circuits
+
+Typed circuit syntax, denotational semantics, execution on registers, and
+unitary circuit composition.
+-/
 
 namespace Quantum
 
 /-- Typed quantum circuits indexed by qubit count. -/
 inductive Circuit : ℕ → Type where
   | id (n : ℕ) : Circuit n
-  | gate {n : ℕ} (U : Register.Gate n) : Circuit n
+  | gate {n : ℕ} (U : Circuit.Register.Gate n) : Circuit n
   | seq {n : ℕ} (first second : Circuit n) : Circuit n
   | tensor {n m : ℕ} (left : Circuit n) (right : Circuit m) : Circuit (n + m)
 
@@ -70,9 +77,9 @@ noncomputable def denote (c : Unitary n) : Register.Gate n :=
 noncomputable def run (c : Unitary n) (s : Register.State n) : Register.State n :=
   c.denote ⬝ s
 
-theorem run_isUnit (c : Unitary n) {s : Register.State n} (hs : Matrix.isUnit s) :
-    Matrix.isUnit (c.run s) :=
-  Matrix.isUnitary_mul_isUnit c.isUnitary hs
+theorem run_isNormalized (c : Unitary n) {s : Register.State n} (hs : Vector.IsNormalized s) :
+    Vector.IsNormalized (c.run s) :=
+  Matrix.isUnitary_mul_isNormalized c.isUnitary hs
 
 end Unitary
 

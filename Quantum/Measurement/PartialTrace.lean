@@ -1,7 +1,24 @@
-import Quantum.Measurement
-import Quantum.Gates
+import Quantum.Measurement.Computational
+
+/-!
+# Partial Trace
+
+Partial trace over a tensor factor and probability lemmas for measuring a
+subsystem.
+-/
 
 namespace Quantum
+
+noncomputable def partialTrace {n m : ℕ} (A : Square (n * m)) : Square n :=
+  fun i j => ∑ k : Fin m, A (finProdFinEquiv (i, k)) (finProdFinEquiv (j, k))
+
+namespace Measurement
+
+/-- Probability of measuring outcome `i` on the first subsystem after tracing out the second. -/
+noncomputable def partialProb {n m : ℕ} (s : Vector (n * m)) (i : Fin n) : ℝ :=
+  ((partialTrace (n := n) (m := m) (Matrix.proj s)) i i).re
+
+end Measurement
 
 @[simp]
 theorem partialTrace_zero {n m : ℕ} :
@@ -70,33 +87,33 @@ theorem partialTrace_add_kron_four {n m : ℕ}
   simp
 
 @[simp]
-theorem partialTrace_kron_proj_of_isUnit {n m : ℕ} (A : Square n) {s : Vector m}
-    (hs : Matrix.isUnit s) :
+theorem partialTrace_kron_proj_of_isNormalized {n m : ℕ} (A : Square n) {s : Vector m}
+    (hs : Vector.IsNormalized s) :
     partialTrace (n := n) (m := m) (A ⊗ Matrix.proj s) = A := by
-  rw [partialTrace_kron, Matrix.trace_proj_of_isUnit hs]
+  rw [partialTrace_kron, Matrix.trace_proj_of_isNormalized hs]
   simp
 
 @[simp]
-theorem partialTrace_proj_kron_of_isUnit {n m : ℕ} (s : Vector n) {t : Vector m}
-    (ht : Matrix.isUnit t) :
+theorem partialTrace_proj_kron_of_isNormalized {n m : ℕ} (s : Vector n) {t : Vector m}
+    (ht : Vector.IsNormalized t) :
     partialTrace (n := n) (m := m) (Matrix.proj (s ⊗ t)) = Matrix.proj s := by
   rw [Matrix.proj_kron]
-  exact partialTrace_kron_proj_of_isUnit (Matrix.proj s) ht
+  exact partialTrace_kron_proj_of_isNormalized (Matrix.proj s) ht
 
 theorem partialTrace_proj_eq_of_kron_eq {n m : ℕ} {a b : Vector n} {s t : Vector m}
-    (h : a ⊗ s = b ⊗ t) (hs : Matrix.isUnit s) (ht : Matrix.isUnit t) :
+    (h : a ⊗ s = b ⊗ t) (hs : Vector.IsNormalized s) (ht : Vector.IsNormalized t) :
     Matrix.proj a = Matrix.proj b := by
   have hpartial :
       partialTrace (n := n) (m := m) (Matrix.proj (a ⊗ s)) =
         partialTrace (n := n) (m := m) (Matrix.proj (b ⊗ t)) := by
     rw [h]
-  rw [partialTrace_proj_kron_of_isUnit (s := a) hs] at hpartial
-  rw [partialTrace_proj_kron_of_isUnit (s := b) ht] at hpartial
+  rw [partialTrace_proj_kron_of_isNormalized (s := a) hs] at hpartial
+  rw [partialTrace_proj_kron_of_isNormalized (s := b) ht] at hpartial
   exact hpartial
 
 theorem partialTrace_proj_add_kron_of_inner_eq_one {n m : ℕ}
     (t p : Vector n) {w q : Vector m}
-    (hw : Matrix.isUnit w) (hq : Matrix.isUnit q) (h : w† ⬝ q = 1) :
+    (hw : Vector.IsNormalized w) (hq : Vector.IsNormalized q) (h : w† ⬝ q = 1) :
     partialTrace (n := n) (m := m) (Matrix.proj ((t ⊗ w) + (p ⊗ q))) =
       Matrix.proj (t + p) := by
   have hqw : Matrix.trace (q ⬝ w†) = 1 := by
@@ -109,13 +126,13 @@ theorem partialTrace_proj_add_kron_of_inner_eq_one {n m : ℕ}
     rw [Matrix.trace_outer_eq_inner, hwq_inner]
     simp
   rw [Matrix.proj_add_kron, partialTrace_add_kron_four,
-    Matrix.trace_proj_of_isUnit hw, Matrix.trace_proj_of_isUnit hq, hqw, hwq]
+    Matrix.trace_proj_of_isNormalized hw, Matrix.trace_proj_of_isNormalized hq, hqw, hwq]
   rw [Matrix.proj_add]
   simp
 
 theorem partialTrace_proj_add_kron_of_inner_eq_zero {n m : ℕ}
     (t p : Vector n) {w q : Vector m}
-    (hw : Matrix.isUnit w) (hq : Matrix.isUnit q) (h : w† ⬝ q = 0) :
+    (hw : Vector.IsNormalized w) (hq : Vector.IsNormalized q) (h : w† ⬝ q = 0) :
     partialTrace (n := n) (m := m) (Matrix.proj ((t ⊗ w) + (p ⊗ q))) =
       Matrix.proj t + Matrix.proj p := by
   have hqw : Matrix.trace (q ⬝ w†) = 0 := by
@@ -128,29 +145,29 @@ theorem partialTrace_proj_add_kron_of_inner_eq_zero {n m : ℕ}
     rw [Matrix.trace_outer_eq_inner, hwq_inner]
     simp
   rw [Matrix.proj_add_kron, partialTrace_add_kron_four,
-    Matrix.trace_proj_of_isUnit hw, Matrix.trace_proj_of_isUnit hq, hqw, hwq]
+    Matrix.trace_proj_of_isNormalized hw, Matrix.trace_proj_of_isNormalized hq, hqw, hwq]
   simp
 
 namespace Measurement
 
-theorem partialProb_kron_of_isUnit {n m : ℕ} (s : Vector n) {t : Vector m}
-    (ht : Matrix.isUnit t) :
+theorem partialProb_kron_of_isNormalized {n m : ℕ} (s : Vector n) {t : Vector m}
+    (ht : Vector.IsNormalized t) :
     partialProb (s ⊗ t) = prob s := by
   funext i
-  rw [partialProb, partialTrace_proj_kron_of_isUnit (s := s) ht]
+  rw [partialProb, partialTrace_proj_kron_of_isNormalized (s := s) ht]
   simp [prob, Matrix.proj, Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_apply, Complex.normSq]
 
 theorem prob_eq_of_kron_eq {n m : ℕ} {a b : Vector n} {s t : Vector m}
-    (h : a ⊗ s = b ⊗ t) (hs : Matrix.isUnit s) (ht : Matrix.isUnit t) :
+    (h : a ⊗ s = b ⊗ t) (hs : Vector.IsNormalized s) (ht : Vector.IsNormalized t) :
     prob a = prob b := by
   have hpartial : partialProb (a ⊗ s) = partialProb (b ⊗ t) := by
     rw [h]
-  rw [partialProb_kron_of_isUnit a hs, partialProb_kron_of_isUnit b ht] at hpartial
+  rw [partialProb_kron_of_isNormalized a hs, partialProb_kron_of_isNormalized b ht] at hpartial
   exact hpartial
 
-theorem partialProb_add_kron_apply_of_isUnit {n m : ℕ}
+theorem partialProb_add_kron_apply_of_isNormalized {n m : ℕ}
     (a b : Vector n) {s t : Vector m}
-    (hs : Matrix.isUnit s) (ht : Matrix.isUnit t) (i : Fin n) :
+    (hs : Vector.IsNormalized s) (ht : Vector.IsNormalized t) (i : Fin n) :
     partialProb ((a ⊗ s) + (b ⊗ t)) i =
       prob a i + (Matrix.trace (s ⬝ t†) * ((a ⬝ b†) i i)).re +
         (Matrix.trace (t ⬝ s†) * ((b ⬝ a†) i i)).re + prob b i := by
@@ -161,12 +178,12 @@ theorem partialProb_add_kron_apply_of_isUnit {n m : ℕ}
     simp [prob, Matrix.proj, Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_apply,
       Complex.normSq]
   rw [partialProb, Matrix.proj_add_kron, partialTrace_add_kron_four,
-    Matrix.trace_proj_of_isUnit hs, Matrix.trace_proj_of_isUnit ht]
+    Matrix.trace_proj_of_isNormalized hs, Matrix.trace_proj_of_isNormalized ht]
   simp [haDiag, hbDiag]
 
 theorem partialProb_add_kron_of_inner_eq_one {n m : ℕ}
     (a b : Vector n) {s t : Vector m}
-    (hs : Matrix.isUnit s) (ht : Matrix.isUnit t) (h : s† ⬝ t = 1) :
+    (hs : Vector.IsNormalized s) (ht : Vector.IsNormalized t) (h : s† ⬝ t = 1) :
     partialProb ((a ⊗ s) + (b ⊗ t)) = prob (a + b) := by
   funext i
   rw [partialProb, partialTrace_proj_add_kron_of_inner_eq_one a b hs ht h]
@@ -175,7 +192,7 @@ theorem partialProb_add_kron_of_inner_eq_one {n m : ℕ}
 
 theorem partialProb_add_kron_of_inner_eq_zero {n m : ℕ}
     (a b : Vector n) {s t : Vector m}
-    (hs : Matrix.isUnit s) (ht : Matrix.isUnit t) (h : s† ⬝ t = 0) :
+    (hs : Vector.IsNormalized s) (ht : Vector.IsNormalized t) (h : s† ⬝ t = 0) :
     partialProb ((a ⊗ s) + (b ⊗ t)) = fun i => prob a i + prob b i := by
   funext i
   rw [partialProb, partialTrace_proj_add_kron_of_inner_eq_zero a b hs ht h]
@@ -183,7 +200,7 @@ theorem partialProb_add_kron_of_inner_eq_zero {n m : ℕ}
 
 theorem partialProb_add_kron_of_pointwise_orthogonal {n m : ℕ}
     {a b : Vector n} {s t : Vector m}
-    (hs : Matrix.isUnit s) (ht : Matrix.isUnit t)
+    (hs : Vector.IsNormalized s) (ht : Vector.IsNormalized t)
     (h : ∀ i, star (a i 0) * b i 0 = 0) :
     partialProb ((a ⊗ s) + (b ⊗ t)) = prob (a + b) := by
   have hpartial :
@@ -211,71 +228,10 @@ theorem partialProb_add_kron_of_pointwise_orthogonal {n m : ℕ}
       simp [prob, Matrix.proj, Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_apply,
         Complex.normSq]
     rw [partialProb, Matrix.proj_add_kron, partialTrace_add_kron_four,
-      Matrix.trace_proj_of_isUnit hs, Matrix.trace_proj_of_isUnit ht]
+      Matrix.trace_proj_of_isNormalized hs, Matrix.trace_proj_of_isNormalized ht]
     simp [habEntry, hbaEntry, haDiag, hbDiag]
   rw [hpartial, prob_add_of_pointwise_orthogonal h]
 
 end Measurement
-
-@[simp]
-theorem partialTrace_proj_ket00 :
-    partialTrace (n := 2) (m := 2) (Matrix.proj ket00) = P0 := by
-  rw [← ket0_kron_ket0]
-  rw [← proj_ket0]
-  exact partialTrace_proj_kron_of_isUnit (s := ket0) ket0_isUnit
-
-@[simp]
-theorem partialTrace_proj_ket01 :
-    partialTrace (n := 2) (m := 2) (Matrix.proj ket01) = P0 := by
-  rw [← ket0_kron_ket1]
-  rw [← proj_ket0]
-  exact partialTrace_proj_kron_of_isUnit (s := ket0) ket1_isUnit
-
-@[simp]
-theorem partialTrace_proj_ket10 :
-    partialTrace (n := 2) (m := 2) (Matrix.proj ket10) = P1 := by
-  rw [← ket1_kron_ket0]
-  rw [← proj_ket1]
-  exact partialTrace_proj_kron_of_isUnit (s := ket1) ket0_isUnit
-
-@[simp]
-theorem partialTrace_proj_ket11 :
-    partialTrace (n := 2) (m := 2) (Matrix.proj ket11) = P1 := by
-  rw [← ket1_kron_ket1]
-  rw [← proj_ket1]
-  exact partialTrace_proj_kron_of_isUnit (s := ket1) ket1_isUnit
-
-@[simp]
-theorem partialTrace_proj_ketPhiPlus :
-    partialTrace (n := 2) (m := 2) (Matrix.proj ketPhiPlus) = ((1 / 2 : ℂ) • (I 2)) := by
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp [partialTrace, Matrix.proj, Matrix.mul, Matrix.adjoint, ketPhiPlus,
-      _root_.Matrix.mul_apply, finProdFinEquiv, Fin.divNat, Fin.modNat, Fin.sum_univ_two]
-
-@[simp]
-theorem partialTrace_pure_ket00 :
-    partialTrace (n := 2) (m := 2) (DensityMatrix.pure ket00) = P0 := by
-  simp [DensityMatrix.pure]
-
-@[simp]
-theorem partialTrace_pure_ket01 :
-    partialTrace (n := 2) (m := 2) (DensityMatrix.pure ket01) = P0 := by
-  simp [DensityMatrix.pure]
-
-@[simp]
-theorem partialTrace_pure_ket10 :
-    partialTrace (n := 2) (m := 2) (DensityMatrix.pure ket10) = P1 := by
-  simp [DensityMatrix.pure]
-
-@[simp]
-theorem partialTrace_pure_ket11 :
-    partialTrace (n := 2) (m := 2) (DensityMatrix.pure ket11) = P1 := by
-  simp [DensityMatrix.pure]
-
-@[simp]
-theorem partialTrace_pure_ketPhiPlus :
-    partialTrace (n := 2) (m := 2) (DensityMatrix.pure ketPhiPlus) = ((1 / 2 : ℂ) • (I 2)) := by
-  simp [DensityMatrix.pure]
 
 end Quantum
