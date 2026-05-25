@@ -1,10 +1,11 @@
-# Lean 3 to Lean 4 Porting Coverage
+# Porting from Lean 3
 
-This file tracks the remaining gap between the Lean 3 `master` branch and the
-Lean 4 `lean4` branch. The goal is not to recreate every Lean 3 helper exactly;
-the Lean 4 port should keep declarations that are part of the quantum API, use
-mathlib4 where it now provides the infrastructure, and leave obsolete proof
-automation behind.
+This file records how the historical Lean 3 project on the `lean3` branch maps
+to the current Lean 4 project on `main`.
+
+The goal is not to recreate every Lean 3 helper exactly. The Lean 4 project
+keeps declarations that are part of the quantum API, uses mathlib4 where it now
+provides the infrastructure, and leaves obsolete proof automation behind.
 
 ## Coverage Matrix
 
@@ -36,7 +37,7 @@ automation behind.
   linearity argument and no cast-heavy infrastructure. Porting the alternative is
   only useful if we specifically want a partial-measurement demonstration theorem.
 
-## Remaining Candidate Work
+## Future Cleanup Ideas
 
 - Add focused aliases for renamed Lean 3 declarations only when downstream code
   needs source compatibility.
