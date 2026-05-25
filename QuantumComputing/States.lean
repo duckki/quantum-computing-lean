@@ -2,7 +2,7 @@ import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.NormNum
-import Quantum.Matrix
+import QuantumComputing.Matrix
 
 /-!
 # Named State Vectors
@@ -11,7 +11,7 @@ Common computational-basis, Hadamard-basis, and Bell state vectors, together
 with their normalization facts.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 noncomputable def invSqrt2 : ℂ :=
   ((1 / Real.sqrt 2 : ℝ) : ℂ)
@@ -130,4 +130,4 @@ theorem ket1_kron_ket1 : ket1 ⊗ ket1 = ket11 := by
   fin_cases i <;> fin_cases j <;>
     simp [Matrix.kron, ket1, ket11, Vector.basis, finProdFinEquiv, Fin.divNat, Fin.modNat]
 
-end Quantum
+end QuantumComputing

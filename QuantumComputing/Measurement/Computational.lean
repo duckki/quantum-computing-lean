@@ -1,7 +1,7 @@
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Data.Complex.BigOperators
-import Quantum.Matrix
-import Quantum.States
+import QuantumComputing.Matrix
+import QuantumComputing.States
 
 /-!
 # Computational-Basis Measurement
@@ -10,7 +10,7 @@ Projection operators, probabilities, post-measurement states, and reusable
 facts for computational-basis measurement.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 namespace Measurement
 
@@ -229,4 +229,4 @@ theorem sum_adjoint_mul_projectors (n : ℕ) :
 
 end Measurement
 
-end Quantum
+end QuantumComputing

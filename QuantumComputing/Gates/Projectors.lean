@@ -1,4 +1,4 @@
-import Quantum.Gates.Basic
+import QuantumComputing.Gates.Basic
 
 /-!
 # Gate Projectors
@@ -7,7 +7,7 @@ Named qubit projectors and algebraic facts about the computational and
 Hadamard-basis projectors.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 def P0 : Square 2 :=
   fun i j =>
@@ -202,4 +202,4 @@ theorem Z_eq_sub_P0_P1 : Z = P0 - P1 := by
   fin_cases i <;> fin_cases j <;>
     norm_num [Z, P0, P1]
 
-end Quantum
+end QuantumComputing

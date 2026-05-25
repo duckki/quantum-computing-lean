@@ -1,4 +1,4 @@
-import Quantum.Gates.Basic
+import QuantumComputing.Gates.Basic
 
 /-!
 # Gate Actions
@@ -6,7 +6,7 @@ import Quantum.Gates.Basic
 Action of the named gates and controlled gates on named state vectors.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 @[simp]
 theorem X_mul_ket0 : X ⬝ ket0 = ket1 := by
@@ -229,4 +229,4 @@ theorem SWAP_kron (a b : Vector 2) : SWAP ⬝ (a ⊗ b) = b ⊗ a := by
       Fin.divNat, Fin.modNat, Fin.sum_univ_four] <;>
     ring
 
-end Quantum
+end QuantumComputing

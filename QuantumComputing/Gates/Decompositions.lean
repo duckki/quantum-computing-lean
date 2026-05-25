@@ -1,6 +1,6 @@
-import Quantum.Gates.Actions
-import Quantum.Gates.Projectors
-import Quantum.Gates.Properties
+import QuantumComputing.Gates.Actions
+import QuantumComputing.Gates.Projectors
+import QuantumComputing.Gates.Properties
 
 /-!
 # Gate Decompositions
@@ -9,7 +9,7 @@ Identities expressing gates in terms of projectors, Hadamards, and controlled
 operations.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 theorem CNOT_decompose : CNOT = P0 ⊗ (I 2) + P1 ⊗ X := by
   ext i j
@@ -53,4 +53,4 @@ theorem CZ_symmetry : CZ = SWAP ⬝ CZ ⬝ SWAP := by
   rw [gateControlled_Z] at h
   exact h
 
-end Quantum
+end QuantumComputing

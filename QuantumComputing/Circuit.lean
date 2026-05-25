@@ -1,4 +1,4 @@
-import Quantum.Circuit.Register
+import QuantumComputing.Circuit.Register
 
 /-!
 # Quantum Circuits
@@ -7,7 +7,7 @@ Typed circuit syntax, denotational semantics, execution on registers, and
 unitary circuit composition.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 /-- Typed quantum circuits indexed by qubit count. -/
 inductive Circuit : ℕ → Type where
@@ -85,4 +85,4 @@ end Unitary
 
 end Circuit
 
-end Quantum
+end QuantumComputing

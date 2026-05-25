@@ -11,15 +11,15 @@ automation behind.
 | Lean 3 area | Lean 4 location | Status | Notes |
 | --- | --- | --- | --- |
 | `src/common_lemmas.lean` | mathlib4 / local proofs | Replaced | Finite-index and cast helpers are mostly avoided by `finProdFinEquiv`, `Fin` APIs, and direct `simp`/`fin_cases` proofs. Do not port wholesale unless a public theorem needs one. |
-| `src/matrix.lean` | `Quantum/Matrix.lean` | Ported with redesign | Core aliases, adjoint, trace, projection, Kronecker product, normalized vectors, and unitarity are present using mathlib4 matrix APIs. |
+| `src/matrix.lean` | `QuantumComputing/Matrix.lean` | Ported with redesign | Core aliases, adjoint, trace, projection, Kronecker product, normalized vectors, and unitarity are present using mathlib4 matrix APIs. |
 | `src/matrix_inner_product.lean` | mathlib4 | Replaced | The old local inner-product-space development is not carried forward. Lean 4 proofs use matrix products and mathlib facts directly. |
-| `src/matrix_lemmas.lean` | `Quantum/Matrix.lean`, measurement modules | Partially ported | Public trace, projection, Kronecker, unitarity, and normalization facts are present. Cast-heavy tensor associativity, custom proof automation, and local normed-space instances remain intentionally unported. |
-| `src/quantum.lean` | `Quantum/States.lean`, `Quantum/Gates/*`, `Quantum/Measurement/*` | Ported with split modules | Named states, gates, projectors, measurement probabilities, and partial trace are split by topic. Old notations such as ket notation and measurement brackets are not restored. |
-| `src/quantum_lemmas.lean` | `Quantum/Gates/*`, `Quantum/Measurement/*`, `Quantum/Matrix.lean` | Partially ported | Gate facts, projector facts, trace facts, partial-trace facts, and state facts are present. The Lean 3 tactic layer is intentionally obsolete. |
-| `src/measurement.lean` | `Quantum/Measurement/Generalized.lean`, `Quantum/Measurement/Projective.lean`, `Quantum/Measurement/Computational.lean` | Mostly ported | Generalized/projective probabilities, post-measurement states, trace-form probability lemmas, post-measurement normalization, and projective-to-computational simulation facts are present in Lean 4 style. |
-| `src/theorems/random-number-generator.lean` | `Quantum/Theorems/RandomNumberGenerator.lean` | Ported and improved | Anonymous examples are now named theorems. |
-| `src/theorems/no-cloning.lean` | `Quantum/Theorems/NoCloning.lean` | Main results ported | `no_cloning_1`, `no_cloning_2`, and `no_cloning_3` are present. `no_cloning_3_alt` is intentionally skipped for now; see below. |
-| Circuit layer | `Quantum/Circuit*.lean` | New Lean 4 API | Typed circuit syntax and unitary circuit wrappers are new and have no Lean 3 counterpart. |
+| `src/matrix_lemmas.lean` | `QuantumComputing/Matrix.lean`, measurement modules | Partially ported | Public trace, projection, Kronecker, unitarity, and normalization facts are present. Cast-heavy tensor associativity, custom proof automation, and local normed-space instances remain intentionally unported. |
+| `src/quantum.lean` | `QuantumComputing/States.lean`, `QuantumComputing/Gates/*`, `QuantumComputing/Measurement/*` | Ported with split modules | Named states, gates, projectors, measurement probabilities, and partial trace are split by topic. Old notations such as ket notation and measurement brackets are not restored. |
+| `src/quantum_lemmas.lean` | `QuantumComputing/Gates/*`, `QuantumComputing/Measurement/*`, `QuantumComputing/Matrix.lean` | Partially ported | Gate facts, projector facts, trace facts, partial-trace facts, and state facts are present. The Lean 3 tactic layer is intentionally obsolete. |
+| `src/measurement.lean` | `QuantumComputing/Measurement/Generalized.lean`, `QuantumComputing/Measurement/Projective.lean`, `QuantumComputing/Measurement/Computational.lean` | Mostly ported | Generalized/projective probabilities, post-measurement states, trace-form probability lemmas, post-measurement normalization, and projective-to-computational simulation facts are present in Lean 4 style. |
+| `src/theorems/random-number-generator.lean` | `QuantumComputing/Theorems/RandomNumberGenerator.lean` | Ported and improved | Anonymous examples are now named theorems. |
+| `src/theorems/no-cloning.lean` | `QuantumComputing/Theorems/NoCloning.lean` | Main results ported | `no_cloning_1`, `no_cloning_2`, and `no_cloning_3` are present. `no_cloning_3_alt` is intentionally skipped for now; see below. |
+| Circuit layer | `QuantumComputing/Circuit*.lean` | New Lean 4 API | Typed circuit syntax and unitary circuit wrappers are new and have no Lean 3 counterpart. |
 
 ## Intentional Non-Ports
 

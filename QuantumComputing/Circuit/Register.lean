@@ -1,6 +1,6 @@
 import Mathlib.LinearAlgebra.Matrix.Reindex
-import Quantum.State
-import Quantum.States
+import QuantumComputing.State
+import QuantumComputing.States
 
 /-!
 # Qubit Registers
@@ -9,7 +9,7 @@ Aliases and tensoring operations for `n`-qubit registers with dimension
 `2 ^ n`.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 namespace Circuit
 
@@ -124,4 +124,4 @@ end Register
 
 end Circuit
 
-end Quantum
+end QuantumComputing

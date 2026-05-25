@@ -1,4 +1,4 @@
-import Quantum.Gates
+import QuantumComputing.Gates
 
 /-!
 # No-Cloning Theorems
@@ -7,7 +7,7 @@ Formal statements showing that unitary cloning maps cannot exist for selected
 families of pure states.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 namespace Theorems.NoCloning
 
@@ -174,4 +174,4 @@ theorem no_cloning_3 (n : ℕ) :
 
 end Theorems.NoCloning
 
-end Quantum
+end QuantumComputing

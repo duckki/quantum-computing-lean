@@ -17,7 +17,7 @@ Kronecker products, projections, and normalized-vector predicates.
 
 open scoped BigOperators
 
-namespace Quantum
+namespace QuantumComputing
 
 abbrev Matrix (m n : ℕ) := _root_.Matrix (Fin m) (Fin n) ℂ
 abbrev Vector (n : ℕ) := Matrix n 1
@@ -409,4 +409,4 @@ theorem isUnitary_mul_isNormalized {A : Square n} {s : Vector n}
 
 end Matrix
 
-end Quantum
+end QuantumComputing

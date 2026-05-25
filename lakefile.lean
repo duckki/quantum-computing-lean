@@ -8,4 +8,4 @@ require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git" @ "v4.29.1"
 
 @[default_target]
-lean_lib Quantum where
+lean_lib QuantumComputing where

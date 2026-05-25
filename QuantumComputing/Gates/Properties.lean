@@ -1,4 +1,4 @@
-import Quantum.Gates.Basic
+import QuantumComputing.Gates.Basic
 
 /-!
 # Gate Properties
@@ -6,7 +6,7 @@ import Quantum.Gates.Basic
 Unitary, self-adjoint, and involutive facts for the named gates.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 theorem X_isUnitary : Matrix.isUnitary X := by
   rw [Matrix.isUnitary_iff_adjoint_mul_self]
@@ -119,4 +119,4 @@ theorem SWAP_mul_self : SWAP ⬝ SWAP = I 4 := by
   fin_cases i <;> fin_cases j <;>
     norm_num [Matrix.mul, SWAP, _root_.Matrix.mul_apply, Fin.sum_univ_four] <;> decide
 
-end Quantum
+end QuantumComputing

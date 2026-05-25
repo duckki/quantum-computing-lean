@@ -1,7 +1,7 @@
-import Quantum.Gates
-import Quantum.Measurement.Computational
-import Quantum.Measurement.PartialTrace
-import Quantum.State
+import QuantumComputing.Gates
+import QuantumComputing.Measurement.Computational
+import QuantumComputing.Measurement.PartialTrace
+import QuantumComputing.State
 
 /-!
 # Measurement Examples
@@ -10,7 +10,7 @@ Concrete computational-basis measurement and partial-trace facts for the named
 one- and two-qubit states.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 namespace Measurement
 
@@ -163,4 +163,4 @@ theorem partialTrace_pure_ketPhiPlus :
     partialTrace (n := 2) (m := 2) (DensityMatrix.pure ketPhiPlus) = ((1 / 2 : ℂ) • (I 2)) := by
   simp [DensityMatrix.pure]
 
-end Quantum
+end QuantumComputing

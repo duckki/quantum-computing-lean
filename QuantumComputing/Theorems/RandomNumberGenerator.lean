@@ -1,5 +1,5 @@
-import Quantum.Gates
-import Quantum.Measurement.Computational
+import QuantumComputing.Gates
+import QuantumComputing.Measurement.Computational
 
 /-!
 # Random Number Generator Theorems
@@ -8,7 +8,7 @@ Uniform measurement probabilities for Hadamard-based random-number generator
 states.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 namespace Theorems.RandomNumberGenerator
 
@@ -79,4 +79,4 @@ theorem H2_ket11_uniform (i : Fin 4) :
 
 end Theorems.RandomNumberGenerator
 
-end Quantum
+end QuantumComputing

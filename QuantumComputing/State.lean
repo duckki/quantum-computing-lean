@@ -1,5 +1,5 @@
 import Mathlib.Analysis.Matrix.PosDef
-import Quantum.Matrix
+import QuantumComputing.Matrix
 
 /-!
 # Quantum States
@@ -8,7 +8,7 @@ Pure-state and density-matrix wrappers, with density-matrix evolution and
 well-formedness predicates.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 open scoped ComplexOrder
 
@@ -121,4 +121,4 @@ theorem density_evolve (U : Square n) (hU : Matrix.isUnitary U) (ψ : PureState 
 
 end PureState
 
-end Quantum
+end QuantumComputing

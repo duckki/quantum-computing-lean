@@ -1,4 +1,4 @@
-import Quantum.Measurement.Computational
+import QuantumComputing.Measurement.Computational
 
 /-!
 # Partial Trace
@@ -7,7 +7,7 @@ Partial trace over a tensor factor and probability lemmas for measuring a
 subsystem.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 noncomputable def partialTrace {n m : ℕ} (A : Square (n * m)) : Square n :=
   fun i j => ∑ k : Fin m, A (finProdFinEquiv (i, k)) (finProdFinEquiv (j, k))
@@ -234,4 +234,4 @@ theorem partialProb_add_kron_of_pointwise_orthogonal {n m : ℕ}
 
 end Measurement
 
-end Quantum
+end QuantumComputing

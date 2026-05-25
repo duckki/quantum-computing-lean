@@ -1,4 +1,4 @@
-import Quantum.States
+import QuantumComputing.States
 
 /-!
 # Basic Gates
@@ -7,7 +7,7 @@ Concrete one- and two-qubit gate matrices and basic controlled-gate
 constructors.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 def X : Square 2 :=
   fun i j =>
@@ -56,4 +56,4 @@ noncomputable def controlledGate {n : ℕ} (U : Square n) : Square (2 * n) :=
 noncomputable def gateControlled (U : Square 2) : Square 4 :=
   SWAP ⬝ controlledGate U ⬝ SWAP
 
-end Quantum
+end QuantumComputing

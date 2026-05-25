@@ -1,5 +1,5 @@
-import Quantum.Measurement.Computational
-import Quantum.State
+import QuantumComputing.Measurement.Computational
+import QuantumComputing.State
 
 /-!
 # Generalized Measurements
@@ -8,7 +8,7 @@ Complete families of measurement operators, generalized probabilities, and
 post-measurement states.
 -/
 
-namespace Quantum
+namespace QuantumComputing
 
 namespace Measurement
 
@@ -222,4 +222,4 @@ theorem generalizedPostMeasure_projectors {n : ℕ} (s : Vector n) (i : Fin n) :
 
 end Measurement
 
-end Quantum
+end QuantumComputing
