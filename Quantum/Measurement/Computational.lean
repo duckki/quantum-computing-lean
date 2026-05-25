@@ -52,6 +52,14 @@ theorem sum_prob {n : ℕ} (s : Vector n) :
       Complex.normSq_eq_conj_mul_self]
   simpa [Complex.re_sum] using congrArg Complex.re h
 
+theorem inner_self_eq_sum_prob_complex {n : ℕ} (s : Vector n) :
+    (s† ⬝ s) 0 0 = ((∑ i : Fin n, prob s i : ℝ) : ℂ) := by
+  apply Complex.ext
+  · rw [sum_prob]
+    simp
+  · simp [Matrix.mul, Matrix.adjoint, prob, _root_.Matrix.mul_apply,
+      Complex.normSq_eq_conj_mul_self]
+
 theorem sum_prob_of_isNormalized {n : ℕ} {s : Vector n} (hs : Vector.IsNormalized s) :
     (∑ i : Fin n, prob s i) = 1 := by
   rw [sum_prob]
@@ -162,6 +170,50 @@ theorem proj_mul_proj {n : ℕ} (i j : Fin n) :
   · subst j
     simp
   · simp [h, proj_mul_proj_ne h]
+
+theorem postMeasure_apply_ne {n : ℕ} (s : Vector n) {i j : Fin n} (h : j ≠ i) :
+    postMeasure s i j 0 = 0 := by
+  simp [postMeasure, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, Vector.basis, h,
+    _root_.Matrix.mul_apply]
+
+@[simp]
+theorem postMeasure_basis_self {n : ℕ} (i : Fin n) :
+    postMeasure (Vector.basis i) i = Vector.basis i := by
+  ext j k
+  fin_cases k
+  by_cases h : j = i
+  · subst j
+    simp [postMeasure, prob, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, Vector.basis,
+      _root_.Matrix.mul_apply]
+  · simp [postMeasure_apply_ne (Vector.basis i) h, Vector.basis_apply_ne h]
+
+@[simp]
+theorem prob_postMeasure_self {n : ℕ} (s : Vector n) (i : Fin n)
+    (h : prob s i ≠ 0) : prob (postMeasure s i) i = 1 := by
+  simp [postMeasure, prob, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, Vector.basis,
+    _root_.Matrix.mul_apply]
+  let x := Complex.normSq (s i 0)
+  have hxnonneg : 0 ≤ x := Complex.normSq_nonneg _
+  have hxpos : 0 < x := lt_of_le_of_ne hxnonneg (by simpa [x, prob] using h.symm)
+  have hsqrt : Real.sqrt x ≠ 0 := ne_of_gt (Real.sqrt_pos_of_pos hxpos)
+  change (Real.sqrt x)⁻¹ * (Real.sqrt x)⁻¹ * x = 1
+  calc
+    (Real.sqrt x)⁻¹ * (Real.sqrt x)⁻¹ * x =
+        (Real.sqrt x)⁻¹ * (Real.sqrt x)⁻¹ * (Real.sqrt x * Real.sqrt x) := by
+      congr 1
+      exact (Real.sq_sqrt hxnonneg).symm.trans (by rw [sq])
+    _ = 1 := by
+      field_simp [hsqrt]
+
+theorem prob_postMeasure_eq_basis {n : ℕ} (s : Vector n) (i : Fin n)
+    (h : prob s i ≠ 0) : prob (postMeasure s i) = prob (Vector.basis i) := by
+  funext j
+  by_cases hij : j = i
+  · subst j
+    rw [prob_postMeasure_self s i h]
+    simp [prob]
+  · rw [prob_basis_ne hij]
+    simp [prob, postMeasure_apply_ne s hij]
 
 @[simp]
 theorem sum_proj (n : ℕ) : (∑ i : Fin n, proj i) = I n := by

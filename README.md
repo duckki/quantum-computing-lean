@@ -49,3 +49,11 @@ lake build
 - `Quantum/Circuit/Examples.lean`: standard unitary circuits and the Bell-state
   preparation example.
 - `Quantum.lean`: top-level import module.
+
+## Lean 3 Porting Notes
+
+The Lean 4 branch is a redesign rather than a line-by-line translation of the
+Lean 3 `master` branch. See
+[docs/porting-from-lean3.md](docs/porting-from-lean3.md) for the current
+coverage matrix, intentionally unported Lean 3 infrastructure, and remaining
+candidate work.

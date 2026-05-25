@@ -39,11 +39,65 @@ theorem generalizedProb_eq_sum_prob {n outcomes : ℕ} (M : Fin outcomes → Squ
     simp [Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_assoc]
   simp [generalizedProb, h]
 
+theorem generalizedProb_eq_trace_effect_proj {n outcomes : ℕ}
+    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes) :
+    generalizedProb M s m = (Tr((M m)† ⬝ M m ⬝ Matrix.proj s)).re := by
+  unfold generalizedProb Matrix.proj
+  congr 1
+  rw [show s† ⬝ ((M m)† ⬝ M m) ⬝ s =
+      s† ⬝ (((M m)† ⬝ M m) ⬝ s) by
+    simp [Matrix.mul, _root_.Matrix.mul_assoc]]
+  rw [← Matrix.trace_outer_eq_inner (((M m)† ⬝ M m) ⬝ s) s]
+  simp [Matrix.mul, _root_.Matrix.mul_assoc]
+
+theorem generalizedProb_eq_trace_state_proj {n outcomes : ℕ}
+    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes) :
+    generalizedProb M s m = (Tr(M m ⬝ Matrix.proj s ⬝ (M m)†)).re := by
+  rw [generalizedProb_eq_trace_effect_proj]
+  congr 1
+  rw [Matrix.trace_mul_comm (M m ⬝ Matrix.proj s) ((M m)†)]
+  simp [Matrix.mul, _root_.Matrix.mul_assoc]
+
 theorem generalizedProb_nonneg {n outcomes : ℕ} (M : Fin outcomes → Square n)
     (s : Vector n) (m : Fin outcomes) :
     0 ≤ generalizedProb M s m := by
   rw [generalizedProb_eq_sum_prob]
   exact Finset.sum_nonneg fun i _ => prob_nonneg _ _
+
+theorem generalizedPostMeasure_isNormalized {n outcomes : ℕ}
+    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes)
+    (h : generalizedProb M s m ≠ 0) :
+    Vector.IsNormalized (generalizedPostMeasure M s m) := by
+  let v : Vector n := M m ⬝ s
+  let p : ℝ := generalizedProb M s m
+  have hpnonneg : 0 ≤ p := by
+    simpa [p] using generalizedProb_nonneg M s m
+  have hppos : 0 < p := lt_of_le_of_ne hpnonneg (by simpa [p] using h.symm)
+  have hsqrt : Real.sqrt p ≠ 0 := ne_of_gt (Real.sqrt_pos_of_pos hppos)
+  have hv : (v† ⬝ v) 0 0 = (p : ℂ) := by
+    rw [inner_self_eq_sum_prob_complex]
+    rw [← generalizedProb_eq_sum_prob]
+  rw [Vector.IsNormalized]
+  ext i j
+  fin_cases i
+  fin_cases j
+  change ((generalizedPostMeasure M s m)† ⬝ generalizedPostMeasure M s m) 0 0 =
+    (1 : Square 1) 0 0
+  simp only [_root_.Matrix.one_apply_eq]
+  have hscale : ((generalizedPostMeasure M s m)† ⬝ generalizedPostMeasure M s m) 0 0 =
+      (((Real.sqrt p)⁻¹ : ℂ) * ((Real.sqrt p)⁻¹ : ℂ)) * ((v† ⬝ v) 0 0) := by
+    simp [generalizedPostMeasure, v, p, Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_apply,
+      Finset.mul_sum, mul_assoc, mul_left_comm, mul_comm]
+  rw [hscale, hv]
+  norm_cast
+  change (Real.sqrt p)⁻¹ * (Real.sqrt p)⁻¹ * p = 1
+  calc
+    (Real.sqrt p)⁻¹ * (Real.sqrt p)⁻¹ * p =
+        (Real.sqrt p)⁻¹ * (Real.sqrt p)⁻¹ * (Real.sqrt p * Real.sqrt p) := by
+      congr 1
+      exact (Real.sq_sqrt hpnonneg).symm.trans (by rw [sq])
+    _ = 1 := by
+      field_simp [hsqrt]
 
 theorem sum_generalizedProb {n outcomes : ℕ} (M : Fin outcomes → Square n) (s : Vector n) :
     (∑ m : Fin outcomes, generalizedProb M s m) =
@@ -124,6 +178,11 @@ theorem sum_prob_of_isNormalized (M : Generalized n outcomes)
     {s : Vector n} (hs : Vector.IsNormalized s) :
     (∑ m : Fin outcomes, M.prob s m) = 1 := by
   simpa [prob] using sum_generalizedProb_of_isComplete M.isComplete hs
+
+theorem postMeasure_isNormalized (M : Generalized n outcomes)
+    (s : Vector n) (m : Fin outcomes) (h : M.prob s m ≠ 0) :
+    Vector.IsNormalized (M.postMeasure s m) := by
+  exact generalizedPostMeasure_isNormalized M.operator s m h
 
 theorem sum_pureProb (M : Generalized n outcomes) (ψ : PureState n) :
     (∑ m : Fin outcomes, M.pureProb ψ m) = 1 := by
