@@ -1,6 +1,3 @@
-import QuantumComputing.Circuit
-import QuantumComputing.Circuit.Examples
-import QuantumComputing.Circuit.Register
 import QuantumComputing.Gates
 import QuantumComputing.Matrix
 import QuantumComputing.Measurement

@@ -20,7 +20,6 @@ provides the infrastructure, and leaves obsolete proof automation behind.
 | `src/measurement.lean` | `QuantumComputing/Measurement/Generalized.lean`, `QuantumComputing/Measurement/Projective.lean`, `QuantumComputing/Measurement/Computational.lean` | Mostly ported | Generalized/projective probabilities, post-measurement states, trace-form probability lemmas, post-measurement normalization, and projective-to-computational simulation facts are present in Lean 4 style. |
 | `src/theorems/random-number-generator.lean` | `QuantumComputing/Theorems/RandomNumberGenerator.lean` | Ported and improved | Anonymous examples are now named theorems. |
 | `src/theorems/no-cloning.lean` | `QuantumComputing/Theorems/NoCloning.lean` | Main results ported | `no_cloning_1`, `no_cloning_2`, and `no_cloning_3` are present. `no_cloning_3_alt` is intentionally skipped for now; see below. |
-| Circuit layer | `QuantumComputing/Circuit*.lean` | New Lean 4 API | Typed circuit syntax and unitary circuit wrappers are new and have no Lean 3 counterpart. |
 
 ## Intentional Non-Ports
 

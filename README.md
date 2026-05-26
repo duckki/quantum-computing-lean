@@ -70,7 +70,6 @@ import QuantumComputing.Theorems.NoCloning
 - Named one- and two-qubit states, gates, and projectors, with verified gate
   actions and standard decomposition identities.
 - Computational, generalized, projective, and partial-trace measurement APIs.
-- Typed circuit syntax with denotational semantics and unitary circuit wrappers.
 - Formalized examples including Hadamard-based uniform random-number generation
   and no-cloning theorems.
 
@@ -103,12 +102,6 @@ import QuantumComputing.Theorems.NoCloning
   measurement probability facts.
 - `QuantumComputing/Measurement/Examples.lean`: concrete measurement and partial-trace
   facts for named states.
-- `QuantumComputing/Circuit/Register.lean`: `n`-qubit register aliases and tensoring with
-  the `2 ^ (n + m)` dimension reindexing handled internally.
-- `QuantumComputing/Circuit.lean`: typed circuit syntax, denotational semantics, and
-  unitary circuit composition.
-- `QuantumComputing/Circuit/Examples.lean`: standard unitary circuits and the Bell-state
-  preparation example.
 - `QuantumComputing.lean`: top-level import module.
 
 ## Lean 3 History
