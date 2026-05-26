@@ -3,3 +3,5 @@
 /.DS_Store
 *.olean
 *.ilean
+docs-generated/.lake/
+docs-generated/.cache/

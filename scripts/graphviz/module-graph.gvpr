@@ -1,0 +1,31 @@
+BEG_G {
+  $.rankdir = "TB";
+  $.bgcolor = "white";
+  $.pad = "0.25";
+  $.nodesep = "0.5";
+  $.ranksep = "0.65";
+  $.splines = "ortho";
+  $.outputorder = "edgesfirst";
+}
+
+N {
+  $.shape = "box";
+  $.style = "rounded,filled";
+  $.fillcolor = "#f8fafc";
+  $.color = "#7f8da3";
+  $.fontname = "Helvetica";
+  $.fontsize = "13";
+  $.margin = "0.13,0.08";
+
+  if ($.name == "QuantumComputing") {
+    $.fillcolor = "#eaf2ff";
+    $.color = "#2563eb";
+    $.penwidth = "2";
+  }
+}
+
+E {
+  $.color = "#8a97aa";
+  $.arrowsize = "0.72";
+  $.penwidth = "1.2";
+}
