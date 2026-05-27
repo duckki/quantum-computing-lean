@@ -17,7 +17,8 @@ The nested Lake tooling project lives in `scripts/docbuild`, keeping
 documentation and graph tooling out of the proof library's direct dependency
 surface. Tooling build output and package caches live under
 `docs-generated/.lake`. Generated documentation cache data and intermediate DOT
-files live under `docs-generated/.cache`.
+files live under `docs-generated/.cache`. The browsable `doc-gen4` site under
+`docs-generated/doc-gen/` is generated locally and intentionally left out of git.
 
 ## Setup
 

@@ -5,3 +5,4 @@
 *.ilean
 docs-generated/.lake/
 docs-generated/.cache/
+docs-generated/doc-gen/
