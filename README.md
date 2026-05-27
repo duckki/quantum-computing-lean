@@ -4,7 +4,8 @@ A Lean 4 formalization of basic quantum computing definitions.
 
 It is a Lake/mathlib4 project and starts with a small core API for finite-dimensional
 complex matrices, state vectors, common qubit states and one-, two-, and
-three-qubit gates, projections, and measurement probabilities.
+three-qubit gates, scoped quantum notation, projections, and measurement
+probabilities.
 
 ## Requirements
 
@@ -53,11 +54,25 @@ import QuantumComputing
 #check QuantumComputing.Theorems.NoCloning.no_cloning_1
 ```
 
+Scoped Dirac ket notation and gate aliases are available as an opt-in surface:
+
+```lean
+import QuantumComputing
+
+open scoped QuantumComputing
+
+#check |+⟩
+#check |0^3⟩
+#check QuantumComputing.CX
+#check QuantumComputing.CCX
+```
+
 You can also import focused modules when working on a smaller part of the
 library:
 
 ```lean
 import QuantumComputing.Gates
+import QuantumComputing.Notation
 import QuantumComputing.Measurement
 import QuantumComputing.Theorems.NoCloning
 ```
@@ -69,6 +84,7 @@ import QuantumComputing.Theorems.NoCloning
   unitarity facts.
 - Named one- and two-qubit states, one-, two-, and three-qubit gates, and
   projectors, with verified gate actions and standard decomposition identities.
+- Scoped Dirac ket notation and common gate aliases.
 - Computational, generalized, projective, and partial-trace measurement APIs.
 - Formalized examples including Hadamard-based uniform random-number generation
   and no-cloning theorems.
@@ -89,6 +105,8 @@ import QuantumComputing.Theorems.NoCloning
   named gates.
 - `QuantumComputing/Gates/Actions.lean`: gate actions on named states.
 - `QuantumComputing/Gates/Decompositions.lean`: standard gate decomposition identities.
+- `QuantumComputing/Notation.lean`: scoped Dirac ket notation and common gate
+  aliases such as `CX`, `CCX`, and `CCNOT`.
 - `QuantumComputing/State.lean`: pure-state and density-matrix wrappers, including
   mathlib-backed positive semidefiniteness for density matrices.
 - `QuantumComputing/Measurement.lean`: public measurement API.

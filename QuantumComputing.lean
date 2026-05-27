@@ -8,6 +8,7 @@ import QuantumComputing.Measurement.Projective
 import QuantumComputing.Measurement.Examples
 import QuantumComputing.State
 import QuantumComputing.States
+import QuantumComputing.Notation
 import QuantumComputing.Theorems
 
 /-!
