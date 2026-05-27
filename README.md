@@ -77,6 +77,34 @@ import QuantumComputing.Measurement
 import QuantumComputing.Theorems.NoCloning
 ```
 
+## Editor Notes
+
+VS Code's Lean extension treats `⟨` and `⟩` as bracket pairs. Dirac ket notation
+such as `|+⟩` intentionally has a closing `⟩` without a matching `⟨`, so VS Code
+may color the `⟩` as an unmatched bracket even though Lean accepts the file.
+
+To avoid that false editor warning, override Lean's workspace bracket list and
+omit the `["⟨", "⟩"]` pair. A compact `.vscode/settings.json` workaround is:
+
+```json
+{
+  "[lean4]": {
+    "editor.language.brackets": [
+      ["(", ")"],
+      ["`(", ")"],
+      ["``(", ")"],
+      ["[", "]"],
+      ["#[", "]"],
+      ["@[", "]"],
+      ["%[", "]"],
+      ["{", "}"]
+    ]
+  }
+}
+```
+
+Reload the VS Code window after changing this setting.
+
 ## Highlights
 
 - Finite-dimensional complex matrix and vector API, including adjoint,

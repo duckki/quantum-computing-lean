@@ -1,4 +1,4 @@
-import QuantumComputing.Gates
+import QuantumComputing.Notation
 
 /-!
 # No-Cloning Theorems
@@ -9,6 +9,8 @@ families of pure states.
 
 namespace QuantumComputing
 
+open scoped QuantumComputing
+
 namespace Theorems.NoCloning
 
 theorem invSqrt2_ne_one_half : invSqrt2 ≠ (1 / 2 : ℂ) := by
@@ -17,28 +19,28 @@ theorem invSqrt2_ne_one_half : invSqrt2 ≠ (1 / 2 : ℂ) := by
   norm_num at hnorm
 
 private theorem ket0_inner_ketPlus :
-    (ket0† ⬝ ketPlus) 0 0 = invSqrt2 := by
+    ((|0⟩)† ⬝ |+⟩) 0 0 = invSqrt2 := by
   norm_num [Matrix.mul, Matrix.adjoint, ket0, ketPlus, Vector.basis,
     _root_.Matrix.mul_apply, Fin.sum_univ_two]
 
-private theorem ketZeros_isNormalized (n : ℕ) : Vector.IsNormalized (ketZeros n) := by
+private theorem ketZeros_isNormalized (n : ℕ) : Vector.IsNormalized |0^n⟩ := by
   simpa [ketZeros] using
     (Vector.basis_isNormalized (⟨0, by simp⟩ : Fin (2 ^ n)))
 
 private theorem ketZeros_inner_invSqrt2_smul (n : ℕ) :
-    ((ketZeros n)† ⬝ (invSqrt2 • ketZeros n)) 0 0 = invSqrt2 := by
-  have hunit : (ketZeros n)† ⬝ ketZeros n = (1 : Square 1) := by
+    ((|0^n⟩)† ⬝ (invSqrt2 • |0^n⟩)) 0 0 = invSqrt2 := by
+  have hunit : (|0^n⟩)† ⬝ |0^n⟩ = (1 : Square 1) := by
     simpa [Vector.IsNormalized] using ketZeros_isNormalized n
   calc
-    ((ketZeros n)† ⬝ (invSqrt2 • ketZeros n)) 0 0 =
-        (invSqrt2 • ((ketZeros n)† ⬝ ketZeros n)) 0 0 := by
+    ((|0^n⟩)† ⬝ (invSqrt2 • |0^n⟩)) 0 0 =
+        (invSqrt2 • ((|0^n⟩)† ⬝ |0^n⟩)) 0 0 := by
       simp [Matrix.mul]
     _ = invSqrt2 := by
       rw [hunit]
       simp
 
 private theorem ketPlus_eq_superposition :
-    ketPlus = invSqrt2 • ket0 + invSqrt2 • ket1 := by
+    |+⟩ = invSqrt2 • |0⟩ + invSqrt2 • |1⟩ := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [ketPlus, ket0, ket1, Vector.basis]
@@ -101,13 +103,13 @@ theorem no_cloning_of_inner_eq_invSqrt2 {d : ℕ} {x y blank : Vector d}
 /-- No unitary one-qubit gate with one blank ancilla can clone every qubit state. -/
 theorem no_cloning_1 :
     ¬ (∃ U : Square 4,
-      Matrix.isUnitary U ∧ ∀ s : Vector 2, U ⬝ (s ⊗ ket0) = s ⊗ s) := by
+      Matrix.isUnitary U ∧ ∀ s : Vector 2, U ⬝ (s ⊗ |0⟩) = s ⊗ s) := by
   exact no_cloning_of_inner_eq_invSqrt2 ket0_isNormalized ket0_inner_ketPlus
 
 /-- No unitary `n`-qubit gate with an all-zero blank register can clone every state vector. -/
 theorem no_cloning_2 (n : ℕ) :
     ¬ (∃ U : Square (2 ^ n * 2 ^ n),
-      Matrix.isUnitary U ∧ ∀ s : Vector (2 ^ n), U ⬝ (s ⊗ ketZeros n) = s ⊗ s) := by
+      Matrix.isUnitary U ∧ ∀ s : Vector (2 ^ n), U ⬝ (s ⊗ |0^n⟩) = s ⊗ s) := by
   exact no_cloning_of_inner_eq_invSqrt2 (ketZeros_isNormalized n)
     (ketZeros_inner_invSqrt2_smul n)
 
@@ -122,54 +124,54 @@ theorem no_cloning_3 (n : ℕ) :
     ¬ (∃ (U : Square (2 * (2 * 2 ^ n))) (f : Vector 2 → Vector (2 ^ n)),
       Matrix.isUnitary U ∧
         ∀ s : Vector 2, Vector.IsNormalized s →
-          U ⬝ (s ⊗ (ket0 ⊗ ketZeros n)) = s ⊗ (s ⊗ f s)) := by
+          U ⬝ (s ⊗ (|0⟩ ⊗ |0^n⟩)) = s ⊗ (s ⊗ f s)) := by
   rintro ⟨U, f, hU, hclone⟩
-  let blank : Vector (2 * 2 ^ n) := ket0 ⊗ ketZeros n
+  let blank : Vector (2 * 2 ^ n) := |0⟩ ⊗ |0^n⟩
   have hblank : Vector.IsNormalized blank :=
     Vector.isNormalized_kron ket0_isNormalized (ketZeros_isNormalized n)
   have hlinear :
-      U ⬝ (ketPlus ⊗ blank) =
-        invSqrt2 • (U ⬝ (ket0 ⊗ blank)) +
-          invSqrt2 • (U ⬝ (ket1 ⊗ blank)) := by
+      U ⬝ (|+⟩ ⊗ blank) =
+        invSqrt2 • (U ⬝ (|0⟩ ⊗ blank)) +
+          invSqrt2 • (U ⬝ (|1⟩ ⊗ blank)) := by
     calc
-      U ⬝ (ketPlus ⊗ blank) =
-          U ⬝ (((invSqrt2 • ket0) + (invSqrt2 • ket1)) ⊗ blank) := by
+      U ⬝ (|+⟩ ⊗ blank) =
+          U ⬝ (((invSqrt2 • |0⟩) + (invSqrt2 • |1⟩)) ⊗ blank) := by
         rw [ketPlus_eq_superposition]
-      _ = U ⬝ (invSqrt2 • (ket0 ⊗ blank) + invSqrt2 • (ket1 ⊗ blank)) := by
+      _ = U ⬝ (invSqrt2 • (|0⟩ ⊗ blank) + invSqrt2 • (|1⟩ ⊗ blank)) := by
         rw [Matrix.kron_add_left, Matrix.kron_smul_left, Matrix.kron_smul_left]
-      _ = invSqrt2 • (U ⬝ (ket0 ⊗ blank)) +
-            invSqrt2 • (U ⬝ (ket1 ⊗ blank)) := by
+      _ = invSqrt2 • (U ⬝ (|0⟩ ⊗ blank)) +
+            invSqrt2 • (U ⬝ (|1⟩ ⊗ blank)) := by
         simp [Matrix.mul, _root_.Matrix.mul_add]
   have hstep :
-      ketPlus ⊗ (ketPlus ⊗ f ketPlus) =
-        invSqrt2 • (ket0 ⊗ (ket0 ⊗ f ket0)) +
-          invSqrt2 • (ket1 ⊗ (ket1 ⊗ f ket1)) := by
-    rw [← hclone ketPlus ketPlus_isNormalized]
+      |+⟩ ⊗ (|+⟩ ⊗ f (|+⟩)) =
+        invSqrt2 • (|0⟩ ⊗ (|0⟩ ⊗ f (|0⟩))) +
+          invSqrt2 • (|1⟩ ⊗ (|1⟩ ⊗ f (|1⟩))) := by
+    rw [← hclone |+⟩ ketPlus_isNormalized]
     rw [hlinear]
-    rw [hclone ket0 ket0_isNormalized, hclone ket1 ket1_isNormalized]
-  have hfzero : f ketPlus = 0 := by
+    rw [hclone |0⟩ ket0_isNormalized, hclone |1⟩ ket1_isNormalized]
+  have hfzero : f (|+⟩) = 0 := by
     ext k j
     fin_cases j
     let idx : Fin (2 * (2 * 2 ^ n)) :=
       finProdFinEquiv ((0 : Fin 2), finProdFinEquiv ((1 : Fin 2), k))
     have hentry := congrFun (congrFun hstep idx) 0
-    have hentry₀ : invSqrt2 * (invSqrt2 * f ketPlus k 0) = 0 := by
+    have hentry₀ : invSqrt2 * (invSqrt2 * f (|+⟩) k 0) = 0 := by
       simpa [idx, triple_kron_entry_010, ket0, ket1, ketPlus, Vector.basis] using hentry
-    have hentry' : (1 / 2 : ℂ) * f ketPlus k 0 = 0 := by
+    have hentry' : (1 / 2 : ℂ) * f (|+⟩) k 0 = 0 := by
       rw [← invSqrt2_mul_self]
       simpa only [mul_assoc] using hentry₀
     have hhalf : (1 / 2 : ℂ) ≠ 0 := by norm_num
     exact (mul_eq_zero.mp hentry').resolve_left hhalf
-  have hinput : Vector.IsNormalized (ketPlus ⊗ blank) :=
+  have hinput : Vector.IsNormalized (|+⟩ ⊗ blank) :=
     Vector.isNormalized_kron ketPlus_isNormalized hblank
-  have houtput : Vector.IsNormalized (U ⬝ (ketPlus ⊗ blank)) :=
+  have houtput : Vector.IsNormalized (U ⬝ (|+⟩ ⊗ blank)) :=
     Matrix.isUnitary_mul_isNormalized hU hinput
   have hzeroTensor :
-      ketPlus ⊗ (ketPlus ⊗ (0 : Vector (2 ^ n))) =
+      |+⟩ ⊗ (|+⟩ ⊗ (0 : Vector (2 ^ n))) =
         (0 : Vector (2 * (2 * 2 ^ n))) := by
     rw [Matrix.kron_zero_right]
-    exact Matrix.kron_zero_right ketPlus
-  rw [hclone ketPlus ketPlus_isNormalized, hfzero, hzeroTensor] at houtput
+    exact Matrix.kron_zero_right |+⟩
+  rw [hclone |+⟩ ketPlus_isNormalized, hfzero, hzeroTensor] at houtput
   exact Vector.not_isNormalized_zero (2 * (2 * 2 ^ n)) houtput
 
 end Theorems.NoCloning
