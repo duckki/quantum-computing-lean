@@ -83,10 +83,6 @@ theorem adjoint_mul (A : Matrix m n) (B : Matrix n p) :
     adjoint (mul A B) = mul (adjoint B) (adjoint A) := by
   simp [adjoint, mul]
 
-theorem trace_mul_comm (A : Matrix m n) (B : Matrix n m) :
-    trace (mul A B) = trace (mul B A) := by
-  simpa [trace, mul] using _root_.Matrix.trace_mul_comm A B
-
 @[simp]
 theorem adjoint_zero : adjoint (0 : Matrix m n) = 0 := by
   simp [adjoint]
@@ -130,6 +126,14 @@ theorem trace_smul (a : ℂ) (A : Square n) : trace (a • A) = a * trace A := b
 @[simp]
 theorem trace_zero : trace (0 : Square n) = 0 := by
   simp [trace]
+
+@[simp]
+theorem trace_add (A B : Square n) : trace (A + B) = trace A + trace B := by
+  simp [trace, _root_.Matrix.trace, Finset.sum_add_distrib]
+
+theorem trace_mul_comm (A : Matrix m n) (B : Matrix n m) :
+    trace (mul A B) = trace (mul B A) := by
+  simpa [trace, mul] using _root_.Matrix.trace_mul_comm A B
 
 theorem trace_adjoint (A : Square n) : trace (adjoint A) = star (trace A) := by
   simp [trace, adjoint, _root_.Matrix.trace]

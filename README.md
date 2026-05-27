@@ -3,8 +3,8 @@
 A Lean 4 formalization of basic quantum computing definitions.
 
 It is a Lake/mathlib4 project and starts with a small core API for finite-dimensional
-complex matrices, state vectors, common qubit states and gates, projections, and
-measurement probabilities.
+complex matrices, state vectors, common qubit states and one-, two-, and
+three-qubit gates, projections, and measurement probabilities.
 
 ## Requirements
 
@@ -67,8 +67,8 @@ import QuantumComputing.Theorems.NoCloning
 - Finite-dimensional complex matrix and vector API, including adjoint,
   multiplication, trace, projection, Kronecker product, normalization, and
   unitarity facts.
-- Named one- and two-qubit states, gates, and projectors, with verified gate
-  actions and standard decomposition identities.
+- Named one- and two-qubit states, one-, two-, and three-qubit gates, and
+  projectors, with verified gate actions and standard decomposition identities.
 - Computational, generalized, projective, and partial-trace measurement APIs.
 - Formalized examples including Hadamard-based uniform random-number generation
   and no-cloning theorems.
@@ -81,8 +81,8 @@ import QuantumComputing.Theorems.NoCloning
 - `QuantumComputing/States.lean`: named state vectors such as `ket0`, `ketPlus`, and
   Bell states, plus their basic state-vector facts.
 - `QuantumComputing/Gates.lean`: public gate API.
-- `QuantumComputing/Gates/Basic.lean`: named gates such as `X`, `H`, `CNOT`, `CZ`, and
-  `SWAP`.
+- `QuantumComputing/Gates/Basic.lean`: named gates such as `X`, `H`, `CNOT`, `CZ`,
+  `SWAP`, and `TOFFOLI`.
 - `QuantumComputing/Gates/Projectors.lean`: named projectors such as `P0`, `P1`,
   `PPlus`, and `PMinus`.
 - `QuantumComputing/Gates/Properties.lean`: unitarity, adjoint, and involution facts for

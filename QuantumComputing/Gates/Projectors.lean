@@ -38,6 +38,22 @@ theorem proj_ket1 : Matrix.proj ket1 = P1 := by
       _root_.Matrix.mul_apply, Fin.sum_univ_one]
 
 @[simp]
+theorem proj_ket00 : Matrix.proj ket00 = P0 ⊗ P0 := by
+  simpa [ket0_kron_ket0, proj_ket0] using Matrix.proj_kron ket0 ket0
+
+@[simp]
+theorem proj_ket01 : Matrix.proj ket01 = P0 ⊗ P1 := by
+  simpa [ket0_kron_ket1, proj_ket0, proj_ket1] using Matrix.proj_kron ket0 ket1
+
+@[simp]
+theorem proj_ket10 : Matrix.proj ket10 = P1 ⊗ P0 := by
+  simpa [ket1_kron_ket0, proj_ket0, proj_ket1] using Matrix.proj_kron ket1 ket0
+
+@[simp]
+theorem proj_ket11 : Matrix.proj ket11 = P1 ⊗ P1 := by
+  simpa [ket1_kron_ket1, proj_ket1] using Matrix.proj_kron ket1 ket1
+
+@[simp]
 theorem P0_mul_ket0 : P0 ⬝ ket0 = ket0 := by
   ext i j
   fin_cases i <;> fin_cases j <;>

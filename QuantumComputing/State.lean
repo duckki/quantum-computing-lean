@@ -76,6 +76,31 @@ theorem evolve_pure (U : Square n) (s : Vector n) :
     evolve U (pure s) = pure (U ⬝ s) := by
   simp [evolve, pure, Matrix.proj, Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_assoc]
 
+theorem evolve_isPositive (U : Square n) {ρ : DensityMatrix n}
+    (hρ : isPositive ρ) : isPositive (evolve U ρ) := by
+  simpa [isPositive, evolve, Matrix.mul, Matrix.adjoint] using
+    hρ.mul_mul_conjTranspose_same U
+
+theorem evolve_hasTraceOne_of_isUnitary {U : Square n} (hU : Matrix.isUnitary U)
+    {ρ : DensityMatrix n} (hρ : hasTraceOne ρ) : hasTraceOne (evolve U ρ) := by
+  rw [hasTraceOne]
+  calc
+    Tr(evolve U ρ) = Tr((U ⬝ ρ) ⬝ U†) := rfl
+    _ = Tr(U† ⬝ (U ⬝ ρ)) := by
+      rw [Matrix.trace_mul_comm (U ⬝ ρ) U†]
+    _ = Tr((U† ⬝ U) ⬝ ρ) := by
+      congr 1
+      simp [Matrix.mul, _root_.Matrix.mul_assoc]
+    _ = Tr((I n) ⬝ ρ) := by
+      rw [(Matrix.isUnitary_iff_adjoint_mul_self U).mp hU]
+    _ = Tr(ρ) := by
+      simp [Matrix.mul]
+    _ = 1 := hρ
+
+theorem evolve_isDensity_of_isUnitary {U : Square n} (hU : Matrix.isUnitary U)
+    {ρ : DensityMatrix n} (hρ : isDensity ρ) : isDensity (evolve U ρ) :=
+  ⟨evolve_isPositive U hρ.1, evolve_hasTraceOne_of_isUnitary hU hρ.2⟩
+
 end DensityMatrix
 
 /-- A pure state is a normalized state vector. -/

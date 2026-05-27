@@ -33,6 +33,14 @@ theorem CNOT_isUnitary : Matrix.isUnitary CNOT := by
     norm_num [Matrix.mul, Matrix.adjoint, CNOT, _root_.Matrix.mul_apply, Fin.sum_univ_four] <;>
     decide
 
+theorem TOFFOLI_isUnitary : Matrix.isUnitary TOFFOLI := by
+  rw [Matrix.isUnitary_iff_adjoint_mul_self]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, Matrix.adjoint, TOFFOLI, _root_.Matrix.mul_apply,
+      Fin.sum_univ_eight] <;>
+    decide
+
 theorem CZ_isUnitary : Matrix.isUnitary CZ := by
   rw [Matrix.isUnitary_iff_adjoint_mul_self]
   ext i j
@@ -72,6 +80,12 @@ theorem CNOT_adjoint : CNOT† = CNOT := by
     norm_num [Matrix.adjoint, CNOT]
 
 @[simp]
+theorem TOFFOLI_adjoint : TOFFOLI† = TOFFOLI := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.adjoint, TOFFOLI]
+
+@[simp]
 theorem CZ_adjoint : CZ† = CZ := by
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -106,6 +120,13 @@ theorem CNOT_mul_self : CNOT ⬝ CNOT = I 4 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [Matrix.mul, CNOT, _root_.Matrix.mul_apply, Fin.sum_univ_four] <;> decide
+
+@[simp]
+theorem TOFFOLI_mul_self : TOFFOLI ⬝ TOFFOLI = I 8 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul, TOFFOLI, _root_.Matrix.mul_apply, Fin.sum_univ_eight] <;>
+    decide
 
 @[simp]
 theorem CZ_mul_self : CZ ⬝ CZ = I 4 := by
