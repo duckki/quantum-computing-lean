@@ -54,7 +54,8 @@ import QuantumComputing
 #check QuantumComputing.Theorems.NoCloning.no_cloning_1
 ```
 
-Scoped Dirac ket notation and gate aliases are available as an opt-in surface:
+Scoped Dirac ket notation, scalar notation, and gate aliases are available as an
+opt-in surface:
 
 ```lean
 import QuantumComputing
@@ -63,6 +64,7 @@ open scoped QuantumComputing
 
 #check |+⟩
 #check |0^3⟩
+#check √2⁻¹
 #check QuantumComputing.CX
 #check QuantumComputing.CCX
 ```
@@ -133,8 +135,8 @@ Reload the VS Code window after changing this setting.
   named gates.
 - `QuantumComputing/Gates/Actions.lean`: gate actions on named states.
 - `QuantumComputing/Gates/Decompositions.lean`: standard gate decomposition identities.
-- `QuantumComputing/Notation.lean`: scoped Dirac ket notation and common gate
-  aliases such as `CX`, `CCX`, and `CCNOT`.
+- `QuantumComputing/Notation.lean`: scoped Dirac ket notation, scalar notation
+  such as `√2⁻¹`, and common gate aliases such as `CX`, `CCX`, and `CCNOT`.
 - `QuantumComputing/State.lean`: pure-state and density-matrix wrappers, including
   mathlib-backed positive semidefiniteness for density matrices.
 - `QuantumComputing/Measurement.lean`: public measurement API.

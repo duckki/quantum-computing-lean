@@ -13,13 +13,13 @@ open scoped QuantumComputing
 
 namespace Theorems.NoCloning
 
-theorem invSqrt2_ne_one_half : invSqrt2 ≠ (1 / 2 : ℂ) := by
+theorem invSqrt2_ne_one_half : √2⁻¹ ≠ (1 / 2 : ℂ) := by
   intro h
   have hnorm := congrArg Complex.normSq h
   norm_num at hnorm
 
 private theorem ket0_inner_ketPlus :
-    ((|0⟩)† ⬝ |+⟩) 0 0 = invSqrt2 := by
+    ((|0⟩)† ⬝ |+⟩) 0 0 = √2⁻¹ := by
   norm_num [Matrix.mul, Matrix.adjoint, ket0, ketPlus, Vector.basis,
     _root_.Matrix.mul_apply, Fin.sum_univ_two]
 
@@ -28,19 +28,19 @@ private theorem ketZeros_isNormalized (n : ℕ) : Vector.IsNormalized |0^n⟩ :=
     (Vector.basis_isNormalized (⟨0, by simp⟩ : Fin (2 ^ n)))
 
 private theorem ketZeros_inner_invSqrt2_smul (n : ℕ) :
-    ((|0^n⟩)† ⬝ (invSqrt2 • |0^n⟩)) 0 0 = invSqrt2 := by
+    ((|0^n⟩)† ⬝ (√2⁻¹ • |0^n⟩)) 0 0 = √2⁻¹ := by
   have hunit : (|0^n⟩)† ⬝ |0^n⟩ = (1 : Square 1) := by
     simpa [Vector.IsNormalized] using ketZeros_isNormalized n
   calc
-    ((|0^n⟩)† ⬝ (invSqrt2 • |0^n⟩)) 0 0 =
-        (invSqrt2 • ((|0^n⟩)† ⬝ |0^n⟩)) 0 0 := by
+    ((|0^n⟩)† ⬝ (√2⁻¹ • |0^n⟩)) 0 0 =
+        (√2⁻¹ • ((|0^n⟩)† ⬝ |0^n⟩)) 0 0 := by
       simp [Matrix.mul]
-    _ = invSqrt2 := by
+    _ = √2⁻¹ := by
       rw [hunit]
       simp
 
 private theorem ketPlus_eq_superposition :
-    |+⟩ = invSqrt2 • |0⟩ + invSqrt2 • |1⟩ := by
+    |+⟩ = √2⁻¹ • |0⟩ + √2⁻¹ • |1⟩ := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [ketPlus, ket0, ket1, Vector.basis]
@@ -58,7 +58,7 @@ private theorem triple_kron_entry_010 {n : ℕ} (a b : Vector 2) (c : Vector (2 
   rw [Matrix.kron_apply, Matrix.kron_apply]
 
 theorem no_cloning_of_inner_eq_invSqrt2 {d : ℕ} {x y blank : Vector d}
-    (hblank : Vector.IsNormalized blank) (hxy : (x† ⬝ y) 0 0 = invSqrt2) :
+    (hblank : Vector.IsNormalized blank) (hxy : (x† ⬝ y) 0 0 = √2⁻¹) :
     ¬ (∃ U : Square (d * d),
       Matrix.isUnitary U ∧ ∀ s : Vector d, U ⬝ (s ⊗ blank) = s ⊗ s) := by
   rintro ⟨U, hU, hclone⟩
@@ -92,10 +92,10 @@ theorem no_cloning_of_inner_eq_invSqrt2 {d : ℕ} {x y blank : Vector d}
     rw [Matrix.adjoint_kron, Matrix.kron_mul]
     simp [Matrix.kron, hxy, finProdFinEquiv, Fin.divNat, Fin.modNat, invSqrt2_mul_self]
   have hright :
-      ((x ⊗ blank)† ⬝ (y ⊗ blank)) 0 0 = invSqrt2 := by
+      ((x ⊗ blank)† ⬝ (y ⊗ blank)) 0 0 = √2⁻¹ := by
     rw [Matrix.adjoint_kron, Matrix.kron_mul]
     simp [Matrix.kron, hxy, hblankScalar, finProdFinEquiv, Fin.divNat, Fin.modNat]
-  have hcontra : (1 / 2 : ℂ) = invSqrt2 := by
+  have hcontra : (1 / 2 : ℂ) = √2⁻¹ := by
     rw [hleft, hright] at hscalar
     exact hscalar
   exact invSqrt2_ne_one_half hcontra.symm
@@ -131,21 +131,21 @@ theorem no_cloning_3 (n : ℕ) :
     Vector.isNormalized_kron ket0_isNormalized (ketZeros_isNormalized n)
   have hlinear :
       U ⬝ (|+⟩ ⊗ blank) =
-        invSqrt2 • (U ⬝ (|0⟩ ⊗ blank)) +
-          invSqrt2 • (U ⬝ (|1⟩ ⊗ blank)) := by
+        √2⁻¹ • (U ⬝ (|0⟩ ⊗ blank)) +
+          √2⁻¹ • (U ⬝ (|1⟩ ⊗ blank)) := by
     calc
       U ⬝ (|+⟩ ⊗ blank) =
-          U ⬝ (((invSqrt2 • |0⟩) + (invSqrt2 • |1⟩)) ⊗ blank) := by
+          U ⬝ (((√2⁻¹ • |0⟩) + (√2⁻¹ • |1⟩)) ⊗ blank) := by
         rw [ketPlus_eq_superposition]
-      _ = U ⬝ (invSqrt2 • (|0⟩ ⊗ blank) + invSqrt2 • (|1⟩ ⊗ blank)) := by
+      _ = U ⬝ (√2⁻¹ • (|0⟩ ⊗ blank) + √2⁻¹ • (|1⟩ ⊗ blank)) := by
         rw [Matrix.kron_add_left, Matrix.kron_smul_left, Matrix.kron_smul_left]
-      _ = invSqrt2 • (U ⬝ (|0⟩ ⊗ blank)) +
-            invSqrt2 • (U ⬝ (|1⟩ ⊗ blank)) := by
+      _ = √2⁻¹ • (U ⬝ (|0⟩ ⊗ blank)) +
+            √2⁻¹ • (U ⬝ (|1⟩ ⊗ blank)) := by
         simp [Matrix.mul, _root_.Matrix.mul_add]
   have hstep :
       |+⟩ ⊗ (|+⟩ ⊗ f (|+⟩)) =
-        invSqrt2 • (|0⟩ ⊗ (|0⟩ ⊗ f (|0⟩))) +
-          invSqrt2 • (|1⟩ ⊗ (|1⟩ ⊗ f (|1⟩))) := by
+        √2⁻¹ • (|0⟩ ⊗ (|0⟩ ⊗ f (|0⟩))) +
+          √2⁻¹ • (|1⟩ ⊗ (|1⟩ ⊗ f (|1⟩))) := by
     rw [← hclone |+⟩ ketPlus_isNormalized]
     rw [hlinear]
     rw [hclone |0⟩ ket0_isNormalized, hclone |1⟩ ket1_isNormalized]
@@ -155,7 +155,7 @@ theorem no_cloning_3 (n : ℕ) :
     let idx : Fin (2 * (2 * 2 ^ n)) :=
       finProdFinEquiv ((0 : Fin 2), finProdFinEquiv ((1 : Fin 2), k))
     have hentry := congrFun (congrFun hstep idx) 0
-    have hentry₀ : invSqrt2 * (invSqrt2 * f (|+⟩) k 0) = 0 := by
+    have hentry₀ : √2⁻¹ * (√2⁻¹ * f (|+⟩) k 0) = 0 := by
       simpa [idx, triple_kron_entry_010, ket0, ket1, ketPlus, Vector.basis] using hentry
     have hentry' : (1 / 2 : ℂ) * f (|+⟩) k 0 = 0 := by
       rw [← invSqrt2_mul_self]

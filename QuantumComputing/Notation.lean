@@ -3,13 +3,15 @@ import QuantumComputing.Gates
 /-!
 # Scoped Quantum Notation
 
-Opt-in Dirac ket notation and common gate aliases.
+Opt-in Dirac ket notation, common scalar notation, and common gate aliases.
 
 Use `open scoped QuantumComputing` after importing this module, or after importing
 the top-level `QuantumComputing` module.
 -/
 
 namespace QuantumComputing
+
+scoped[QuantumComputing] notation "√2⁻¹" => invSqrt2
 
 scoped[QuantumComputing] notation "|0⟩" => ket0
 scoped[QuantumComputing] notation "|1⟩" => ket1
@@ -44,5 +46,7 @@ example : |1⟩ = QuantumComputing.ket1 := rfl
 example : |+⟩ = QuantumComputing.ketPlus := rfl
 example : |-⟩ = QuantumComputing.ketMinus := rfl
 example : |Φ+⟩ = QuantumComputing.ketPhiPlus := rfl
+example : √2⁻¹ = QuantumComputing.invSqrt2 := rfl
+example : √2⁻¹ • |0⟩ = QuantumComputing.invSqrt2 • QuantumComputing.ket0 := rfl
 example (n : ℕ) : |0^n⟩ = QuantumComputing.ketZeros n := rfl
 example (n : ℕ) : |0^(n)⟩ = QuantumComputing.ketZeros n := rfl
