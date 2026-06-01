@@ -21,8 +21,7 @@ scoped[QuantumComputing] notation "|01⟩" => ket01
 scoped[QuantumComputing] notation "|10⟩" => ket10
 scoped[QuantumComputing] notation "|11⟩" => ket11
 
-scoped[QuantumComputing] notation "|0^" n "⟩" => ketZeros n
-scoped[QuantumComputing] notation "|0^(" n ")⟩" => ketZeros n
+scoped[QuantumComputing] notation "|0⟩⊗[" n "]" => ketZeros n
 
 scoped[QuantumComputing] notation "|+⟩" => ketPlus
 scoped[QuantumComputing] notation "|-⟩" => ketMinus
@@ -48,5 +47,4 @@ example : |-⟩ = QuantumComputing.ketMinus := rfl
 example : |Φ+⟩ = QuantumComputing.ketPhiPlus := rfl
 example : √2⁻¹ = QuantumComputing.invSqrt2 := rfl
 example : √2⁻¹ • |0⟩ = QuantumComputing.invSqrt2 • QuantumComputing.ket0 := rfl
-example (n : ℕ) : |0^n⟩ = QuantumComputing.ketZeros n := rfl
-example (n : ℕ) : |0^(n)⟩ = QuantumComputing.ketZeros n := rfl
+example (n : ℕ) : |0⟩⊗[n] = QuantumComputing.ketZeros n := rfl

@@ -23,17 +23,17 @@ private theorem ket0_inner_ketPlus :
   norm_num [Matrix.mul, Matrix.adjoint, ket0, ketPlus, Vector.basis,
     _root_.Matrix.mul_apply, Fin.sum_univ_two]
 
-private theorem ketZeros_isNormalized (n : ℕ) : Vector.IsNormalized |0^n⟩ := by
+private theorem ketZeros_isNormalized (n : ℕ) : Vector.IsNormalized (|0⟩⊗[n]) := by
   simpa [ketZeros] using
     (Vector.basis_isNormalized (⟨0, by simp⟩ : Fin (2 ^ n)))
 
 private theorem ketZeros_inner_invSqrt2_smul (n : ℕ) :
-    ((|0^n⟩)† ⬝ (√2⁻¹ • |0^n⟩)) 0 0 = √2⁻¹ := by
-  have hunit : (|0^n⟩)† ⬝ |0^n⟩ = (1 : Square 1) := by
+    ((|0⟩⊗[n])† ⬝ (√2⁻¹ • (|0⟩⊗[n]))) 0 0 = √2⁻¹ := by
+  have hunit : (|0⟩⊗[n])† ⬝ (|0⟩⊗[n]) = (1 : Square 1) := by
     simpa [Vector.IsNormalized] using ketZeros_isNormalized n
   calc
-    ((|0^n⟩)† ⬝ (√2⁻¹ • |0^n⟩)) 0 0 =
-        (√2⁻¹ • ((|0^n⟩)† ⬝ |0^n⟩)) 0 0 := by
+    ((|0⟩⊗[n])† ⬝ (√2⁻¹ • (|0⟩⊗[n]))) 0 0 =
+        (√2⁻¹ • ((|0⟩⊗[n])† ⬝ (|0⟩⊗[n]))) 0 0 := by
       simp [Matrix.mul]
     _ = √2⁻¹ := by
       rw [hunit]
@@ -109,7 +109,7 @@ theorem no_cloning_1 :
 /-- No unitary `n`-qubit gate with an all-zero blank register can clone every state vector. -/
 theorem no_cloning_2 (n : ℕ) :
     ¬ (∃ U : Square (2 ^ n * 2 ^ n),
-      Matrix.isUnitary U ∧ ∀ s : Vector (2 ^ n), U ⬝ (s ⊗ |0^n⟩) = s ⊗ s) := by
+      Matrix.isUnitary U ∧ ∀ s : Vector (2 ^ n), U ⬝ (s ⊗ (|0⟩⊗[n])) = s ⊗ s) := by
   exact no_cloning_of_inner_eq_invSqrt2 (ketZeros_isNormalized n)
     (ketZeros_inner_invSqrt2_smul n)
 
@@ -124,9 +124,9 @@ theorem no_cloning_3 (n : ℕ) :
     ¬ (∃ (U : Square (2 * (2 * 2 ^ n))) (f : Vector 2 → Vector (2 ^ n)),
       Matrix.isUnitary U ∧
         ∀ s : Vector 2, Vector.IsNormalized s →
-          U ⬝ (s ⊗ (|0⟩ ⊗ |0^n⟩)) = s ⊗ (s ⊗ f s)) := by
+          U ⬝ (s ⊗ (|0⟩ ⊗ (|0⟩⊗[n]))) = s ⊗ (s ⊗ f s)) := by
   rintro ⟨U, f, hU, hclone⟩
-  let blank : Vector (2 * 2 ^ n) := |0⟩ ⊗ |0^n⟩
+  let blank : Vector (2 * 2 ^ n) := |0⟩ ⊗ (|0⟩⊗[n])
   have hblank : Vector.IsNormalized blank :=
     Vector.isNormalized_kron ket0_isNormalized (ketZeros_isNormalized n)
   have hlinear :

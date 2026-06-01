@@ -63,7 +63,7 @@ import QuantumComputing
 open scoped QuantumComputing
 
 #check |+⟩
-#check |0^3⟩
+#check |0⟩⊗[3]
 #check √2⁻¹
 #check QuantumComputing.CX
 #check QuantumComputing.CCX
