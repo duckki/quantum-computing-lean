@@ -30,7 +30,7 @@ variable {m n p : ℕ}
 noncomputable abbrev adjoint (A : Matrix m n) : Matrix n m :=
   _root_.Matrix.conjTranspose A
 
-noncomputable def mul (A : Matrix m n) (B : Matrix n p) : Matrix m p :=
+noncomputable abbrev mul (A : Matrix m n) (B : Matrix n p) : Matrix m p :=
   A * B
 
 @[simp]
@@ -229,6 +229,11 @@ theorem kron_mul {q r s : ℕ} (A : Matrix m n) (B : Matrix p q)
   rcases finProdFinEquiv.symm i with ⟨i₁, i₂⟩
   rcases finProdFinEquiv.symm j with ⟨j₁, j₂⟩
   simp [mul, kron, _root_.Matrix.mul_kronecker_mul]
+
+theorem kron_mul_assoc {r s t u : ℕ} (A : Matrix m n) (B : Matrix p q)
+    (C : Matrix n r) (D : Matrix q s) (E : Matrix r t) (F : Matrix s u) :
+    mul (mul (kron A B) (kron C D)) (kron E F) = kron (mul (mul A C) E) (mul (mul B D) F) := by
+  simp [mul_assoc, kron_mul]
 
 @[simp]
 theorem proj_kron (s : Vector m) (t : Vector n) :

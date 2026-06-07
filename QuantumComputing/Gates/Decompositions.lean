@@ -45,7 +45,19 @@ theorem H_Z_H_eq_X : H ⬝ Z ⬝ H = X := by
 
 theorem CNOT_eq_H_CZ_H : CNOT = ((I 2) ⊗ H) ⬝ CZ ⬝ ((I 2) ⊗ H) := by
   rw [CNOT_decompose, CZ_decompose]
-  simp [H_Z_H_eq_X]
+  have h0 : ((I 2) ⊗ H) ⬝ (P0 ⊗ (I 2)) ⬝ ((I 2) ⊗ H) = P0 ⊗ (I 2) := by
+    simpa [H_mul_self] using
+      (Matrix.kron_mul_assoc (I 2) H P0 (I 2) (I 2) H)
+  have h1 : ((I 2) ⊗ H) ⬝ (P1 ⊗ Z) ⬝ ((I 2) ⊗ H) = P1 ⊗ X := by
+    simpa [H_Z_H_eq_X] using
+      (Matrix.kron_mul_assoc (I 2) H P1 Z (I 2) H)
+  calc
+    P0 ⊗ (I 2) + P1 ⊗ X
+        = ((I 2) ⊗ H) ⬝ (P0 ⊗ (I 2)) ⬝ ((I 2) ⊗ H) +
+            ((I 2) ⊗ H) ⬝ (P1 ⊗ Z) ⬝ ((I 2) ⊗ H) := by
+              rw [h0, h1]
+    _ = ((I 2) ⊗ H) ⬝ (P0 ⊗ (I 2) + P1 ⊗ Z) ⬝ ((I 2) ⊗ H) := by
+          simp [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
 
 theorem CZ_symmetry : CZ = SWAP ⬝ CZ ⬝ SWAP := by
   have h : gateControlled Z = SWAP ⬝ CZ ⬝ SWAP := by
