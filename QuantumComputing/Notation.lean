@@ -3,7 +3,8 @@ import QuantumComputing.Gates
 /-!
 # Scoped Quantum Notation
 
-Opt-in Dirac ket notation, common scalar notation, and common gate aliases.
+Opt-in Dirac ket notation, common scalar notation, and the most common gate
+aliases.
 
 Use `open scoped QuantumComputing` after importing this module, or after importing
 the top-level `QuantumComputing` module.

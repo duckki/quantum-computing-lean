@@ -8,5 +8,5 @@ import QuantumComputing.Gates.Decompositions
 # Quantum Gates
 
 Public entry point for named gates, projector gates, gate actions, and standard
-decomposition identities.
+decomposition identities used in the beginner quantum-computing examples.
 -/

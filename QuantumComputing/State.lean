@@ -4,8 +4,8 @@ import QuantumComputing.Matrix
 /-!
 # Quantum States
 
-Pure-state and density-matrix wrappers, with density-matrix evolution and
-well-formedness predicates.
+Pure-state and density-matrix wrappers, with density-matrix evolution,
+well-formedness predicates, and the link between state vectors and mixed states.
 -/
 
 namespace QuantumComputing

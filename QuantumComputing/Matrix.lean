@@ -11,9 +11,9 @@ import Mathlib.Tactic.NormNum
 /-!
 # Complex Matrices
 
-Thin wrappers and helper lemmas for finite-dimensional complex matrices and
-state vectors, including adjoints, traces, Kronecker products, projections,
-and normalized-vector predicates.
+Linear algebra primitives for the quantum development: finite-dimensional
+complex matrices, state vectors, adjoints, traces, Kronecker products,
+projections, and normalized-vector predicates.
 -/
 
 open scoped BigOperators

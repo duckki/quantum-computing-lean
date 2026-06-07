@@ -8,7 +8,7 @@ import QuantumComputing.Matrix
 # Named State Vectors
 
 Common computational-basis, Hadamard-basis, and Bell state vectors, together
-with their normalization facts.
+with their normalization facts and tensor-product identities.
 -/
 
 namespace QuantumComputing

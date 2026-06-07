@@ -7,5 +7,6 @@ import QuantumComputing.Measurement.Projective
 # Quantum Measurement
 
 Public entry point for computational-basis, generalized, projective, and
-partial-trace measurement theory.
+partial-trace measurement theory, plus example theorems that connect the theory
+to simple textbook measurements.
 -/
