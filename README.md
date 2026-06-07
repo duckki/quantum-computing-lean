@@ -9,8 +9,8 @@ probabilities.
 
 ## Highlights
 
-- Finite-dimensional complex matrix and vector helpers such as normalization and unitarity
-  facts.
+- Thin wrappers and helper lemmas over finite-dimensional complex matrices and
+  vectors, including notation, normalization, and unitarity facts.
 - Named one- and two-qubit states, one-, two-, and three-qubit gates, and
   projectors, with verified gate actions and standard decomposition identities.
 - Scoped Dirac ket notation and common gate aliases.
@@ -27,9 +27,9 @@ that follows keeps the individual files easy to scan.
 
 ### Core
 
-- [`QuantumComputing/Matrix.lean`](QuantumComputing/Matrix.lean): finite complex
-  matrix and vector API, adjoints, multiplication, trace, projections, and
-  Kronecker products.
+- [`QuantumComputing/Matrix.lean`](QuantumComputing/Matrix.lean): thin wrappers
+  and helper lemmas over mathlib matrices and vectors, including adjoints,
+  projections, traces, and Kronecker products.
 - [`QuantumComputing/States.lean`](QuantumComputing/States.lean): named qubit
   states, including basis states and Bell states.
 - [`QuantumComputing/State.lean`](QuantumComputing/State.lean): pure-state and
