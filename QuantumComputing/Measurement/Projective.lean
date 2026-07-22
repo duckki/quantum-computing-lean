@@ -76,7 +76,8 @@ theorem projectiveOperators_eq_projectors (n : ℕ) :
 
 theorem projectiveOperators_computationalBasis_isComplete (n : ℕ) :
     IsProjectiveComplete (fun i : Fin n => Vector.basis i) := by
-  simpa [projectiveOperators_eq_projectors] using projectors_isComplete n
+  simpa [IsProjectiveComplete, projectiveOperators_eq_projectors] using
+    projectors_isComplete n
 
 namespace Projective
 

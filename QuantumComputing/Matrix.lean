@@ -234,7 +234,7 @@ theorem kron_mul {q r s : ℕ} (A : Matrix m n) (B : Matrix p q)
 theorem kron_mul_assoc {r s t u : ℕ} (A : Matrix m n) (B : Matrix p q)
     (C : Matrix n r) (D : Matrix q s) (E : Matrix r t) (F : Matrix s u) :
     mul (mul (kron A B) (kron C D)) (kron E F) = kron (mul (mul A C) E) (mul (mul B D) F) := by
-  simp [mul_assoc, kron_mul]
+  simp [kron_mul]
 
 @[simp]
 theorem proj_kron (s : Vector m) (t : Vector n) :
