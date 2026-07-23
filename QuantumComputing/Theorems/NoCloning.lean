@@ -18,8 +18,7 @@ theorem invSqrt2_ne_one_half : √2⁻¹ ≠ (1 / 2 : ℂ) := by
   have hnorm := congrArg Complex.normSq h
   norm_num at hnorm
 
-private theorem ket0_inner_ketPlus :
-    ((|0⟩)† ⬝ |+⟩) 0 0 = √2⁻¹ := by
+private theorem ket0_inner_ketPlus : ((|0⟩)† ⬝ |+⟩) 0 0 = √2⁻¹ := by
   norm_num [Matrix.mul, Matrix.adjoint, ket0, ketPlus, Vector.basis,
     _root_.Matrix.mul_apply, Fin.sum_univ_two]
 
@@ -27,8 +26,8 @@ private theorem ketZeros_isNormalized (n : ℕ) : Vector.IsNormalized (|0⟩⊗[
   simpa [ketZeros] using
     (Vector.basis_isNormalized (⟨0, by simp⟩ : Fin (2 ^ n)))
 
-private theorem ketZeros_inner_invSqrt2_smul (n : ℕ) :
-    ((|0⟩⊗[n])† ⬝ (√2⁻¹ • (|0⟩⊗[n]))) 0 0 = √2⁻¹ := by
+private theorem ketZeros_inner_invSqrt2_smul (n : ℕ)
+    : ((|0⟩⊗[n])† ⬝ (√2⁻¹ • (|0⟩⊗[n]))) 0 0 = √2⁻¹ := by
   have hunit : (|0⟩⊗[n])† ⬝ (|0⟩⊗[n]) = (1 : Square 1) := by
     simpa [Vector.IsNormalized] using ketZeros_isNormalized n
   calc
@@ -39,17 +38,15 @@ private theorem ketZeros_inner_invSqrt2_smul (n : ℕ) :
       rw [hunit]
       simp
 
-private theorem ketPlus_eq_superposition :
-    |+⟩ = √2⁻¹ • |0⟩ + √2⁻¹ • |1⟩ := by
+private theorem ketPlus_eq_superposition : |+⟩ = √2⁻¹ • |0⟩ + √2⁻¹ • |1⟩ := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [ketPlus, ket0, ket1, Vector.basis]
 
 private theorem triple_kron_entry_010 {n : ℕ} (a b : Vector 2) (c : Vector (2 ^ n))
-    (k : Fin (2 ^ n)) :
-    (a ⊗ (b ⊗ c))
-        (finProdFinEquiv ((0 : Fin 2), finProdFinEquiv ((1 : Fin 2), k))) 0 =
-      a 0 0 * (b 1 0 * c k 0) := by
+    (k : Fin (2 ^ n))
+    : (a ⊗ (b ⊗ c)) (finProdFinEquiv ((0 : Fin 2), finProdFinEquiv ((1 : Fin 2), k))) 0
+      = a 0 0 * (b 1 0 * c k 0) := by
   change
     (a ⊗ (b ⊗ c))
         (finProdFinEquiv ((0 : Fin 2), finProdFinEquiv ((1 : Fin 2), k)))
@@ -58,9 +55,9 @@ private theorem triple_kron_entry_010 {n : ℕ} (a b : Vector 2) (c : Vector (2 
   rw [Matrix.kron_apply, Matrix.kron_apply]
 
 theorem no_cloning_of_inner_eq_invSqrt2 {d : ℕ} {x y blank : Vector d}
-    (hblank : Vector.IsNormalized blank) (hxy : (x† ⬝ y) 0 0 = √2⁻¹) :
-    ¬ (∃ U : Square (d * d),
-      Matrix.isUnitary U ∧ ∀ s : Vector d, U ⬝ (s ⊗ blank) = s ⊗ s) := by
+    (hblank : Vector.IsNormalized blank) (hxy : (x† ⬝ y) 0 0 = √2⁻¹)
+    : ¬ (∃ U : Square (d * d),
+          Matrix.isUnitary U ∧ ∀ s : Vector d, U ⬝ (s ⊗ blank) = s ⊗ s) := by
   rintro ⟨U, hU, hclone⟩
   have hUadj : U† ⬝ U = I (d * d) := by
     simpa using (Matrix.isUnitary_iff_adjoint_mul_self U).mp hU
@@ -101,15 +98,14 @@ theorem no_cloning_of_inner_eq_invSqrt2 {d : ℕ} {x y blank : Vector d}
   exact invSqrt2_ne_one_half hcontra.symm
 
 /-- No unitary one-qubit gate with one blank ancilla can clone every qubit state. -/
-theorem no_cloning_1 :
-    ¬ (∃ U : Square 4,
-      Matrix.isUnitary U ∧ ∀ s : Vector 2, U ⬝ (s ⊗ |0⟩) = s ⊗ s) := by
+theorem no_cloning_1
+    : ¬ (∃ U : Square 4, Matrix.isUnitary U ∧ ∀ s : Vector 2, U ⬝ (s ⊗ |0⟩) = s ⊗ s) := by
   exact no_cloning_of_inner_eq_invSqrt2 ket0_isNormalized ket0_inner_ketPlus
 
 /-- No unitary `n`-qubit gate with an all-zero blank register can clone every state vector. -/
-theorem no_cloning_2 (n : ℕ) :
-    ¬ (∃ U : Square (2 ^ n * 2 ^ n),
-      Matrix.isUnitary U ∧ ∀ s : Vector (2 ^ n), U ⬝ (s ⊗ (|0⟩⊗[n])) = s ⊗ s) := by
+theorem no_cloning_2 (n : ℕ)
+    : ¬ (∃ U : Square (2 ^ n * 2 ^ n),
+          Matrix.isUnitary U ∧ ∀ s : Vector (2 ^ n), U ⬝ (s ⊗ (|0⟩⊗[n])) = s ⊗ s) := by
   exact no_cloning_of_inner_eq_invSqrt2 (ketZeros_isNormalized n)
     (ketZeros_inner_invSqrt2_smul n)
 
@@ -120,11 +116,11 @@ extra output in an arbitrary `n`-qubit garbage register.
 The register dimension is written as `2 * (2 * 2 ^ n)` to match the tensor
 shape used by the current API and avoid carrying arithmetic casts.
 -/
-theorem no_cloning_3 (n : ℕ) :
-    ¬ (∃ (U : Square (2 * (2 * 2 ^ n))) (f : Vector 2 → Vector (2 ^ n)),
-      Matrix.isUnitary U ∧
-        ∀ s : Vector 2, Vector.IsNormalized s →
-          U ⬝ (s ⊗ (|0⟩ ⊗ (|0⟩⊗[n]))) = s ⊗ (s ⊗ f s)) := by
+theorem no_cloning_3 (n : ℕ)
+    : ¬ (∃ (U : Square (2 * (2 * 2 ^ n))) (f : Vector 2 → Vector (2 ^ n)),
+          Matrix.isUnitary U
+          ∧ ∀ s : Vector 2,
+              Vector.IsNormalized s → U ⬝ (s ⊗ (|0⟩ ⊗ (|0⟩⊗[n]))) = s ⊗ (s ⊗ f s)) := by
   rintro ⟨U, f, hU, hclone⟩
   let blank : Vector (2 * 2 ^ n) := |0⟩ ⊗ (|0⟩⊗[n])
   have hblank : Vector.IsNormalized blank :=

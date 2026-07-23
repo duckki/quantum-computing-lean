@@ -109,10 +109,15 @@ theorem CNOT_mul_ket11 : CNOT ⬝ ket11 = ket10 := by
     simp [Matrix.mul, CNOT, ket10, ket11, Vector.basis, _root_.Matrix.mul_apply]
 
 @[simp]
-theorem TOFFOLI_mul_basis (i : Fin 8) :
-    TOFFOLI ⬝ Vector.basis i =
-      Vector.basis (if i = (6 : Fin 8) then (7 : Fin 8)
-        else if i = (7 : Fin 8) then (6 : Fin 8) else i) := by
+theorem TOFFOLI_mul_basis (i : Fin 8)
+    : TOFFOLI ⬝ Vector.basis i
+      = Vector.basis
+          ( if i = (6 : Fin 8) then
+              (7 : Fin 8)
+            else if i = (7 : Fin 8) then
+              (6 : Fin 8)
+            else
+              i) := by
   fin_cases i <;>
     ext r c <;>
     fin_cases r <;>

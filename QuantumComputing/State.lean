@@ -55,34 +55,33 @@ theorem pure_isPositive (s : Vector n) : isPositive (pure s) := by
   simpa [isPositive, pure, Matrix.proj, Matrix.mul, Matrix.adjoint] using
     _root_.Matrix.posSemidef_self_mul_conjTranspose (A := s)
 
-theorem trace_pure_of_isNormalized {s : Vector n} (hs : Vector.IsNormalized s) :
-    Tr(pure s) = 1 := by
+theorem trace_pure_of_isNormalized {s : Vector n} (hs : Vector.IsNormalized s)
+    : Tr(pure s) = 1 := by
   simpa [pure] using Matrix.trace_proj_of_isNormalized hs
 
-theorem pure_hasTraceOne_of_isNormalized {s : Vector n} (hs : Vector.IsNormalized s) :
-    hasTraceOne (pure s) := by
+theorem pure_hasTraceOne_of_isNormalized {s : Vector n} (hs : Vector.IsNormalized s)
+    : hasTraceOne (pure s) := by
   exact trace_pure_of_isNormalized hs
 
-theorem pure_isDensity_of_isNormalized {s : Vector n} (hs : Vector.IsNormalized s) :
-    isDensity (pure s) := by
+theorem pure_isDensity_of_isNormalized {s : Vector n} (hs : Vector.IsNormalized s)
+    : isDensity (pure s) := by
   exact ⟨pure_isPositive s, pure_hasTraceOne_of_isNormalized hs⟩
 
 @[simp]
-theorem evolve_apply (U : Square n) (ρ : DensityMatrix n) :
-    evolve U ρ = U ⬝ ρ ⬝ U† :=
+theorem evolve_apply (U : Square n) (ρ : DensityMatrix n) : evolve U ρ = U ⬝ ρ ⬝ U† :=
   rfl
 
-theorem evolve_pure (U : Square n) (s : Vector n) :
-    evolve U (pure s) = pure (U ⬝ s) := by
+theorem evolve_pure (U : Square n) (s : Vector n) : evolve U (pure s) = pure (U ⬝ s) := by
   simp [evolve, pure, Matrix.proj, Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_assoc]
 
-theorem evolve_isPositive (U : Square n) {ρ : DensityMatrix n}
-    (hρ : isPositive ρ) : isPositive (evolve U ρ) := by
+theorem evolve_isPositive (U : Square n) {ρ : DensityMatrix n} (hρ : isPositive ρ)
+    : isPositive (evolve U ρ) := by
   simpa [isPositive, evolve, Matrix.mul, Matrix.adjoint] using
     hρ.mul_mul_conjTranspose_same U
 
 theorem evolve_hasTraceOne_of_isUnitary {U : Square n} (hU : Matrix.isUnitary U)
-    {ρ : DensityMatrix n} (hρ : hasTraceOne ρ) : hasTraceOne (evolve U ρ) := by
+    {ρ : DensityMatrix n} (hρ : hasTraceOne ρ)
+    : hasTraceOne (evolve U ρ) := by
   rw [hasTraceOne]
   calc
     Tr(evolve U ρ) = Tr((U ⬝ ρ) ⬝ U†) := rfl
@@ -98,7 +97,8 @@ theorem evolve_hasTraceOne_of_isUnitary {U : Square n} (hU : Matrix.isUnitary U)
     _ = 1 := hρ
 
 theorem evolve_isDensity_of_isUnitary {U : Square n} (hU : Matrix.isUnitary U)
-    {ρ : DensityMatrix n} (hρ : isDensity ρ) : isDensity (evolve U ρ) :=
+    {ρ : DensityMatrix n} (hρ : isDensity ρ)
+    : isDensity (evolve U ρ) :=
   ⟨evolve_isPositive U hρ.1, evolve_hasTraceOne_of_isUnitary hU hρ.2⟩
 
 end DensityMatrix
@@ -116,32 +116,31 @@ instance : Coe (PureState n) (Vector n) where
   coe ψ := ψ.vector
 
 @[simp]
-theorem coe_mk (s : Vector n) (hs : Vector.IsNormalized s) :
-    ((PureState.mk s hs : PureState n) : Vector n) = s :=
+theorem coe_mk (s : Vector n) (hs : Vector.IsNormalized s)
+    : ((PureState.mk s hs : PureState n) : Vector n) = s :=
   rfl
 
 /-- The density matrix associated to a pure state. -/
 noncomputable def density (ψ : PureState n) : DensityMatrix n :=
   DensityMatrix.pure ψ.vector
 
-theorem density_isDensity (ψ : PureState n) :
-    DensityMatrix.isDensity ψ.density :=
+theorem density_isDensity (ψ : PureState n) : DensityMatrix.isDensity ψ.density :=
   DensityMatrix.pure_isDensity_of_isNormalized ψ.isNormalized
 
 /-- Evolve a pure state by a unitary gate. -/
-noncomputable def evolve (U : Square n) (hU : Matrix.isUnitary U) (ψ : PureState n) :
-    PureState n where
+noncomputable def evolve (U : Square n) (hU : Matrix.isUnitary U) (ψ : PureState n)
+    : PureState n where
   vector := U ⬝ ψ.vector
   isNormalized := Matrix.isUnitary_mul_isNormalized hU ψ.isNormalized
 
 @[simp]
-theorem evolve_vector (U : Square n) (hU : Matrix.isUnitary U) (ψ : PureState n) :
-    (evolve U hU ψ).vector = U ⬝ ψ.vector :=
+theorem evolve_vector (U : Square n) (hU : Matrix.isUnitary U) (ψ : PureState n)
+    : (evolve U hU ψ).vector = U ⬝ ψ.vector :=
   rfl
 
 @[simp]
-theorem density_evolve (U : Square n) (hU : Matrix.isUnitary U) (ψ : PureState n) :
-    (evolve U hU ψ).density = DensityMatrix.evolve U ψ.density := by
+theorem density_evolve (U : Square n) (hU : Matrix.isUnitary U) (ψ : PureState n)
+    : (evolve U hU ψ).density = DensityMatrix.evolve U ψ.density := by
   simpa [density] using (DensityMatrix.evolve_pure U ψ.vector).symm
 
 end PureState

@@ -30,45 +30,45 @@ def prob {n : ℕ} (s : Vector n) (i : Fin n) : ℝ :=
 noncomputable def postMeasure {n : ℕ} (s : Vector n) (i : Fin n) : Vector n :=
   ((1 / Real.sqrt (prob s i) : ℝ) : ℂ) • (proj i ⬝ s)
 
-theorem proj_def {n : ℕ} (i : Fin n) :
-    proj i = Matrix.proj (Vector.basis i) :=
+theorem proj_def {n : ℕ} (i : Fin n) : proj i = Matrix.proj (Vector.basis i) :=
   rfl
 
 @[simp]
 theorem prob_basis_self {n : ℕ} (i : Fin n) : prob (Vector.basis i) i = 1 := by
   simp [prob]
 
-theorem prob_basis_ne {n : ℕ} {i j : Fin n} (h : j ≠ i) :
-    prob (Vector.basis i) j = 0 := by
+theorem prob_basis_ne {n : ℕ} {i j : Fin n} (h : j ≠ i)
+    : prob (Vector.basis i) j = 0 := by
   simp [prob, Vector.basis_apply_ne h]
 
 theorem prob_nonneg {n : ℕ} (s : Vector n) (i : Fin n) : 0 ≤ prob s i :=
   Complex.normSq_nonneg _
 
-theorem sum_prob {n : ℕ} (s : Vector n) :
-    (∑ i : Fin n, prob s i) = ((s† ⬝ s) 0 0).re := by
+theorem sum_prob {n : ℕ} (s : Vector n)
+    : (∑ i : Fin n, prob s i) = ((s† ⬝ s) 0 0).re := by
   have h : (∑ i : Fin n, ((prob s i : ℝ) : ℂ)) = (s† ⬝ s) 0 0 := by
     simp [prob, Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_apply,
       Complex.normSq_eq_conj_mul_self]
   simpa [Complex.re_sum] using congrArg Complex.re h
 
-theorem inner_self_eq_sum_prob_complex {n : ℕ} (s : Vector n) :
-    (s† ⬝ s) 0 0 = ((∑ i : Fin n, prob s i : ℝ) : ℂ) := by
+theorem inner_self_eq_sum_prob_complex {n : ℕ} (s : Vector n)
+    : (s† ⬝ s) 0 0 = ((∑ i : Fin n, prob s i : ℝ) : ℂ) := by
   apply Complex.ext
   · rw [sum_prob]
     simp
   · simp [Matrix.mul, Matrix.adjoint, prob, _root_.Matrix.mul_apply,
       Complex.normSq_eq_conj_mul_self]
 
-theorem sum_prob_of_isNormalized {n : ℕ} {s : Vector n} (hs : Vector.IsNormalized s) :
-    (∑ i : Fin n, prob s i) = 1 := by
+theorem sum_prob_of_isNormalized {n : ℕ} {s : Vector n} (hs : Vector.IsNormalized s)
+    : (∑ i : Fin n, prob s i) = 1 := by
   rw [sum_prob]
   have hroot : s† ⬝ s = 1 := by simpa [Vector.IsNormalized] using hs
   rw [hroot]
   norm_num
 
-theorem exists_prob_ne_zero_of_isNormalized {n : ℕ} {s : Vector n} (hs : Vector.IsNormalized s) :
-    ∃ i, prob s i ≠ 0 := by
+theorem exists_prob_ne_zero_of_isNormalized {n : ℕ} {s : Vector n}
+    (hs : Vector.IsNormalized s)
+    : ∃ i, prob s i ≠ 0 := by
   by_contra h
   have hzero : ∀ i, prob s i = 0 := by
     intro i
@@ -80,9 +80,8 @@ theorem exists_prob_ne_zero_of_isNormalized {n : ℕ} {s : Vector n} (hs : Vecto
   rw [hsum_zero] at hsum_one
   norm_num at hsum_one
 
-theorem prob_kron_apply {n m : ℕ} (s : Vector n) (t : Vector m)
-    (i : Fin n) (j : Fin m) :
-    prob (s ⊗ t) (finProdFinEquiv (i, j)) = prob s i * prob t j := by
+theorem prob_kron_apply {n m : ℕ} (s : Vector n) (t : Vector m) (i : Fin n) (j : Fin m)
+    : prob (s ⊗ t) (finProdFinEquiv (i, j)) = prob s i * prob t j := by
   have hleft : (finProdFinEquiv.symm (0 : Fin (1 * 1))).1 = (0 : Fin 1) :=
     Subsingleton.elim _ _
   have hright : (finProdFinEquiv.symm (0 : Fin (1 * 1))).2 = (0 : Fin 1) :=
@@ -90,8 +89,8 @@ theorem prob_kron_apply {n m : ℕ} (s : Vector n) (t : Vector m)
   simp [prob, Matrix.kron, Complex.normSq_mul, hleft, hright]
 
 theorem prob_kron_cancel_right {n m : ℕ} {s t : Vector n} {u : Vector m}
-    (h : prob (s ⊗ u) = prob (t ⊗ u)) (hu : Vector.IsNormalized u) :
-    prob s = prob t := by
+    (h : prob (s ⊗ u) = prob (t ⊗ u)) (hu : Vector.IsNormalized u)
+    : prob s = prob t := by
   funext i
   obtain ⟨j, hj⟩ := exists_prob_ne_zero_of_isNormalized hu
   have hprob := congrFun h (finProdFinEquiv (i, j))
@@ -99,8 +98,8 @@ theorem prob_kron_cancel_right {n m : ℕ} {s t : Vector n} {u : Vector m}
   exact mul_right_cancel₀ hj hprob
 
 theorem prob_kron_cancel_left {n m : ℕ} {s t : Vector n} {u : Vector m}
-    (h : prob (u ⊗ s) = prob (u ⊗ t)) (hu : Vector.IsNormalized u) :
-    prob s = prob t := by
+    (h : prob (u ⊗ s) = prob (u ⊗ t)) (hu : Vector.IsNormalized u)
+    : prob s = prob t := by
   funext i
   obtain ⟨j, hj⟩ := exists_prob_ne_zero_of_isNormalized hu
   have hprob := congrFun h (finProdFinEquiv (j, i))
@@ -108,8 +107,8 @@ theorem prob_kron_cancel_left {n m : ℕ} {s t : Vector n} {u : Vector m}
   exact mul_left_cancel₀ hj hprob
 
 theorem prob_add_of_pointwise_orthogonal {n : ℕ} {s t : Vector n}
-    (h : ∀ i, star (s i 0) * t i 0 = 0) :
-    prob (s + t) = fun i => prob s i + prob t i := by
+    (h : ∀ i, star (s i 0) * t i 0 = 0)
+    : prob (s + t) = fun i => prob s i + prob t i := by
   funext i
   have hinner : (star (s i 0) * t i 0).re = 0 := by
     simpa using congrArg Complex.re (h i)
@@ -133,19 +132,17 @@ theorem prob_ketMinus_zero : prob ketMinus 0 = (1 / 2 : ℝ) := by
 theorem prob_ketMinus_one : prob ketMinus 1 = (1 / 2 : ℝ) := by
   simp [prob, ketMinus, Complex.normSq_neg]
 
-theorem quadratic_proj {n : ℕ} (s : Vector n) (i : Fin n) :
-    ((s† ⬝ proj i ⬝ s) 0 0).re = Complex.normSq (s i 0) := by
+theorem quadratic_proj {n : ℕ} (s : Vector n) (i : Fin n)
+    : ((s† ⬝ proj i ⬝ s) 0 0).re = Complex.normSq (s i 0) := by
   simp [proj, Matrix.proj, Matrix.mul, Matrix.adjoint, Vector.basis,
     _root_.Matrix.mul_apply, Complex.normSq]
 
 @[simp]
-theorem adjoint_proj {n : ℕ} (i : Fin n) :
-    (proj i)† = proj i := by
+theorem adjoint_proj {n : ℕ} (i : Fin n) : (proj i)† = proj i := by
   simp [proj]
 
 @[simp]
-theorem proj_mul_self {n : ℕ} (i : Fin n) :
-    proj i ⬝ proj i = proj i := by
+theorem proj_mul_self {n : ℕ} (i : Fin n) : proj i ⬝ proj i = proj i := by
   simpa [proj] using Matrix.proj_mul_proj_of_isNormalized (Vector.basis_isNormalized i)
 
 @[simp]
@@ -153,32 +150,30 @@ theorem trace_proj {n : ℕ} (i : Fin n) : Tr(proj i) = 1 := by
   simpa [proj] using Matrix.trace_proj_of_isNormalized (Vector.basis_isNormalized i)
 
 @[simp]
-theorem adjoint_mul_proj {n : ℕ} (i : Fin n) :
-    (proj i)† ⬝ proj i = proj i := by
+theorem adjoint_mul_proj {n : ℕ} (i : Fin n) : (proj i)† ⬝ proj i = proj i := by
   simp
 
 @[simp]
-theorem proj_mul_proj_ne {n : ℕ} {i j : Fin n} (h : i ≠ j) :
-    proj i ⬝ proj j = 0 := by
+theorem proj_mul_proj_ne {n : ℕ} {i j : Fin n} (h : i ≠ j) : proj i ⬝ proj j = 0 := by
   ext a b
   simp [proj, Matrix.proj, Matrix.mul, Matrix.adjoint, Vector.basis,
     _root_.Matrix.mul_apply, Ne.symm h]
 
-theorem proj_mul_proj {n : ℕ} (i j : Fin n) :
-    proj i ⬝ proj j = if i = j then proj i else 0 := by
+theorem proj_mul_proj {n : ℕ} (i j : Fin n)
+    : proj i ⬝ proj j = if i = j then proj i else 0 := by
   by_cases h : i = j
   · subst j
     simp
   · simp [h, proj_mul_proj_ne h]
 
-theorem postMeasure_apply_ne {n : ℕ} (s : Vector n) {i j : Fin n} (h : j ≠ i) :
-    postMeasure s i j 0 = 0 := by
+theorem postMeasure_apply_ne {n : ℕ} (s : Vector n) {i j : Fin n} (h : j ≠ i)
+    : postMeasure s i j 0 = 0 := by
   simp [postMeasure, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, Vector.basis, h,
     _root_.Matrix.mul_apply]
 
 @[simp]
-theorem postMeasure_basis_self {n : ℕ} (i : Fin n) :
-    postMeasure (Vector.basis i) i = Vector.basis i := by
+theorem postMeasure_basis_self {n : ℕ} (i : Fin n)
+    : postMeasure (Vector.basis i) i = Vector.basis i := by
   ext j k
   fin_cases k
   by_cases h : j = i
@@ -188,8 +183,8 @@ theorem postMeasure_basis_self {n : ℕ} (i : Fin n) :
   · simp [postMeasure_apply_ne (Vector.basis i) h, Vector.basis_apply_ne h]
 
 @[simp]
-theorem prob_postMeasure_self {n : ℕ} (s : Vector n) (i : Fin n)
-    (h : prob s i ≠ 0) : prob (postMeasure s i) i = 1 := by
+theorem prob_postMeasure_self {n : ℕ} (s : Vector n) (i : Fin n) (h : prob s i ≠ 0)
+    : prob (postMeasure s i) i = 1 := by
   simp [postMeasure, prob, proj, Matrix.proj, Matrix.mul, Matrix.adjoint, Vector.basis,
     _root_.Matrix.mul_apply]
   let x := Complex.normSq (s i 0)
@@ -205,8 +200,8 @@ theorem prob_postMeasure_self {n : ℕ} (s : Vector n) (i : Fin n)
     _ = 1 := by
       field_simp [hsqrt]
 
-theorem prob_postMeasure_eq_basis {n : ℕ} (s : Vector n) (i : Fin n)
-    (h : prob s i ≠ 0) : prob (postMeasure s i) = prob (Vector.basis i) := by
+theorem prob_postMeasure_eq_basis {n : ℕ} (s : Vector n) (i : Fin n) (h : prob s i ≠ 0)
+    : prob (postMeasure s i) = prob (Vector.basis i) := by
   funext j
   by_cases hij : j = i
   · subst j
@@ -223,8 +218,8 @@ theorem sum_proj (n : ℕ) : (∑ i : Fin n, proj i) = I n := by
     _root_.Matrix.mul_apply, _root_.Matrix.one_apply]
 
 @[simp]
-theorem sum_adjoint_mul_projectors (n : ℕ) :
-    (∑ i : Fin n, (projectors n i)† ⬝ projectors n i) = I n := by
+theorem sum_adjoint_mul_projectors (n : ℕ)
+    : (∑ i : Fin n, (projectors n i)† ⬝ projectors n i) = I n := by
   simp [projectors]
 
 end Measurement

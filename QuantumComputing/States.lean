@@ -35,9 +35,12 @@ noncomputable def ketMinus : Vector 2 :=
 
 noncomputable def ketPhiPlus : Vector 4 :=
   fun i _ =>
-    if (i : ℕ) = 0 then invSqrt2
-    else if (i : ℕ) = 3 then invSqrt2
-    else 0
+    if (i : ℕ) = 0 then
+      invSqrt2
+    else if (i : ℕ) = 3 then
+      invSqrt2
+    else
+      0
 
 @[simp]
 theorem star_invSqrt2 : (starRingEnd ℂ) invSqrt2 = invSqrt2 := by

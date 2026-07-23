@@ -89,6 +89,17 @@ lake exe cache get
 lake build
 ```
 
+## Formatting
+
+LeanFmt is included as a Lake dependency. Use either of these commands to format the Lean
+sources:
+
+```sh
+make fmt
+# or
+lake exe fmt --recursive .
+```
+
 ## Using the Library
 
 The top-level module imports the public quantum computing API:

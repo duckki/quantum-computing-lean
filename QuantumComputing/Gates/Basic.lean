@@ -10,23 +10,27 @@ constructors.
 namespace QuantumComputing
 
 def X : Square 2 :=
+  -- leanfmt: off next
   fun i j =>
     if (i : ℕ) = 0 ∧ (j : ℕ) = 1 then 1
     else if (i : ℕ) = 1 ∧ (j : ℕ) = 0 then 1
     else 0
 
 def Z : Square 2 :=
+  -- leanfmt: off next
   fun i j =>
     if (i : ℕ) = 0 ∧ (j : ℕ) = 0 then 1
     else if (i : ℕ) = 1 ∧ (j : ℕ) = 1 then -1
     else 0
 
 noncomputable def H : Square 2 :=
+  -- leanfmt: off next
   fun i j =>
     if (i : ℕ) = 1 ∧ (j : ℕ) = 1 then -invSqrt2
     else invSqrt2
 
 def CNOT : Square 4 :=
+  -- leanfmt: off next
   fun i j =>
     if (i : ℕ) = 0 ∧ (j : ℕ) = 0 then 1
     else if (i : ℕ) = 1 ∧ (j : ℕ) = 1 then 1
@@ -36,6 +40,7 @@ def CNOT : Square 4 :=
 
 /-- Three-qubit Toffoli gate, flipping the last qubit when the first two are `1`. -/
 def TOFFOLI : Square 8 :=
+  -- leanfmt: off next
   fun i j =>
     if (i : ℕ) = 0 ∧ (j : ℕ) = 0 then 1
     else if (i : ℕ) = 1 ∧ (j : ℕ) = 1 then 1
@@ -48,6 +53,7 @@ def TOFFOLI : Square 8 :=
     else 0
 
 def CZ : Square 4 :=
+  -- leanfmt: off next
   fun i j =>
     if (i : ℕ) = 0 ∧ (j : ℕ) = 0 then 1
     else if (i : ℕ) = 1 ∧ (j : ℕ) = 1 then 1
@@ -56,6 +62,7 @@ def CZ : Square 4 :=
     else 0
 
 def SWAP : Square 4 :=
+  -- leanfmt: off next
   fun i j =>
     if (i : ℕ) = 0 ∧ (j : ℕ) = 0 then 1
     else if (i : ℕ) = 1 ∧ (j : ℕ) = 2 then 1

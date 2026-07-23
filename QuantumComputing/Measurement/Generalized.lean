@@ -18,12 +18,14 @@ def IsComplete {n outcomes : ℕ} (M : Fin outcomes → Square n) : Prop :=
 
 /-- Probability of generalized measurement outcome `m` for measurement operators `M`. -/
 noncomputable def generalizedProb {n outcomes : ℕ}
-    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes) : ℝ :=
+    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes)
+    : ℝ :=
   ((s† ⬝ ((M m)† ⬝ M m) ⬝ s) 0 0).re
 
 /-- Normalized post-measurement state after generalized measurement outcome `m`. -/
 noncomputable def generalizedPostMeasure {n outcomes : ℕ}
-    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes) : Vector n :=
+    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes)
+    : Vector n :=
   ((1 / Real.sqrt (generalizedProb M s m) : ℝ) : ℂ) • (M m ⬝ s)
 
 /-- Generalized measurement operators satisfying the completeness condition. -/
@@ -32,16 +34,16 @@ structure Generalized (n outcomes : ℕ) where
   isComplete : IsComplete operator
 
 theorem generalizedProb_eq_sum_prob {n outcomes : ℕ} (M : Fin outcomes → Square n)
-    (s : Vector n) (m : Fin outcomes) :
-    generalizedProb M s m = ∑ i : Fin n, prob (M m ⬝ s) i := by
+    (s : Vector n) (m : Fin outcomes)
+    : generalizedProb M s m = ∑ i : Fin n, prob (M m ⬝ s) i := by
   rw [sum_prob]
   have h : s† ⬝ ((M m)† ⬝ M m) ⬝ s = (M m ⬝ s)† ⬝ (M m ⬝ s) := by
     simp [Matrix.mul, Matrix.adjoint, _root_.Matrix.mul_assoc]
   simp [generalizedProb, h]
 
 theorem generalizedProb_eq_trace_effect_proj {n outcomes : ℕ}
-    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes) :
-    generalizedProb M s m = (Tr((M m)† ⬝ M m ⬝ Matrix.proj s)).re := by
+    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes)
+    : generalizedProb M s m = (Tr((M m)† ⬝ M m ⬝ Matrix.proj s)).re := by
   unfold generalizedProb Matrix.proj
   congr 1
   rw [show s† ⬝ ((M m)† ⬝ M m) ⬝ s =
@@ -51,23 +53,23 @@ theorem generalizedProb_eq_trace_effect_proj {n outcomes : ℕ}
   simp [Matrix.mul, _root_.Matrix.mul_assoc]
 
 theorem generalizedProb_eq_trace_state_proj {n outcomes : ℕ}
-    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes) :
-    generalizedProb M s m = (Tr(M m ⬝ Matrix.proj s ⬝ (M m)†)).re := by
+    (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes)
+    : generalizedProb M s m = (Tr(M m ⬝ Matrix.proj s ⬝ (M m)†)).re := by
   rw [generalizedProb_eq_trace_effect_proj]
   congr 1
   rw [Matrix.trace_mul_comm (M m ⬝ Matrix.proj s) ((M m)†)]
   simp [Matrix.mul, _root_.Matrix.mul_assoc]
 
 theorem generalizedProb_nonneg {n outcomes : ℕ} (M : Fin outcomes → Square n)
-    (s : Vector n) (m : Fin outcomes) :
-    0 ≤ generalizedProb M s m := by
+    (s : Vector n) (m : Fin outcomes)
+    : 0 ≤ generalizedProb M s m := by
   rw [generalizedProb_eq_sum_prob]
   exact Finset.sum_nonneg fun i _ => prob_nonneg _ _
 
 theorem generalizedPostMeasure_isNormalized {n outcomes : ℕ}
     (M : Fin outcomes → Square n) (s : Vector n) (m : Fin outcomes)
-    (h : generalizedProb M s m ≠ 0) :
-    Vector.IsNormalized (generalizedPostMeasure M s m) := by
+    (h : generalizedProb M s m ≠ 0)
+    : Vector.IsNormalized (generalizedPostMeasure M s m) := by
   let v : Vector n := M m ⬝ s
   let p : ℝ := generalizedProb M s m
   have hpnonneg : 0 ≤ p := by
@@ -99,9 +101,9 @@ theorem generalizedPostMeasure_isNormalized {n outcomes : ℕ}
     _ = 1 := by
       field_simp [hsqrt]
 
-theorem sum_generalizedProb {n outcomes : ℕ} (M : Fin outcomes → Square n) (s : Vector n) :
-    (∑ m : Fin outcomes, generalizedProb M s m) =
-      ((s† ⬝ (∑ m : Fin outcomes, (M m)† ⬝ M m) ⬝ s) 0 0).re := by
+theorem sum_generalizedProb {n outcomes : ℕ} (M : Fin outcomes → Square n) (s : Vector n)
+    : (∑ m : Fin outcomes, generalizedProb M s m)
+      = ((s† ⬝ (∑ m : Fin outcomes, (M m)† ⬝ M m) ⬝ s) 0 0).re := by
   have hmat :
       s† ⬝ (∑ m : Fin outcomes, (M m)† ⬝ M m) ⬝ s =
         ∑ m : Fin outcomes, s† ⬝ ((M m)† ⬝ M m) ⬝ s := by
@@ -114,8 +116,8 @@ theorem sum_generalizedProb {n outcomes : ℕ} (M : Fin outcomes → Square n) (
 
 theorem sum_generalizedProb_of_isComplete {n outcomes : ℕ}
     {M : Fin outcomes → Square n} (hM : IsComplete M) {s : Vector n}
-    (hs : Vector.IsNormalized s) :
-    (∑ m : Fin outcomes, generalizedProb M s m) = 1 := by
+    (hs : Vector.IsNormalized s)
+    : (∑ m : Fin outcomes, generalizedProb M s m) = 1 := by
   rw [sum_generalizedProb, hM]
   have hroot : s† ⬝ s = 1 := by simpa [Vector.IsNormalized] using hs
   have h : s† ⬝ (I n) ⬝ s = 1 := by
@@ -134,58 +136,61 @@ instance : CoeFun (Generalized n outcomes) (fun _ => Fin outcomes → Square n) 
   coe M := M.operator
 
 @[simp]
-theorem coe_apply (M : Generalized n outcomes) (m : Fin outcomes) :
-    (M : Fin outcomes → Square n) m = M.operator m :=
+theorem coe_apply (M : Generalized n outcomes) (m : Fin outcomes)
+    : (M : Fin outcomes → Square n) m = M.operator m :=
   rfl
 
 /-- Probability of generalized measurement outcome `m`. -/
-noncomputable def prob (M : Generalized n outcomes) (s : Vector n) (m : Fin outcomes) : ℝ :=
+noncomputable def prob (M : Generalized n outcomes) (s : Vector n) (m : Fin outcomes)
+    : ℝ :=
   generalizedProb M.operator s m
 
 /-- Normalized post-measurement state after generalized measurement outcome `m`. -/
 noncomputable def postMeasure
-    (M : Generalized n outcomes) (s : Vector n) (m : Fin outcomes) : Vector n :=
+    (M : Generalized n outcomes) (s : Vector n) (m : Fin outcomes)
+    : Vector n :=
   generalizedPostMeasure M.operator s m
 
 /-- Measurement probability for a pure state wrapper. -/
 noncomputable def pureProb (M : Generalized n outcomes) (ψ : PureState n)
-    (m : Fin outcomes) : ℝ :=
+    (m : Fin outcomes)
+    : ℝ :=
   M.prob ψ.vector m
 
 /-- Post-measurement vector after measuring a pure state. -/
 noncomputable def purePostMeasure (M : Generalized n outcomes) (ψ : PureState n)
-    (m : Fin outcomes) : Vector n :=
+    (m : Fin outcomes)
+    : Vector n :=
   M.postMeasure ψ.vector m
 
 @[simp]
 theorem prob_eq_generalizedProb (M : Generalized n outcomes)
-    (s : Vector n) (m : Fin outcomes) :
-    M.prob s m = generalizedProb M.operator s m :=
+    (s : Vector n) (m : Fin outcomes)
+    : M.prob s m = generalizedProb M.operator s m :=
   rfl
 
 @[simp]
 theorem postMeasure_eq_generalizedPostMeasure (M : Generalized n outcomes)
-    (s : Vector n) (m : Fin outcomes) :
-    M.postMeasure s m = generalizedPostMeasure M.operator s m :=
+    (s : Vector n) (m : Fin outcomes)
+    : M.postMeasure s m = generalizedPostMeasure M.operator s m :=
   rfl
 
-theorem prob_nonneg (M : Generalized n outcomes)
-    (s : Vector n) (m : Fin outcomes) :
-    0 ≤ M.prob s m := by
+theorem prob_nonneg (M : Generalized n outcomes) (s : Vector n) (m : Fin outcomes)
+    : 0 ≤ M.prob s m := by
   simpa [prob] using generalizedProb_nonneg M.operator s m
 
 theorem sum_prob_of_isNormalized (M : Generalized n outcomes)
-    {s : Vector n} (hs : Vector.IsNormalized s) :
-    (∑ m : Fin outcomes, M.prob s m) = 1 := by
+    {s : Vector n} (hs : Vector.IsNormalized s)
+    : (∑ m : Fin outcomes, M.prob s m) = 1 := by
   simpa [prob] using sum_generalizedProb_of_isComplete M.isComplete hs
 
 theorem postMeasure_isNormalized (M : Generalized n outcomes)
-    (s : Vector n) (m : Fin outcomes) (h : M.prob s m ≠ 0) :
-    Vector.IsNormalized (M.postMeasure s m) := by
+    (s : Vector n) (m : Fin outcomes) (h : M.prob s m ≠ 0)
+    : Vector.IsNormalized (M.postMeasure s m) := by
   exact generalizedPostMeasure_isNormalized M.operator s m h
 
-theorem sum_pureProb (M : Generalized n outcomes) (ψ : PureState n) :
-    (∑ m : Fin outcomes, M.pureProb ψ m) = 1 := by
+theorem sum_pureProb (M : Generalized n outcomes) (ψ : PureState n)
+    : (∑ m : Fin outcomes, M.pureProb ψ m) = 1 := by
   simpa [pureProb] using M.sum_prob_of_isNormalized ψ.isNormalized
 
 noncomputable def projective (n : ℕ) : Generalized n n where
@@ -193,30 +198,30 @@ noncomputable def projective (n : ℕ) : Generalized n n where
   isComplete := projectors_isComplete n
 
 @[simp]
-theorem projective_apply {n : ℕ} (i : Fin n) :
-    (projective n).operator i = projectors n i :=
+theorem projective_apply {n : ℕ} (i : Fin n)
+    : (projective n).operator i = projectors n i :=
   rfl
 
 end Generalized
 
 @[simp]
-theorem generalizedProb_projectors {n : ℕ} (s : Vector n) (i : Fin n) :
-    generalizedProb (projectors n) s i = prob s i := by
+theorem generalizedProb_projectors {n : ℕ} (s : Vector n) (i : Fin n)
+    : generalizedProb (projectors n) s i = prob s i := by
   simp [generalizedProb, prob, projectors, quadratic_proj]
 
-theorem sum_generalizedProb_projectors {n : ℕ} (s : Vector n) :
-    (∑ i : Fin n, generalizedProb (projectors n) s i) = (∑ i : Fin n, prob s i) := by
+theorem sum_generalizedProb_projectors {n : ℕ} (s : Vector n)
+    : (∑ i : Fin n, generalizedProb (projectors n) s i) = (∑ i : Fin n, prob s i) := by
   simp
 
 theorem sum_generalizedProb_projectors_of_isNormalized {n : ℕ} {s : Vector n}
-    (hs : Vector.IsNormalized s) :
-    (∑ i : Fin n, generalizedProb (projectors n) s i) = 1 := by
+    (hs : Vector.IsNormalized s)
+    : (∑ i : Fin n, generalizedProb (projectors n) s i) = 1 := by
   rw [sum_generalizedProb_projectors]
   exact sum_prob_of_isNormalized hs
 
 @[simp]
-theorem generalizedPostMeasure_projectors {n : ℕ} (s : Vector n) (i : Fin n) :
-    generalizedPostMeasure (projectors n) s i = postMeasure s i := by
+theorem generalizedPostMeasure_projectors {n : ℕ} (s : Vector n) (i : Fin n)
+    : generalizedPostMeasure (projectors n) s i = postMeasure s i := by
   simp [generalizedPostMeasure, postMeasure, generalizedProb, prob, projectors,
     quadratic_proj]
 
