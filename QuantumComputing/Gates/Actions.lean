@@ -112,7 +112,7 @@ theorem CNOT_mul_ket11 : CNOT ⬝ ket11 = ket10 := by
 theorem TOFFOLI_mul_basis (i : Fin 8)
     : TOFFOLI ⬝ Vector.basis i
       = Vector.basis
-          ( if i = (6 : Fin 8) then
+          (if i = (6 : Fin 8) then
               (7 : Fin 8)
             else if i = (7 : Fin 8) then
               (6 : Fin 8)
