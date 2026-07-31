@@ -78,8 +78,7 @@ that follows keeps the individual files easy to scan.
 
 ## Requirements
 
-This project is pinned to Lean `v4.29.1` and mathlib4 `v4.29.1`. Lake reads the
-Lean version from `lean-toolchain` and the mathlib dependency from
+Lake reads the Lean version from `lean-toolchain` and the mathlib dependency from
 `lakefile.lean`.
 
 ## Build

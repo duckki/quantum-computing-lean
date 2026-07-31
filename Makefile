@@ -2,6 +2,9 @@
 
 all: build
 
+get-cache:
+	time lake exe cache get
+
 build:
 	time lake build
 
