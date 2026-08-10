@@ -193,8 +193,8 @@ theorem prob_postMeasure_self {n : ℕ} (s : Vector n) (i : Fin n) (h : prob s i
   have hsqrt : Real.sqrt x ≠ 0 := ne_of_gt (Real.sqrt_pos_of_pos hxpos)
   change (Real.sqrt x)⁻¹ * (Real.sqrt x)⁻¹ * x = 1
   calc
-    (Real.sqrt x)⁻¹ * (Real.sqrt x)⁻¹ * x =
-        (Real.sqrt x)⁻¹ * (Real.sqrt x)⁻¹ * (Real.sqrt x * Real.sqrt x) := by
+    (Real.sqrt x)⁻¹ * (Real.sqrt x)⁻¹ * x
+        = (Real.sqrt x)⁻¹ * (Real.sqrt x)⁻¹ * (Real.sqrt x * Real.sqrt x) := by
       congr 1
       exact (Real.sq_sqrt hxnonneg).symm.trans (by rw [sq])
     _ = 1 := by

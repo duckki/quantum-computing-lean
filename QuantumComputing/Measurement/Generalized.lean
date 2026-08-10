@@ -94,8 +94,8 @@ theorem generalizedPostMeasure_isNormalized {n outcomes : ℕ}
   norm_cast
   change (Real.sqrt p)⁻¹ * (Real.sqrt p)⁻¹ * p = 1
   calc
-    (Real.sqrt p)⁻¹ * (Real.sqrt p)⁻¹ * p =
-        (Real.sqrt p)⁻¹ * (Real.sqrt p)⁻¹ * (Real.sqrt p * Real.sqrt p) := by
+    (Real.sqrt p)⁻¹ * (Real.sqrt p)⁻¹ * p
+        = (Real.sqrt p)⁻¹ * (Real.sqrt p)⁻¹ * (Real.sqrt p * Real.sqrt p) := by
       congr 1
       exact (Real.sq_sqrt hpnonneg).symm.trans (by rw [sq])
     _ = 1 := by

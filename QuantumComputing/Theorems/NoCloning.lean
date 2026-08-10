@@ -31,8 +31,7 @@ private theorem ketZeros_inner_invSqrt2_smul (n : ℕ)
   have hunit : (|0⟩⊗[n])† ⬝ (|0⟩⊗[n]) = (1 : Square 1) := by
     simpa [Vector.IsNormalized] using ketZeros_isNormalized n
   calc
-    ((|0⟩⊗[n])† ⬝ (√2⁻¹ • (|0⟩⊗[n]))) 0 0 =
-        (√2⁻¹ • ((|0⟩⊗[n])† ⬝ (|0⟩⊗[n]))) 0 0 := by
+    ((|0⟩⊗[n])† ⬝ (√2⁻¹ • (|0⟩⊗[n]))) 0 0 = (√2⁻¹ • ((|0⟩⊗[n])† ⬝ (|0⟩⊗[n]))) 0 0 := by
       simp [Matrix.mul]
     _ = √2⁻¹ := by
       rw [hunit]
@@ -130,13 +129,11 @@ theorem no_cloning_3 (n : ℕ)
         √2⁻¹ • (U ⬝ (|0⟩ ⊗ blank)) +
           √2⁻¹ • (U ⬝ (|1⟩ ⊗ blank)) := by
     calc
-      U ⬝ (|+⟩ ⊗ blank) =
-          U ⬝ (((√2⁻¹ • |0⟩) + (√2⁻¹ • |1⟩)) ⊗ blank) := by
+      U ⬝ (|+⟩ ⊗ blank) = U ⬝ (((√2⁻¹ • |0⟩) + (√2⁻¹ • |1⟩)) ⊗ blank) := by
         rw [ketPlus_eq_superposition]
       _ = U ⬝ (√2⁻¹ • (|0⟩ ⊗ blank) + √2⁻¹ • (|1⟩ ⊗ blank)) := by
         rw [Matrix.kron_add_left, Matrix.kron_smul_left, Matrix.kron_smul_left]
-      _ = √2⁻¹ • (U ⬝ (|0⟩ ⊗ blank)) +
-            √2⁻¹ • (U ⬝ (|1⟩ ⊗ blank)) := by
+      _ = √2⁻¹ • (U ⬝ (|0⟩ ⊗ blank)) + √2⁻¹ • (U ⬝ (|1⟩ ⊗ blank)) := by
         simp [Matrix.mul, _root_.Matrix.mul_add]
   have hstep :
       |+⟩ ⊗ (|+⟩ ⊗ f (|+⟩)) =

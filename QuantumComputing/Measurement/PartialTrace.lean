@@ -54,8 +54,8 @@ theorem trace_partialTrace {n m : ℕ} (A : Square (n * m))
       (fun x : Fin (n * m) => A x x)
       (by intro x; simp)
   calc
-    Matrix.trace (partialTrace (n := n) (m := m) A) =
-        ∑ x : Fin n × Fin m, A (finProdFinEquiv x) (finProdFinEquiv x) := by
+    Matrix.trace (partialTrace (n := n) (m := m) A)
+        = ∑ x : Fin n × Fin m, A (finProdFinEquiv x) (finProdFinEquiv x) := by
       simp [Matrix.trace, _root_.Matrix.trace, partialTrace, Fintype.sum_prod_type]
     _ = Matrix.trace A := by
       simpa [Matrix.trace, _root_.Matrix.trace] using h
