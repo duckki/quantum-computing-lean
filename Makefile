@@ -1,6 +1,6 @@
 .PHONY: all build fmt-check fmt
 
-all: build
+all: build fmt-check
 
 get-cache:
 	time lake exe cache get
