@@ -46,11 +46,10 @@ private theorem triple_kron_entry_010 {n : ℕ} (a b : Vector 2) (c : Vector (2 
     (k : Fin (2 ^ n))
     : (a ⊗ (b ⊗ c)) (finProdFinEquiv ((0 : Fin 2), finProdFinEquiv ((1 : Fin 2), k))) 0
       = a 0 0 * (b 1 0 * c k 0) := by
-  change
-    (a ⊗ (b ⊗ c))
-        (finProdFinEquiv ((0 : Fin 2), finProdFinEquiv ((1 : Fin 2), k)))
-        (finProdFinEquiv ((0 : Fin 1), finProdFinEquiv ((0 : Fin 1), (0 : Fin 1)))) =
-      a 0 0 * (b 1 0 * c k 0)
+  change (a ⊗ (b ⊗ c))
+            (finProdFinEquiv ((0 : Fin 2), finProdFinEquiv ((1 : Fin 2), k)))
+            (finProdFinEquiv ((0 : Fin 1), finProdFinEquiv ((0 : Fin 1), (0 : Fin 1))))
+          = a 0 0 * (b 1 0 * c k 0)
   rw [Matrix.kron_apply, Matrix.kron_apply]
 
 theorem no_cloning_of_inner_eq_invSqrt2 {d : ℕ} {x y blank : Vector d}
